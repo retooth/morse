@@ -1,0 +1,10 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block content %}
+<div class="{{ mediatype }}" id="contentwrapper">
+ <div class="item" id="item-header">inspirations by the community</div>
+ <div class="item"></div>
+ {% block metadata %}
+ {% endblock %}
+</div>
+{% endblock %}

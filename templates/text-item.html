@@ -1,0 +1,15 @@
+<!doctype html>
+{% extends "item.html" %}
+ {% block metadata %}
+ <div id="interdisciplinary-bar">
+ Distribution of the topic <i>{{ item }}</i> in the arts:<br>
+ {% for board in config.BOARDS %}
+  <div class="{{ board }}-tag" style="width:125pt" id="{{ board }}-interdisciplinary-tag">{{ item }}</div>
+ {% endfor %}
+ </div>
+ <div id="interdisciplinary-bar">
+ {% for board in config.BOARDS %}
+  <div class="{{ board }}-tag" style="width:125pt" id="{{ board }}-interdisciplinary-tag">synonym for {{ item }}</div>
+ {% endfor %}
+ </div>
+ {%endblock%}

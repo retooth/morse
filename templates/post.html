@@ -1,0 +1,13 @@
+<!doctype html>
+<div class="postentry {% if post.isfresh %} fresh {% endif %}">
+<a id="post{{ post.id }}" class="postheader"></a>
+  <aside class="postsidebar">
+    <div class="profileimage" style="background-image:url('{{ post.creator.profileimage }}')"></div>
+    <div class="postcreator">{{ post.creator.username }}</div>
+  </aside>
+  <article class="post">
+   {{ post.content }}
+ </article>
+ <div class="clear"></div>
+<div class="postfooter">{{ post.id }}</div>
+</div>

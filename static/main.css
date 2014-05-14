@@ -1,0 +1,708 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+  font-family: 'Roboto';
+}
+
+
+/* header -------------------------------------- */
+
+header {
+  background:#3D322E; 
+  border-radius: 3pt;
+  padding:5pt 5pt 5pt 5pt; 
+  color:#fff;
+}
+
+    #headertitle{
+      float:left;
+    }
+
+        #community {
+          font: 20pt 'Roboto';
+          font-weight: 900;
+        }
+
+
+        #slogan {
+          font: 12pt 'Roboto';
+        }
+
+
+    #profileimage{
+      background-size: 64px 64px;
+      border-radius: 50%;
+      display: block;
+      margin: -1px;
+      height: 64px;
+      width: 64px;
+      border:2pt solid white;
+      background-image: url("http://i.imgur.com/XNgLBE7b.jpg"); /* TODO default image */
+      float:right;
+      cursor:pointer;
+    }
+
+        #usernav{
+          position:absolute;
+          display:none;
+          background:#eee; 
+          border-radius:3pt;
+          border:1pt solid #ccc;
+          padding:5pt;
+          font-size:11pt;
+          margin-top:5pt;
+          float:right;
+          width:200pt;
+          left:70%;
+        }
+
+            #dologout{
+              background:#DB3026;
+              text-decoration:none;
+              color:#fff;
+              padding:5pt;
+              border-radius:3pt;
+              width:41%;
+              float:left;
+              margin-left:5pt;
+            }
+
+
+            #showsettings{
+              background:#67DAD7;
+              text-decoration:none;
+              color:#fff;
+              padding:5pt;
+              border-radius:3pt;
+              width:41%;
+              float:left;
+              margin-left:5pt;
+            }
+
+.alert{
+  display:none;
+  padding:5pt;
+  font-size:10pt;
+  background:#F08D37;
+  border-radius:3pt;
+  font: 11pt 'Roboto';
+  margin-top:10pt;
+}
+
+/* --------------------------------------------- */
+
+
+
+
+/* index --------------------------------------- */
+
+#goback{
+  font-size:15pt;
+  color:#DB3026;
+  text-decoration:none;
+}
+
+.boardentry {
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+}
+
+    .boardtitle {
+      font-weight:bold;
+      font-size:12pt;
+      color:#000;
+    }
+
+    .boarddescription {
+      font-size:10pt;
+      color:#000;
+    }
+
+/* --------------------------------------------- */
+
+
+
+/* board --------------------------------------- */
+
+#boardtitle {
+  font-weight:bold;
+  color:#000;
+  margin-top: -5pt;
+  padding:0;
+  font-size:32pt;
+}
+
+.topicentry {
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+}
+
+.topicentry:hover {
+  background:#eef;
+}
+
+    .topictitle{
+      color:#000;
+      font-weight:bold;
+    }
+
+    .lastpost {
+      display:none;
+      background: #BDF067;
+      border-radius-bottom-left: 3pt;
+      border-radius-bottom-right: 3pt;
+      padding:5pt;
+      margin:-5pt;
+      margin-top:2pt;
+      font-size:10pt;
+    }
+
+    .lasttopics {
+      display:none;
+      background: #DDEAD0;
+      border-radius-bottom-left: 3pt;
+      border-radius-bottom-right: 3pt;
+      padding:5pt;
+      margin:-5pt;
+      margin-top:2pt;
+      font-size:10pt;
+    }
+
+.accessdenied{
+  margin-top:30pt;
+  text-align:center;
+}
+
+.accessdenied #goback{
+  color:#DB3026;
+  text-decoration:none;
+}
+
+/* --------------------------------------------- */
+
+
+
+
+/* topic --------------------------------------- */
+
+#topictitle {
+  font-weight:bold;
+  color:#000;
+  margin-top: -5pt;
+  padding:0;
+  font-size:32pt;
+}
+
+#topictitlewrapper{
+  float:left;
+}
+
+#gobacktooltip{
+  display:none;
+}
+
+.postentry {
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+}
+
+  .post{
+    font-size:11pt;
+    float:left;
+    width:88%;
+    padding:5pt;
+    min-height:120px;
+    border-left:1pt solid #ccc;
+  }
+
+  .postsidebar{
+    text-align:center;
+    float:left;
+    min-width:64px;
+    width:7%;
+    padding:5pt;
+    height:100%;
+    margin-right:5pt;
+  }
+
+      .profileimage{
+        background-size: 64px 64px;
+        border-radius: 50%;
+        display: block;
+        height: 64px;
+        width: 64px;
+        border:2pt solid white;
+        background-image: url("http://i.imgur.com/XNgLBE7b.jpg"); /* TODO: default image */
+        cursor:pointer;
+      }
+
+      .postcreator{
+        padding:2pt;
+        font-weight:bold;
+        font-size:10pt;
+        text-align:center;
+        white-space: pre-wrap;      /* CSS3 */   
+        white-space: -moz-pre-wrap; /* Firefox */    
+        white-space: -pre-wrap;     /* Opera <7 */   
+        white-space: -o-pre-wrap;   /* Opera 7 */    
+        word-wrap: break-word;      /* IE */
+      }
+
+  .postfooter{
+    width:0;
+    height:0;
+    font-size:0;
+  }
+
+#topictools{
+  float:left;
+  padding-left:5pt;
+}
+
+    #followswitch{
+      color:#fff;
+      padding:4pt;
+      border-radius:3pt;
+      float:left;
+      margin-left:5pt;
+      cursor:pointer;
+      font-size:10pt;
+    }
+
+    .follow{
+      background:#88C100;
+    }
+
+    .unfollow{
+      background:#FF8A00;
+    }
+
+/* --------------------------------------------- */
+
+
+
+
+/* input box ----------------------------------- */
+
+#inputwrapper{
+  display:none;
+  border-radius: 3pt;
+  padding:5pt;
+  border: 1pt solid #ccc;
+}
+
+  #newtopictitle{
+    font: 10pt 'Roboto';
+    outline:none;
+    border:none;
+    width:80%;
+    overflow:hidden;
+    padding:4pt;
+    font-weight:bold;
+    font-size:12pt;
+  }
+
+  #newtopictext{
+    font: 10pt 'Roboto';
+    outline:none;
+    border:none;
+    width:98%;
+    overflow:hidden;
+    padding:4pt;
+  }
+
+  #newposttext{
+    font: 11pt 'Roboto';
+    outline:none;
+    border:none;
+    width:98%;
+    overflow:hidden;
+    padding:4pt;
+  }
+
+/* ------------------------------------------- */
+
+
+
+
+/* input toolbar ----------------------------- */
+
+#makebold{
+  font-weight:bold;
+  border:1pt solid #ccc;
+  padding:2pt;
+  width:10pt;
+  font-size:8pt;
+  float:left;
+  margin-right:2pt;
+  cursor:pointer;
+}
+
+#makeitalic{
+  font-style:italic;
+  border:1pt solid #ccc;
+  padding:2pt;
+  width:10pt;
+  font-size:8pt;
+  float:left;
+  margin-right:2pt;
+  cursor:pointer;
+}
+
+#makequote{
+  border:1pt solid #ccc;
+  padding:2pt;
+  width:10pt;
+  font-size:8pt;
+  float:left;
+  margin-right:2pt;
+  cursor:pointer;
+}
+
+#makelink{
+  color:#7D7Af0;
+  border:1pt solid #ccc;
+  padding:2pt;
+  min-width:10pt;
+  font-size:8pt;
+  float:left;
+  margin-right:2pt;
+  cursor:pointer;
+  background:#fff;
+}
+
+#newhref{
+  font-family:'Roboto';
+  border:none;
+  margin:0;
+  font-size:8pt;
+  padding:0;
+  outline:none;
+  width:200pt;
+}
+
+#closenewhref{
+  font-family:'Roboto';
+  font-size:8pt;
+  font-weight:bold;
+  color:#444;
+}
+
+#newhrefwrapper{
+  display:none;
+}
+
+#newhref:focus{
+  border:none;
+  outline:none;
+}
+
+#toolfooter{
+  padding:5pt;
+}
+
+#dopost{
+  cursor:pointer;
+  font-weight:bold;
+  background: #ADF057;
+  border:1pt solid #ccc;
+  border-radius: 2pt;
+  float:left;
+  color:#000;
+  padding:2pt;
+  font-size:8pt;
+  margin-right:2pt;
+}
+
+#docreate{
+  cursor:pointer;
+  font-weight:bold;
+  background: #ADF057;
+  border:1pt solid #ccc;
+  border-radius: 2pt;
+  float:left;
+  color:#000;
+  padding:2pt;
+  font-size:8pt;
+  margin-right:2pt;
+}
+
+.disabledbox{
+  background:#DDEAD0;
+}
+
+#dummylink{
+  background:#9DAC99;
+  color:#fff;
+}
+
+.inputalert{
+  display:none;
+  float:left;
+  padding:2pt;
+  font-size:10pt;
+  color: #F08D37;
+}
+
+#typinginfo{
+  font-size:10pt;
+  font-weight:900;
+}
+
+/* ------------------------------------------- */
+
+
+
+
+/* styling ----------------------------------- */
+
+blockquote{
+  background: #DDEAD0;
+  border-radius:2pt;
+  padding:5pt;
+}
+
+.fresh {
+  background: #BDF067;
+}
+
+.fresh:hover {
+  background: #ADE057;
+}
+
+/* ------------------------------------------- */
+
+
+
+
+/* login and signup -------------------------- */
+
+#signupcontrols{
+  float:left;
+}
+
+    input.loginregister{
+      font: 11pt 'Roboto';
+      padding:5pt;
+      border:1pt solid #ccc;
+      border-radius:3pt;
+    }
+
+    #dologin{
+      font: 11pt 'Roboto';
+      background:#88C100;
+      border:1pt solid #88C100;
+      text-decoration:none;
+      color:#fff;
+      padding:5pt;
+      border-radius:3pt;
+      margin-left:5pt;
+    }
+
+    #dosignup{
+      font: 11pt 'Roboto';
+      background:#88C100;
+      border:1pt solid #88C100;
+      text-decoration:none;
+      color:#fff;
+      padding:5pt;
+      border-radius:3pt;
+    }
+
+#rules{
+  float:left;
+  padding:5pt;
+  margin-left:5pt;
+  border-left:1pt solid #ccc;
+  min-height:120pt;
+}
+
+div.login{
+  position:absolute;
+  left:25%;
+  width:50%;
+}
+
+/* --------------------------------------------- */
+
+
+
+
+/* settings ------------------------------------ */
+
+#settingswrapper{
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+}
+
+    #bio{
+      outline:none;
+      border:1pt solid #ccc;
+      border-radius:3pt;
+      resize:none;
+      width:400pt;
+      min-height:100pt;
+      padding:5pt;
+    }
+
+    .websitewrapper{
+      display: inline-block;
+      border: 1px solid #ccc;
+      width:400pt;
+      border-radius:3pt;
+      margin-top:5pt;
+      padding:5pt;
+    }
+
+    .websitewrapper button{
+      border:none;
+      background:none;
+      padding:none;
+      cursor:pointer;
+    }
+
+    .websitewrapper button img{
+      border:none;
+      width:12px;
+      height:auto;
+    }
+
+    .websitewrapper input{
+      font: 11pt 'Roboto';
+      border:none;
+      padding:0;
+      width:375pt;
+      outline:none; 
+    }
+
+    .website{
+      border:1pt solid #ccc;
+      border-radius:3pt;
+      min-width:400pt;
+      padding:5pt;
+      font-size:11pt;
+    }
+
+    #anotherwebsite{
+      border:none;
+      background:#FABE28;
+      text-decoration:none;
+      color:#fff;
+      padding:5pt;
+      border-radius:3pt;
+      margin-left:1pt;
+      cursor:pointer;
+      font-size:10pt;
+      float:left;
+    }
+
+    #updateinfo{
+      float:left;
+    }
+
+    .updatesettings{
+      float:left;
+      background:#88C100;
+      border:none;
+      text-decoration:none;
+      color:#fff;
+      padding:5pt;
+      border-radius:3pt;
+      margin-left:1pt;
+      cursor:pointer;
+      font-size:10pt;
+    }
+
+    textarea { font: 11pt "Roboto"; }
+
+    .settings{
+      font: 11pt 'Roboto';
+      border:1pt solid #ccc;
+      border-radius:3pt;
+      padding:5pt;
+      width:400pt;
+      outline:none;
+      margin-top:5pt;
+      position:relative; 
+    }
+
+    .accountsettingsalert{
+      float:left;
+      display:none;
+      padding:5pt;
+      font-size:10pt;
+      color: #F08D37;
+    }
+
+    .infosettingsalert{
+      float:left;
+      display:none;
+      padding:5pt;
+      font-size:10pt;
+      color: #F08D37;
+    }
+/* --------------------------------------------- */
+
+
+
+
+/* admin --------------------------------------- */
+
+#adminwrapper{
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+}
+
+/* --------------------------------------------- */
+
+
+
+/* helpers ------------------------------------- */
+
+.clear{
+  clear:both;
+}
+
+.buttonspinner{
+  padding-left:25px !important;
+  background-repeat:no-repeat !important;
+  background-position:5px 8px !important;
+  background-image: url("loader-white.gif") !important;
+}
+
+.hidden{
+  display:none;
+}
+
+a.divwrapper{
+  text-decoration:none;
+}
+
+.redoutline{
+ border-color:#F08D37 !important;
+}

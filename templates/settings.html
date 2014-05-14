@@ -1,0 +1,42 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block content %}
+<div id="settingswrapper">
+<b>Settings</b><br/><br/>
+<textarea id="bio" maxlength="500" placeholder="Introduce yourself in 500 characters">{{bio}}</textarea>
+<br class="website"/>
+{% for website in websites %}
+<div class="websitewrapper">
+<input type="url" placeholder="Do you have a Website/Blog/whatever?" value="{{website}}"/>
+<button class="deletewebsite"><img src="{{ url_for('static', filename='close.png') }}"/></button>
+</div>
+{% endfor %}
+<br id="anotherwebsitebr"/>
+<br/>
+<button id="anotherwebsite">I have another website</button>
+<button id="updateinfo" class="updatesettings" >Update my info</button>
+<div id="infosettingsalert_ajax" class="infosettingsalert">Error connecting to the server</div>
+<div class="clear"></div>
+<br/>
+<b>Account Details</b><br/>
+<br/>
+<input id="newemail" class="accountdetail settings" placeholder="Email" value="{{ email }}"/>
+<input id="newpassword" type="password" class="accountdetail settings" placeholder="New password"/>
+<input id="newpasswordagain" type="password" class="accountdetail settings" placeholder="New password (again)"/>
+<span id="chromebugmask" class="hidden">
+  <input id="oldpassword" type="password" class="settings" placeholder="Old password (for security)"/>
+</span>
+<br/>
+<br/>
+<div>
+<button id="updateaccount" class="hidden updatesettings">Update account</button>
+<div id="accountsettingsalert_passwordsdontmatch" class="accountsettingsalert">Passwords don't match</div>
+<div id="accountsettingsalert_wrongpassword" class="accountsettingsalert">Wrong password</div>
+<div id="accountsettingsalert_ajax" class="accountsettingsalert">Error connecting to the server</div>
+<div class="clear"></div>
+</div>
+<br/>
+<b>Danger Zone</b><br/>
+- delete account<br/>
+</div>
+{% endblock %}

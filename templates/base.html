@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+</head>
+<body>
+<header>
+<div id="headertitle">
+<span id="community">title</span><br />
+<span id="slogan">subtitle</span>
+</div>
+{% if logged_in %}
+ <div id="profileimage" style="background-image:url('{{ current_user.profileimage }}')"></div>
+{% endif %}
+<div class="clear"></div>
+</header>
+{% include "alerts.html" %}
+{% if logged_in %}
+ {% include "usernav.html" %}
+{% endif %}
+<br />
+{% block content %}{% endblock %}
+<script src="{{ url_for('static', filename='jquery-1.9.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery.json-2.4.min.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery-autogrow.min.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery-visible.min.js') }}"></script>
+<script src="{{ url_for('static', filename='jquery-spellfade.js') }}"></script>
+<script src="{{ url_for('static', filename='main.js') }}"></script>
+</body>

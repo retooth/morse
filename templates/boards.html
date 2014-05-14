@@ -1,0 +1,7 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block content %}
+{% for board in boards %}
+    {% include "boardentry.html" %}
+{% endfor %}
+{% endblock %}

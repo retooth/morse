@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+  <form action="" method=post>
+        <div id="signupcontrols">
+          <input type="text" id="username" name="username" class="loginregister"
+            placeholder="Enter Username" value="{{ request.form.username }}"
+            required><br/>
+          <input type="password" id="password" name="password" class="loginregister"
+            placeholder="Enter Password" value="{{ request.form.password }}"
+            required><br />
+          <input type="email" id="email" name="email" class="loginregister"
+            placeholder="Enter Email" value="{{ request.form.username }}"
+            required><br />
+           <button type="submit" id="dosignup">Sign Up</button>
+        </div>
+        <div id="rules">
+        {% include "rules.html" %}
+        </div>
+  </form>
+{% endblock %}

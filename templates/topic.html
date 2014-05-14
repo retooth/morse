@@ -1,0 +1,27 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block content %}
+ <div id="topicid" class="hidden">{{ topic.id }}</div>
+ <div id="topicheader">
+ <div id="topictitlewrapper">
+  <h1 id="topictitle">
+   <a href="/board/{{ topic.board_id }}" id="goback">..
+    <span id="gobacktooltip">Back to topic list</span>
+   </a>{{ topic.title }}
+  </h1>
+ </div>
+ <div id="topictools">
+  {% if topic.followed %}
+    <div id="followswitch" class="unfollow" switched="Follow">Unfollow</div> 
+  {% else %}
+    <div id="followswitch" class="follow" switched="Unfollow">Follow</div> 
+  {% endif %}
+   <div class="clear"></div>
+ </div>
+ <div class="clear"></div>
+ </div>
+ {% include "postinput.html" %}
+ {% for post in posts %}
+  {% include "post.html" %}
+ {% endfor %}
+{% endblock %}
