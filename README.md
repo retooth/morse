@@ -5,7 +5,7 @@ A javascript-heavy, minimalist bulletin board software
 #### Motivation
 
 Morse was created, because phpBB and vBulletin seemed outdated to me, both in design and ux.
-The main reasons the ux bugged me was, that the mass of shown information (such as post dates,
+The main reason the ux bugged me was, that the mass of shown information (such as post dates,
 "active since" and the like) distracted from the actual content. I tried a new approach I'd
 like to call the "SIOWN principle", which is short for "Show Information Only When Needed"
 In application this means, that the new post input field only shows, when the user starts
