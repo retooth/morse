@@ -1,4 +1,8 @@
-== Morse ==
+# Morse
+
+A javascript-heavy, minimalist bulletin board software
+
+#### Motivation
 
 Morse was created, because phpBB and vBulletin seemed outdated to me, both in design and ux.
 The main reasons the ux bugged me was, that the mass of shown information (such as post dates,
@@ -14,6 +18,7 @@ suddenly notice, that my pasta water is boiling over). I have to remember flaggi
 unread. In Morse a post gets only flagged, when the bottom of the post is in the browser
 viewport, which means you actually have to read the post (or scroll down like a maniac)
 
-The current version is not really finished yet. It lacks an admin panel and some
-small features. But if you want to hack into the code and temper with the database yourself, 
-you can try it already. 
+#### Current version
+
+Morse is not really finished yet. It lacks an admin panel and some small features. But if 
+you want to hack into the code and temper with the database yourself, you can try it already. 
