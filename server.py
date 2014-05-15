@@ -131,41 +131,41 @@ class User (db.Model):
         return self.id
 
     @property
-    def maystructure ():
-        user_id = current_user.id
-        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+    def maystructure (self):
+        relations = GroupMember.query.filter(GroupMember.user_id.like(self.id)).all() 
         for r in relations:
-            if r.may_structure:
+            group = Group.query.get(r.group_id)
+            if group.may_structure:
                 return True
                 break
         return False
 
     @property
     def mayedit ():
-        user_id = current_user.id
-        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+        relations = GroupMember.query.filter(GroupMember.user_id.like(self.id)).all() 
         for r in relations:
-            if r.may_edit:
+            group = Group.query.get(r.group_id)
+            if group.may_edit:
                 return True
                 break
         return False
 
     @property
     def maydelete ():
-        user_id = current_user.id
-        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+        relations = GroupMember.query.filter(GroupMember.user_id.like(self.id)).all() 
         for r in relations:
-            if r.may_delete:
+            group = Group.query.get(r.group_id)
+            if group.may_delete:
                 return True
                 break
         return False
 
     @property
     def mayclose ():
-        user_id = current_user.id
         relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
         for r in relations:
-            if r.may_close:
+            group = Group.query.get(r.group_id)
+            if group.may_close:
                 return True
                 break
         return False
@@ -462,6 +462,18 @@ def admin():
         return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
 
     return render_template('admin.html', logged_in = logged_in(), current_user = current_user)
+
+@app.route('/newboard')
+@login_required
+def newboard():
+    """ 
+    Renders the new board view
+    :rtype: html
+    """
+    if not current_user.maystructure:
+        return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
+
+    return render_template('newboard.html', logged_in = logged_in(), current_user = current_user)
 
 @app.route('/settings')
 @login_required

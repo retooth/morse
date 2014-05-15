@@ -474,4 +474,7 @@ $("#updateaccount").click(function(e){
 
 });
 
+/* administration */
+$(".grouplist").sortable({ connectWith : ".grouplist", placeholder : 'ddplaceholder' });
+
 });

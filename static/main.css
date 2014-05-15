@@ -678,6 +678,57 @@ div.login{
   margin-bottom:5pt;
 }
 
+    .grouplistwrapper{
+      background:#eee;
+      width:20%;
+      border-radius:3pt;
+      border:1pt solid #ccc;
+      float:left;
+      margin-right:10pt;
+      min-height:200pt;
+      text-align:center;
+    }
+
+	.grouplist{
+          list-style-type:none;
+          padding:0;
+	  margin:0;
+          padding-bottom:40pt;
+	}
+
+        .grouplist li{
+          background: #ADF057;
+          padding:2pt;
+	  font-size:11pt;
+	  cursor:move;
+          margin-left:0;
+          display:block;
+          margin-bottom:1pt;
+	}
+
+        .ui-draggable-dragging{
+	  opacity:0.5;
+	}
+
+	.ddplaceholder{
+          background:none !important;
+	  border:1px dashed #aaa;
+          padding:5pt;
+          margin-left:0;
+          display:block;
+          margin-bottom:1pt;
+	  min-height:14pt;
+	}
+
+	.grouplistwrapper header{
+	  font-size:10pt;
+	  border-radius:3pt 3pt 0pt 0pt;
+	  margin:0;
+	  padding:5pt;
+	  min-height:30pt;
+	  background:#333;
+	}
+
 /* --------------------------------------------- */
 
 
