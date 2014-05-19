@@ -96,7 +96,7 @@ function alertInfoSettings (id){
   $("#infosettingsalert_"+id).delay(2000).slideUp(800);
 }
 
-$(document).keypress(function (keyevent){
+$(document).keydown(function (keyevent){
  // TODO: this is a bit of a mess, clean up please
  $("#typinginfo").slideUp(0);
  $("#inputwrapper").slideDown(400);
@@ -108,9 +108,9 @@ $(document).keypress(function (keyevent){
   }
  }else if ($(document.activeElement).attr("id") != "newtopictext" &&
            $(document.activeElement).attr("id") != "newhref"){
-  if (keyevent.which == 13){
+  /*if (keyevent.which == 13){
     keyevent.preventDefault();
-  }
+  }*/
   if ($("#newtopictitle").length == 0){
     $("#newposttext").focus();
   }else{
@@ -414,8 +414,6 @@ $("#updateinfo").click(function(e){
 
 });
 
-console.log($(".accountdetail"));
-
 $(".accountdetail").keypress(function(e){
 
   // see http://stackoverflow.com/questions/11627531
@@ -475,6 +473,125 @@ $("#updateaccount").click(function(e){
 });
 
 /* administration */
-$(".grouplist").sortable({ connectWith : ".grouplist", placeholder : 'ddplaceholder' });
+$(".grouplist").sortable({ 
+  connectWith : ".grouplist",
+  placeholder : 'ddplaceholder',
+  create : allLiToHiddenInput,
+  receive : allLiToHiddenInput
+});
+
+function allLiToHiddenInput (){
+  $("#lihiddeninput").html("");
+  liToHiddenInput( $("#modelistignorant li"), "ignorant");
+  liToHiddenInput( $("#modelistknowonly li"), "knowonly");
+  liToHiddenInput( $("#modelistreadonly li"), "readonly");
+  liToHiddenInput( $("#modelistposter li"), "poster");
+}
+
+function liToHiddenInput (lilist, prefix){
+  $.each ( lilist, function (index, item){
+    var group_id = $(item).attr("group-id");
+    var hiddeninput = $("<input/>");
+    hiddeninput.attr("type", "hidden");
+    hiddeninput.attr("name", prefix + index);
+    hiddeninput.val(group_id);
+    hiddeninput.appendTo("#lihiddeninput");
+  });
+}
+
+$("#showmodelist").click(function(e){
+  $("#showmodelist").fadeOut(0);
+  $("#hidemodelist").fadeIn(0);
+  $("#modelist").slideDown(800);
+});
+
+$("#hidemodelist").click(function(e){
+  $("#hidemodelist").fadeOut(0);
+  $("#showmodelist").fadeIn(0);
+  $("#modelist").slideUp(800);
+});
+
+$("#groupsidelist li").click(function(e){
+  $(".groupmenu").fadeOut(0);
+  var group_id = $(this).attr("group-id");
+  $(".groupmenu[group-id=" + group_id + "]").fadeIn(400);
+});
+
+$(".userfirstletter").click(function(e){
+  var letter = $(this).attr("letter")
+  $(".usersidelist ul").fadeOut(0);
+  $(".usersidelist ul[letter=" + letter + "]").fadeIn(400);
+});
+
+$(".groupuserlist").sortable();
+
+$(".usersidelist li").draggable({ helper: "clone", connectToSortable: ".groupuserlist"});
+
+$(".groupuserlist").on( "sortstop", function (e, ui){
+
+  var new_user = ui.item
+  new_user.addClass("user");
+  var id = new_user.attr("user-id");
+
+  // This blob finds <li>s with the same user-id attr (which indicates
+  // that this user is already in this group). It is >1 and not >0,
+  // because at sortstop the new element is already added to <ul>
+
+  if ( $(this).children("li[user-id=\"" + id + "\"]").length > 1 ){
+    alertGlobal("alreadyingroup");
+    new_user.remove();
+  }else{
+    $(this).attr("tainted", true);
+
+    // we can be sure, that there always be at least one
+    // .deletefromgroup. By cloning we can change the close
+    // button in the template without the need to change it here
+    var closebutton = $(".deletefromgroup").first().clone()
+    closebutton.appendTo(new_user);
+    $(".deletefromgroup").off("click");
+    $(".deletefromgroup").on("click", deleteFromGroup);
+  }
+
+});
+
+$(".deletefromgroup").on("click", deleteFromGroup);
+
+function deleteFromGroup(e){
+  $(this).parents(".groupuserlist").attr("tainted", true);
+  $(this).parents("li").remove();
+}  
+
+$("#updategroups").click(function(e){
+
+  //FIXME: buttonspinner shows endless when no change happened
+  $(this).addClass("buttonspinner");
+  $.each($(".groupuserlist[tainted=\"true\"]"), function (index, grouplist){
+    var users = $(grouplist).children("li");
+    var user_ids = Array();
+    $.each (users, function (index, user){
+        var id = $(user).attr("user-id");
+        user_ids.push(id);
+    });
+    var group_id = $(grouplist).attr("group-id");
+    var ids_json = JSON.stringify(user_ids);
+    console.log(group_id);
+    console.log(ids_json);
+    $.ajax({
+      url: "updategroup/" + group_id,
+      type: "POST",
+      contentType: "application/json",
+      data: ids_json,
+      error: function (e) {
+          $("#updategroups").removeClass("buttonspinner");
+          alertGlobal("ajax"); 
+      },
+      success: function(data){ $("#updategroups").removeClass("buttonspinner"); },
+      dataType: "json",
+      traditional: true
+    });
+  });
+
+
+});
 
 });

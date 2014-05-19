@@ -1,6 +1,11 @@
 <!doctype html>
 {% extends "base.html" %}
 {% block content %}
+{% if current_user.maystructure %}
+  <a href="/newboard" id="createnewboard"><img src="{{ url_for('static', filename='newboard.png') }}"/></a>
+  <br/>
+  <br/>
+{% endif %}
 {% for board in boards %}
     {% include "boardentry.html" %}
 {% endfor %}

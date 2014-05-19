@@ -6,14 +6,16 @@
 </head>
 <body>
 <header>
-<div id="headertitle">
-<span id="community">title</span><br />
-<span id="slogan">subtitle</span>
-</div>
-{% if logged_in %}
- <div id="profileimage" style="background-image:url('{{ current_user.profileimage }}')"></div>
-{% endif %}
-<div class="clear"></div>
+<a class="headerwrapper" href="/">
+  <div id="headertitle">
+  <span id="community">title</span><br />
+  <span id="slogan">subtitle</span>
+  </div>
+</a>
+  {% if logged_in %}
+   <div id="profileimage" style="background-image:url('{{ current_user.profileimage }}')"></div>
+  {% endif %}
+  <div class="clear"></div>
 </header>
 {% include "alerts.html" %}
 {% if logged_in %}

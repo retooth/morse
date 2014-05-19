@@ -1,24 +1,38 @@
-<div id="modelistnone" class="grouplistwrapper">
-  <header>No Rights</header>
-  <ul class="grouplist">
-   <li>Users</li>
-  </ul>
+<div id="showmodelist">Show group rights</div>
+<div id="hidemodelist">Hide group rights</div>
+<div id="modelist">
+  <div id="modelistignorant" class="grouplistwrapper">
+    <header>No Rights</header>
+    <ul class="grouplist">
+     {% for group in board.ignorantgroups %}
+     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     {% endfor %}
+    </ul>
+  </div>
+  <div id="modelistknowonly" class="grouplistwrapper">
+    <header>Can see this board</header>
+    <ul class="grouplist">
+     {% for group in board.knowonlygroups %}
+     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     {% endfor %}
+    </ul>
+  </div>
+  <div id="modelistreadonly" class="grouplistwrapper">
+    <header>Can see and read this board</header>
+    <ul class="grouplist">
+     {% for group in board.readonlygroups %}
+     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     {% endfor %}
+    </ul>
+  </div>
+  <div id="modelistposter" class="grouplistwrapper">
+    <header>Can see and read this board and create posts</header>
+    <ul class="grouplist">
+     {% for group in board.postergroups %}
+     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     {% endfor %}
+    </ul>
+  </div>
+  <div class="clear"></div>
+  <div id="lihiddeninput" class="hidden"></div>
 </div>
-<div id="modelistv" class="grouplistwrapper">
-  <header>Can see this board</header>
-  <ul class="grouplist">
-   <li>Admin</li>
-  </ul>
-</div>
-<div id="modelistvr" class="grouplistwrapper">
-  <header>Can see and read this board</header>
-  <ul class="grouplist">
-   <li>Moderators</li>
-  </ul>
-</div>
-<div id="modelistvrw" class="grouplistwrapper">
-  <header>Can see and read this board and create posts</header>
-  <ul class="grouplist">
-  </ul>
-</div>
-<div class="clear"></div>

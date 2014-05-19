@@ -3,6 +3,9 @@
   <div class="boardtitle">
    <span class="boardtitle">{{ board.title }}</span> 
    <span class="boarddescription">{{ board.description }}</span>
+   {% if current_user.maystructure %}
+   <a href="/updateboard/{{ board.id }}" class="editboard"><img src="{{url_for('static', filename='edit.png')}}"/></a>
+   {% endif %}
  </div>
  </a> 
 <div class="lastpost"><b>XYZ</b> wrote in <i>Main topic</i>: What a boring topic</div>

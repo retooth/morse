@@ -19,6 +19,11 @@ body {
   font-family: 'Roboto';
 }
 
+input {
+  padding:5pt;
+  border:1pt solid #ccc;
+  border-radius:3pt;
+}
 
 /* header -------------------------------------- */
 
@@ -28,6 +33,18 @@ header {
   padding:5pt 5pt 5pt 5pt; 
   color:#fff;
 }
+
+    .headerwrapper {
+      color:#fff;
+    }
+
+    .headerwrapper:hover {
+      color:#fff;
+    }
+
+    .headerwrapper:visited {
+      color:#fff;
+    }
 
     #headertitle{
       float:left;
@@ -594,7 +611,7 @@ div.login{
       font: 11pt 'Roboto';
       border:none;
       padding:0;
-      width:375pt;
+      width:370pt;
       outline:none; 
     }
 
@@ -671,6 +688,14 @@ div.login{
 
 /* admin --------------------------------------- */
 
+.editboard{
+ border:none;
+ padding:none;
+ background:none;
+ outline:none;
+ float:right;
+}
+
 #adminwrapper{
   border-radius: 3pt;
   border: 1pt solid #ccc;
@@ -678,9 +703,49 @@ div.login{
   margin-bottom:5pt;
 }
 
+    #newboardtitle{
+      width:85%;
+      margin-bottom:5pt;
+    }
+
+    #newboarddescription{
+      width:85%;
+    }
+
+    #showmodelist{
+      width:85%;
+      font-size:10pt;
+      background:#3D322E;
+      border:1pt solid #3D3D2E; 
+      border-radius: 3pt;
+      padding:5pt 5pt 5pt 5pt; 
+      color:#fff;
+      cursor:pointer;
+    }
+
+    #hidemodelist{
+      display:none;
+      width:85%;
+      font-size:10pt;
+      background:#3D322E;
+      border:1pt solid #3D3D2E; 
+      border-radius: 3pt 3pt 0 0;
+      padding:5pt 5pt 5pt 5pt; 
+      color:#fff;
+      cursor:pointer;
+    }
+
+    #modelist{
+      display:none;
+      width:85%;
+      border-radius: 0 0 3pt 3pt;
+      border:1pt solid #ccc;
+      padding:5pt 5pt 5pt 5pt; 
+    }
+
     .grouplistwrapper{
       background:#eee;
-      width:20%;
+      width:23%;
       border-radius:3pt;
       border:1pt solid #ccc;
       float:left;
@@ -690,33 +755,33 @@ div.login{
     }
 
 	.grouplist{
-          list-style-type:none;
-          padding:0;
+      list-style-type:none;
+      padding:0;
 	  margin:0;
-          padding-bottom:40pt;
+      padding-bottom:40pt;
 	}
 
-        .grouplist li{
-          background: #ADF057;
-          padding:2pt;
+    .grouplist li{
+      background: #ADF057;
+      padding:2pt;
 	  font-size:11pt;
 	  cursor:move;
-          margin-left:0;
-          display:block;
-          margin-bottom:1pt;
+      margin-left:0;
+      display:block;
+      margin-bottom:1pt;
 	}
 
-        .ui-draggable-dragging{
+    .ui-draggable-dragging{
 	  opacity:0.5;
 	}
 
 	.ddplaceholder{
-          background:none !important;
+      background:none !important;
 	  border:1px dashed #aaa;
-          padding:5pt;
-          margin-left:0;
-          display:block;
-          margin-bottom:1pt;
+      padding:5pt;
+      margin-left:0;
+      display:block;
+      margin-bottom:1pt;
 	  min-height:14pt;
 	}
 
@@ -728,6 +793,95 @@ div.login{
 	  min-height:30pt;
 	  background:#333;
 	}
+
+    #groupsidenav {
+      border-right:1pt solid #ccc;
+      width:20%;
+      float:left;
+    }
+
+    #groupsidelist{
+      list-style-type:none;
+      padding:0;
+    }
+
+    #groupsidelist li{
+      cursor:pointer;
+      background:#ccc;
+      margin-bottom:1pt;
+      padding:5pt;
+      font-size:10pt;
+    }
+
+    .groupmenu {
+      padding-left:15pt;
+      display:none;
+      float:left;
+      font-size:10pt;
+      width:500pt;
+    }
+
+        .groupmenuinner{
+          float:left;
+          border-right:1pt solid #ccc;
+          padding-right:5pt;
+          width:70%;
+        }
+
+            .groupuserlist{
+              list-style-type:none;
+              padding:0;
+              padding-bottom:200pt;
+            }
+
+            .groupmenuinner .user{
+              display:block;
+              cursor:default;
+              background:#ccc;
+              margin-right:5pt;
+              padding:5pt;
+              font-size:10pt;
+              float:left;
+            }
+
+            .deletefromgroup{
+              cursor:pointer;
+              margin-left:5pt;
+            }
+
+            .groupdescription {
+            }
+
+        .usersidelist {
+          float:left;
+          padding-left:5pt;
+        }
+
+            .userfirstletter{
+              border:1pt solid #555;
+              background:#aaa;
+              padding:5pt;
+              border-radius:2pt;
+              cursor:pointer;
+            }
+
+        .usersidelist header{
+          background: #333;
+          padding:10pt;
+        }
+
+        .usersidelist ul{
+          list-style-type:none;
+          display:none;
+          padding:0;
+        }
+
+        .usersidelist li{
+          background:#ccc;
+          padding:5pt;
+          font-size:10pt;
+          cursor:w-resize;
+        }
 
 /* --------------------------------------------- */
 
@@ -756,4 +910,15 @@ a.divwrapper{
 
 .redoutline{
  border-color:#F08D37 !important;
+}
+
+
+.submit{
+  font: 11pt 'Roboto';
+  background:#88C100;
+  border:1pt solid #88C100;
+  text-decoration:none;
+  color:#fff;
+  padding:5pt;
+  border-radius:3pt;
 }

@@ -6,7 +6,7 @@
     <div class="postcreator">{{ post.creator.username }}</div>
   </aside>
   <article class="post">
-   {{ post.content }}
+   {{ post.content | safe }}
  </article>
  <div class="clear"></div>
 <div class="postfooter">{{ post.id }}</div>

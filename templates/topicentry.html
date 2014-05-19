@@ -1,7 +1,7 @@
 <div class="topicentry {% if topic.isfresh %} fresh {% endif %}">
  <a class="divwrapper" href="/topic/{{ topic.id }}">
   <div class="topictitle">
-   <span class="topictitle">{{ topic.title }}</span> 
+   <span class="topictitle">{{ topic.title | safe }}</span> 
  </div>
  </a> 
 <div class="lastpost"><b>XYZ</b> wrote in <i>Main topic</i>: What a boring topic</div>
