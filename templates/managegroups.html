@@ -1,0 +1,48 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block content %}
+<div id="adminwrapper">
+<b>Manage Groups</b><br/><br/>
+<nav id="groupsidenav">
+<ul id="groupsidelist">
+{% for group in groups %}
+  <li group-id={{group.id}}>{{group.name}}</li>
+{% endfor %}
+</ul>
+</nav>
+{% for group in groups %}
+  <div group-id="{{group.id}}" class="groupmenu">
+    <div class="groupmenuinner">
+    <span class="groupdescription">{{group.description}}</span><br>
+     <ul group-id="{{group.id}}" tainted="false" class="groupuserlist">
+     {% for member in group.members %}
+      <li user-id="{{member.id}}" class="user">
+        {{ member.username }}
+        <img class="deletefromgroup" src="{{ url_for('static', filename='close-small.png')}}"/>
+      </li>
+     {% endfor %}
+     </ul>
+    </div>
+    <div class="usersidelist">
+      <header>
+      {% for letter in userlist.firstletters %}
+        <span letter="{{ letter }}" class="userfirstletter">
+          {{ letter }}
+        </span>
+      {% endfor %}
+      </header>
+      {% for letter in userlist.firstletters %}
+        <ul letter={{ letter }} class="userlist">
+          {% for user in userlist[letter] %}
+            <li user-id="{{ user.id }}">{{ user.username }}</li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>
+    <div class="clear"></div>
+  </div>
+{% endfor %}
+<div class="clear"></div>
+<button id="updategroups" class="">Save</button>
+</div>
+{% endblock %}
