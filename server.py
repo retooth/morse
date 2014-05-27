@@ -392,7 +392,7 @@ class PostWrapper (object):
 
         topic = Topic.query.filter(Topic.id.like(self.topic_id)).first()
         topic = wrap_topic(topic)
-        if (postread is None) and (topic.followed):
+        if (not postread) and (topic.followed):
             return True
         return False
 

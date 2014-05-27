@@ -96,6 +96,13 @@ function alertInfoSettings (id){
   $("#infosettingsalert_"+id).delay(2000).slideUp(800);
 }
 
+function alertBoardSettings (id){
+  /* shows the appropriate error message beneath the submit button */
+  $("div[id^=\"boardsettingsalert_\"]").fadeOut(0);
+  $("#boardsettingsalert_"+id).fadeIn(800);
+  $("#boardsettingsalert_"+id).fadeOut(4000);
+}
+
 $(document).keydown(function (keyevent){
  // TODO: this is a bit of a mess, clean up please
  $("#typinginfo").slideUp(0);
@@ -473,6 +480,18 @@ $("#updateaccount").click(function(e){
 });
 
 /* administration */
+$("#boardsettings").submit(function(e){
+  // prevent blank board title
+  if ($("#newboardtitle").val() != ""){
+    return;
+  }
+  $("#newboardtitle").addClass("redoutline");
+  $("#newboardtitle").focus();
+  alertBoardSettings("blanktitle");
+  e.preventDefault();
+});
+
+
 $(".grouplist").sortable({ 
   connectWith : ".grouplist",
   placeholder : 'ddplaceholder',

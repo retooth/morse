@@ -712,6 +712,14 @@ div.login{
       width:85%;
     }
 
+    .adminalert{
+      float:left;
+      display:none;
+      padding:7pt;
+      font-size:10pt;
+      color: #F08D37;
+    }
+
     #showmodelist{
       width:85%;
       font-size:10pt;
@@ -904,6 +912,10 @@ div.login{
   display:none;
 }
 
+.floatleft{
+  float:left;
+}
+
 a.divwrapper{
   text-decoration:none;
 }
@@ -911,7 +923,6 @@ a.divwrapper{
 .redoutline{
  border-color:#F08D37 !important;
 }
-
 
 .submit{
   font: 11pt 'Roboto';
