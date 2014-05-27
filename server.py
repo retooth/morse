@@ -53,12 +53,6 @@ USER_ID_GUESTS = 0
 def load_user(id):
     return User.query.get(int(id))
 
-def logged_in():
-    # this is a strange workaround
-    if not "id" in dir(current_user):
-        return False
-    return True
-        
 @app.route('/register' , methods=['GET','POST'])
 def register():
     if request.method == 'GET':
@@ -563,7 +557,7 @@ def index():
     :rtype: html
     """
     visible, readable, writable = get_my_boards()
-    return render_template('boards.html', boards=visible, logged_in = logged_in(), current_user = current_user)
+    return render_template('boards.html', boards=visible, current_user = current_user)
 
 @app.route('/board/<board_id>')
 def board(board_id):
@@ -574,11 +568,11 @@ def board(board_id):
     # TODO: order topics by timestamp
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not int(board_id) in readable:
-        return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
+        return render_template('accessdenied.html', current_user = current_user)
     board  = Board.query.filter(Board.id.like(board_id)).first()
     topics = Topic.query.filter(Topic.board_id.like(board_id)).all()
     topics = map(wrap_topic, topics)
-    return render_template('board.html', board=board, topics=topics, logged_in = logged_in(), current_user = current_user)
+    return render_template('board.html', board=board, topics=topics, current_user = current_user)
 
 @app.route('/admin')
 @login_required
@@ -588,9 +582,9 @@ def admin():
     :rtype: html
     """
     if not current_user.maystructure:
-        return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
+        return render_template('accessdenied.html', current_user = current_user)
 
-    return render_template('admin.html', logged_in = logged_in(), current_user = current_user)
+    return render_template('admin.html', current_user = current_user)
 
 def formlist_to_group_ids (form, prefix):
     i = 0
@@ -627,11 +621,11 @@ def newboard():
     :rtype: html
     """
     if not current_user.maystructure:
-        return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
+        return render_template('accessdenied.html', current_user = current_user)
 
     if request.method == 'GET':
         dummy = DummyBoard()
-        return render_template('newboard.html', logged_in = logged_in(), current_user = current_user, board = dummy)
+        return render_template('newboard.html', current_user = current_user, board = dummy)
 
     title = request.form['boardtitle']
     description = request.form['boardescription']
@@ -677,14 +671,14 @@ def updateboard(board_id):
     :rtype: html
     """
     if not current_user.maystructure:
-        return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
+        return render_template('accessdenied.html', current_user = current_user)
 
     board = Board.query.get(board_id)
     if not board:
         return "", 400
 
     if request.method == 'GET':
-        return render_template('updateboard.html', logged_in = logged_in(), current_user = current_user, board = board)
+        return render_template('updateboard.html', current_user = current_user, board = board)
 
     board.title = request.form['boardtitle']
     board.description = request.form['boardescription']
@@ -707,13 +701,12 @@ def updateboard(board_id):
 def managegroups ():
     
     if not current_user.maystructure:
-        return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
+        return render_template('accessdenied.html', current_user = current_user)
 
     if request.method == 'GET':
         groups = Group.query.all()
         userlist = AlphabeticUserList()
-        return render_template('managegroups.html', logged_in = logged_in(), \
-                                                    current_user = current_user, groups = groups, userlist = userlist)
+        return render_template('managegroups.html', current_user = current_user, groups = groups, userlist = userlist)
 
     # TODO  
 
@@ -776,7 +769,7 @@ def settings():
     bio = current_user.bio
     email = current_user.email
 
-    return render_template('settings.html', logged_in = logged_in(), current_user = current_user, websites=websites, bio=bio, email=email)
+    return render_template('settings.html', current_user = current_user, websites=websites, bio=bio, email=email)
 
 @app.route('/settings/updateinfo', methods=['POST'])
 @login_required
@@ -902,9 +895,9 @@ def showtopic (topic_id):
     topic = wrap_topic(topic)
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not topic.board_id in readable:
-        return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
+        return render_template('accessdenied.html', current_user = current_user)
     posts = map(wrap_post, topic.posts) 
-    return render_template("topic.html", topic=topic, posts=posts, logged_in = logged_in(), current_user = current_user)
+    return render_template("topic.html", topic=topic, posts=posts, current_user = current_user)
 
 @app.route('/read', methods=['POST'])
 def read ():
