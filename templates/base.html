@@ -13,13 +13,17 @@
   </div>
 </a>
   {% if logged_in %}
-   <div id="profileimage" style="background-image:url('{{ current_user.profileimage }}')"></div>
+   <div id="useravar" class="profileimage" style="background-image:url('{{ current_user.profileimage }}')"></div>
+  {% else %}
+   <div id="guestavatar" class="profileimage" style="background-image:url('anonymous.png')"></div>
   {% endif %}
   <div class="clear"></div>
 </header>
 {% include "alerts.html" %}
 {% if logged_in %}
  {% include "usernav.html" %}
+{% else %}
+ {% include "guestnav.html" %}
 {% endif %}
 <br />
 {% block content %}{% endblock %}

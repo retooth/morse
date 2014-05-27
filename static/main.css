@@ -61,7 +61,7 @@ header {
         }
 
 
-    #profileimage{
+    .profileimage{
       background-size: 64px 64px;
       border-radius: 50%;
       display: block;
@@ -69,12 +69,11 @@ header {
       height: 64px;
       width: 64px;
       border:2pt solid white;
-      background-image: url("http://i.imgur.com/XNgLBE7b.jpg"); /* TODO default image */
       float:right;
       cursor:pointer;
     }
 
-        #usernav{
+        .navmenu{
           position:absolute;
           display:none;
           background:#eee; 
@@ -87,6 +86,30 @@ header {
           width:200pt;
           left:70%;
         }
+
+            #gotologin{
+              background:#FABE28;
+              border:1pt solid #FABE28;
+              width:41%;
+              text-decoration:none;
+              color:#fff;
+              padding:5pt;
+              border-radius:3pt;
+              margin-left:5pt;
+              float:left;
+            }
+
+            #gotoregister{
+              background:#FF8A00;
+              border:1pt solid #FF8A00;
+              text-decoration:none;
+              width:41%;
+              color:#fff;
+              padding:5pt;
+              border-radius:3pt;
+              margin-left:5pt;
+              float:left;
+            }
 
             #dologout{
               background:#DB3026;

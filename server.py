@@ -47,6 +47,8 @@ GROUP_ID_MODERATORS = 2
 GROUP_ID_REGISTERED = 3
 GROUP_ID_GUESTS = 4
 
+USER_ID_GUESTS = 0
+
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
@@ -507,10 +509,15 @@ class TopicWrapper (object):
 def wrap_topic (topic):
     return TopicWrapper(current_user, topic)
 
-
 def get_my_boards (get_only_ids=False):
-    user_id = current_user.id
-    relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+
+    if current_user.is_anonymous():
+        dummy = GroupMember(USER_ID_GUESTS, GROUP_ID_GUESTS)
+        relations = [dummy]
+    else:
+        user_id = current_user.id
+        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+
     # stack rights
     boardmodes = {}
     for r in relations:
@@ -527,6 +534,7 @@ def get_my_boards (get_only_ids=False):
     # filter invisible boards and split
     # into readable and writable boards
     readable_boards = []
+    visible_boards  = []
     writable_boards = []
     for board_id, mode in boardmodes.iteritems():
         if mode.v:
@@ -541,31 +549,30 @@ def get_my_boards (get_only_ids=False):
                     readable_boards.append(board.id)
                 else:
                     readable_boards.append(board)
-    return readable_boards, writable_boards 
+            visible_boards.append(board)
+    return visible_boards, readable_boards, writable_boards 
 
 
 
 # Routes ################################################################# 
 
 @app.route('/')
-@login_required
 def index():
     """ 
     Renders the index view
     :rtype: html
     """
-    readable, writable = get_my_boards()
-    return render_template('boards.html', boards=readable, logged_in = logged_in(), current_user = current_user)
+    visible, readable, writable = get_my_boards()
+    return render_template('boards.html', boards=visible, logged_in = logged_in(), current_user = current_user)
 
 @app.route('/board/<board_id>')
-@login_required
 def board(board_id):
     """ 
     Renders the board view for board_id
     :rtype: html
     """
     # TODO: order topics by timestamp
-    readable, writable = get_my_boards( get_only_ids = True)
+    visible, readable, writable = get_my_boards( get_only_ids = True)
     if not int(board_id) in readable:
         return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
     board  = Board.query.filter(Board.id.like(board_id)).first()
@@ -819,7 +826,6 @@ def updateaccount ():
     return jsonify(success=True)
 
 @app.route('/board/<board_id>/starttopic', methods=['POST'])
-@login_required
 def starttopic (board_id):
     """ 
     Creates a new topic. Is called by the javascript event
@@ -828,7 +834,7 @@ def starttopic (board_id):
                      should be started
     :rtype: json 
     """
-    readable, writable = get_my_boards( get_only_ids = True )
+    visible, readable, writable = get_my_boards( get_only_ids = True )
     if not int(board_id) in writable:
         return jsonify(success=False) 
     title = request.values["title"]
@@ -851,7 +857,6 @@ def starttopic (board_id):
 
 
 @app.route('/topic/<topic_id>/post', methods=['POST'])
-@login_required
 def post (topic_id):
     """ 
     Creates a new post. Is called by the javascript event
@@ -861,7 +866,7 @@ def post (topic_id):
     """
     topic = Topic.query.filter(Topic.id.like(topic_id)).first()
 
-    readable, writable = get_my_boards( get_only_ids = True)
+    visible, readable, writable = get_my_boards( get_only_ids = True)
     if not topic.board_id in writable:
         return jsonify(success=False)
  
@@ -879,31 +884,40 @@ def post (topic_id):
 
 
 @app.route('/topic/<topic_id>', methods=['GET'])
-@login_required
 def showtopic (topic_id):
     """ 
     renders topic view
     :param topic_id: indicates topic view to render
     :rtype: html 
     """
+
     # TODO: page numbers
     # TODO: order by timestamp
     topic = Topic.query.filter(Topic.id.like(topic_id)).first()
+    
+    #if not current_user:
+    #    groupmode = GroupMode.query.filter(GroupMode.group_id.like(GROUP_ID_GUESTS), \
+    #                                       GroupMode.board_id.like(topic.board_id)).first()
+
     topic = wrap_topic(topic)
-    readable, writable = get_my_boards( get_only_ids = True)
+    visible, readable, writable = get_my_boards( get_only_ids = True)
     if not topic.board_id in readable:
         return render_template('accessdenied.html', logged_in = logged_in(), current_user = current_user)
     posts = map(wrap_post, topic.posts) 
     return render_template("topic.html", topic=topic, posts=posts, logged_in = logged_in(), current_user = current_user)
 
 @app.route('/read', methods=['POST'])
-@login_required
 def read ():
     """ 
     marks posts as read. this function is called via ajax
     by the javascript function readVisiblePosts in main.js
     :rtype: json 
     """
+    # just return success and do nothing
+    # if user is guest
+    if current_user.is_anonymous:
+        return jsonify(success=True)
+
     post_ids = request.json
     posts = []
     for post_id in post_ids:

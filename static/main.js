@@ -258,8 +258,12 @@ $(".boardentry").on("mouseleave", function (){
 });
 
 /* user navbar */
-$("#profileimage").click(function (){
+$("#useravatar").click(function (){
   $("#usernav").slideToggle();
+});
+
+$("#guestavatar").click(function (){
+  $("#guestnav").slideToggle();
 });
 
 /* follow switch */
