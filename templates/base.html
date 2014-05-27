@@ -30,4 +30,9 @@
 <script src="{{ url_for('static', filename='jquery-spellfade.js') }}"></script>
 <script src="{{ url_for('static', filename='jquery-ui-1.10.4.custom.min.js') }}"></script>
 <script src="{{ url_for('static', filename='main.js') }}"></script>
+{% if alert is defined %}
+  <script>
+    alertGlobal("{{ alert }}");
+  </script>
+{% endif %}
 </body>

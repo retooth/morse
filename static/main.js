@@ -68,41 +68,6 @@ function readVisiblePosts (){
 
 }
 
-function alertInput (id){
-  /* shows the appropriate error message beneath the toolbox */
-  $("div[id^=\"inputalert_\"]").fadeOut(0);
-  $("#inputalert_"+id).fadeIn(800);
-  $("#inputalert_"+id).fadeOut(4000);
-}
-
-function alertGlobal (id){
-  /* shows the appropriate error banner below the header */
-  $("div[id^=\"alert_\"]").fadeOut(0);
-  $("#alert_"+id).slideDown(800);
-  $("#alert_"+id).delay(10000).slideUp(800);
-}
-
-function alertAccountSettings (id){
-  /* shows the appropriate error banner in the account settings section */
-  $("div[id^=\"accountsettingsalert_\"]").fadeOut(0);
-  $("#accountsettingsalert_"+id).slideDown(800);
-  $("#accountsettingsalert_"+id).delay(2000).slideUp(800);
-}
-
-function alertInfoSettings (id){
-  /* shows the appropriate error banner in the info settings section */
-  $("div[id^=\"infosettingsalert_\"]").fadeOut(0);
-  $("#infosettingsalert_"+id).slideDown(800);
-  $("#infosettingsalert_"+id).delay(2000).slideUp(800);
-}
-
-function alertBoardSettings (id){
-  /* shows the appropriate error message beneath the submit button */
-  $("div[id^=\"boardsettingsalert_\"]").fadeOut(0);
-  $("#boardsettingsalert_"+id).fadeIn(800);
-  $("#boardsettingsalert_"+id).fadeOut(4000);
-}
-
 $(document).keydown(function (keyevent){
  // TODO: this is a bit of a mess, clean up please
  $("#typinginfo").slideUp(0);
@@ -614,3 +579,42 @@ $("#updategroups").click(function(e){
 });
 
 });
+
+/* i put the alert functions in here, so they are in the right scope
+for the bottom script in base.html to call */
+
+function alertInput (id){
+  /* shows the appropriate error message beneath the toolbox */
+  $("div[id^=\"inputalert_\"]").fadeOut(0);
+  $("#inputalert_"+id).fadeIn(800);
+  $("#inputalert_"+id).fadeOut(4000);
+}
+
+function alertGlobal (id){
+  /* shows the appropriate error banner below the header */
+  $("div[id^=\"alert_\"]").fadeOut(0);
+  $("#alert_"+id).slideDown(800);
+  $("#alert_"+id).delay(10000).slideUp(800);
+}
+
+function alertAccountSettings (id){
+  /* shows the appropriate error banner in the account settings section */
+  $("div[id^=\"accountsettingsalert_\"]").fadeOut(0);
+  $("#accountsettingsalert_"+id).slideDown(800);
+  $("#accountsettingsalert_"+id).delay(2000).slideUp(800);
+}
+
+function alertInfoSettings (id){
+  /* shows the appropriate error banner in the info settings section */
+  $("div[id^=\"infosettingsalert_\"]").fadeOut(0);
+  $("#infosettingsalert_"+id).slideDown(800);
+  $("#infosettingsalert_"+id).delay(2000).slideUp(800);
+}
+
+function alertBoardSettings (id){
+  /* shows the appropriate error message beneath the submit button */
+  $("div[id^=\"boardsettingsalert_\"]").fadeOut(0);
+  $("#boardsettingsalert_"+id).fadeIn(800);
+  $("#boardsettingsalert_"+id).fadeOut(4000);
+}
+

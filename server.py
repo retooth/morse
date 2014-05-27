@@ -68,6 +68,14 @@ def register():
 
     # TODO: mail authentication check
     # TODO: check, if user exists
+    user_exists = User.query.filter(User.username.like(username)).first()
+    if user_exists:
+        return render_template("register.html", alert = "userexists");
+
+    email_exists = User.query.filter(User.email.like(email)).first()
+    if email_exists:
+        return render_template("register.html", alert = "emailexists");
+
     user = User(username, password, email)
     db.session.add(user)
     db.session.commit()
