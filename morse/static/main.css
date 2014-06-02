@@ -134,7 +134,7 @@ header {
               margin-left:5pt;
             }
 
-.alert{
+.error{
   display:none;
   padding:5pt;
   font-size:10pt;
@@ -143,6 +143,18 @@ header {
   font: 11pt 'Roboto';
   margin-top:10pt;
 }
+
+.notice{
+  display:none;
+  padding:5pt;
+  font-size:10pt;
+  background:#88C100;
+  border-radius:3pt;
+  font: 11pt 'Roboto';
+  margin-top:10pt;
+}
+
+
 
 /* --------------------------------------------- */
 

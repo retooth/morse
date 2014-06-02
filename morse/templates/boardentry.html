@@ -3,7 +3,7 @@
   <div class="boardtitle">
    <span class="boardtitle">{{ board.title }}</span> 
    <span class="boarddescription">{{ board.description }}</span>
-   {% if current_user.maystructure %}
+   {% if current_user.may_structure %}
    <a href="/updateboard/{{ board.id }}" class="editboard"><img src="{{url_for('static', filename='edit.png')}}"/></a>
    {% endif %}
  </div>
