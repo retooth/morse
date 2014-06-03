@@ -1,14 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
   <form action="" method=post>
-        <div class="login">
-          <input type="text" id="username" name="username" class="loginregister"
-            placeholder="Enter Username" value="{{ request.form.username }}"
-            required>
-          <input type="password" id="password" name="password" class="loginregister"
-            placeholder="Enter Password" value="{{ request.form.password }}"
-            required>
-           <button type="submit" id="dologin">Login</button>
+        <div id="loginwrapper">
+            <input type="text" id="username" name="username" class="first"
+              placeholder="Enter Username" value="{{ request.form.username }}"
+              required><br/>
+            <input type="password" id="password" name="password" class="last"
+              placeholder="Enter Password" value="{{ request.form.password }}"
+              required><br/>
+            <button type="submit" id="dologin">Login</button><br/>
+            <div id="signupinfo">
+              Don't have an account? <a href="/register">Sign Up</a>
+            </div>
         </div>
   </form>
 {% endblock %}

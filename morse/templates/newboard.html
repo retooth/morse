@@ -4,14 +4,17 @@
 <div id="adminwrapper">
 <b>Create new board</b><br/><br/>
 <form id="boardsettings" action="/newboard" method="POST">
-<input type="text" name="boardtitle" id="newboardtitle" placeholder="Name of the board"/><br/>
-<input type="text" name="boardescription" id="newboarddescription" placeholder="A little description"/><br/>
-<br/>
-{% include "groupmode.html" %}
-<br/>
-<input type="submit" class="submit floatleft" value="Create new"/>
-{% include "boardsettingsalerts.html" %}
-<div class="clear"></div>
+  <input type="text" name="boardtitle" id="newboardtitle" 
+         class="first" placeholder="Name of the board"/>
+  <input type="text" name="boardescription" id="newboarddescription" 
+         class="last" placeholder="A little description"/>
+  <br/>
+  <br/>
+  {% include "groupmode.html" %}
+  <br/>
+  <input type="submit" class="submit floatleft" value="Create new"/>
+  {% include "boardsettingsalerts.html" %}
+  <div class="clear"></div>
 </form>
 </div>
 {% endblock %}

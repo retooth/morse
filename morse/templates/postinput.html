@@ -1,14 +1,6 @@
 <div id="inputwrapper">
   <div id="newposttext" class="inputheader" contenteditable="true"></div>
-  <div id="toolfooter">
-    <div id="dopost">Post</div>
-    <div id="makebold">b</div>
-    <div id="makeitalic">i</div>
-    <div id="makequote">"</div>
-    <div id="makelink">a <span id="newhrefwrapper"> | <input id="newhref"/> <span id="closenewhref">x</span>&nbsp;</span></div>
-    {% include "inputalerts.html" %}
-    <div class="clear"></div>
-  </div>
+  {% include "inputtools.html" %}
 </div>
 <div id="typinginfo">To create a new post just start typing</div>
 <br/>

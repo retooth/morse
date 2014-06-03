@@ -216,16 +216,18 @@ $("#makelink").on("mousedown", function (e){
     wrap.setAttribute("id", "dummylink");
     $("#newhref").val("http://");
     $("#newhrefwrapper").slideDown(400);
+    $("#closenewhref").fadeIn(200);
+    $("#makelink").addClass("openrightborder");
     selection.surroundContents(wrap);
+    $("#newtopictitle").removeAttr('contenteditable');
+    $("#newtopictext").removeAttr('contenteditable');
+    $("#newposttext").removeAttr('contenteditable');
+    $("#inputwrapper").addClass("disabledbox");
   }
 });
 
 $("#makelink").on("mouseup", function (){
   $("#newhref").focus();
-  $("#newtopictitle").removeAttr('contenteditable');
-  $("#newtopictext").removeAttr('contenteditable');
-  $("#newposttext").removeAttr('contenteditable');
-  $("#inputwrapper").addClass("disabledbox");
 });
 
 $("#newhref").keypress(function (keyevent){
@@ -237,6 +239,8 @@ $("#newhref").keypress(function (keyevent){
     $("#newtopictext").focus();
     $("#newposttext").focus();
     $("#newhrefwrapper").slideUp(200);
+    $("#closenewhref").fadeOut(200);
+    $("#makelink").removeClass("openrightborder");
     var link = $("#dummylink").html();
     var href = $("#newhref").val();
     if (link == ""){
@@ -246,15 +250,11 @@ $("#newhref").keypress(function (keyevent){
   }
 });
 
-/* board info banners */
+/* board info banners (TODO: replace with something good) */
 $(".boardentry").on("mouseenter", function (){
-  $(this).children(".lastpost").slideDown(400);
-  $(this).children(".lasttopics").slideDown(400);
 });
 
 $(".boardentry").on("mouseleave", function (){
-  $(this).children(".lastpost").slideUp(200);
-  $(this).children(".lasttopics").slideUp(200);
 });
 
 /* user navbar */
@@ -325,6 +325,7 @@ $("#goback").mouseleave(function(e){
 });
 
 $("#closenewhref").click(function(e){
+  $("#makelink").removeClass("openrightborder");
   $("#inputwrapper").removeClass("disabledbox");
   $("#newtopictitle").attr('contenteditable', "true");
   $("#newtopictext").attr('contenteditable', "true");
@@ -332,6 +333,13 @@ $("#closenewhref").click(function(e){
   $("#newtopictext").focus();
   $("#newposttext").focus();
   $("#newhrefwrapper").slideUp(200);
+  $(this).fadeOut(200);
+  // FIXME: there is a bug, that doesn't do these last two
+  // lines (at least the outline of dummylink is visible)
+  // after that link creating doesn't work any more, probably
+  // because more than one #dummylink exists. this has something
+  // to do with multi-line-selecting, but i couldn't reproduce it
+  // probably.
   var old = $("#dummylink").html();
   $("#dummylink").replaceWith(old);
 });
@@ -339,6 +347,7 @@ $("#closenewhref").click(function(e){
 //FIXME: delay until remove
 $(".deletewebsite").on("click", function(e){
   $(this).parent().slideUp(200).remove();
+  beautifyWebsiteList();
 });
 
 /* settings */
@@ -349,6 +358,9 @@ $("#anotherwebsite").click(function(e){
   website.children("input").val("");
   website.children("input").attr("placeholder", "...");
   website.insertBefore($("#anotherwebsitebr"));
+
+  beautifyWebsiteList();
+
   website.slideDown(200);
   website.children("button").fadeIn(1200);
 
@@ -358,9 +370,39 @@ $("#anotherwebsite").click(function(e){
   //FIXME: see above
   $(".deletewebsite").on("click", function(e){
     $(this).parent().slideUp(200).remove();
+    beautifyWebsiteList();
   });
 
 });
+
+function beautifyWebsiteList(){
+  
+  var lastindex = $(".websitewrapper").length - 1;
+
+  if (lastindex == 0){
+    unbeautifyWebsiteList();
+  }else{
+    unbeautifyWebsiteList();
+    $.each($(".websitewrapper"), function (index, element){
+      if (index == 0){
+        $(element).addClass("first");
+      }
+      if (index > 0 && index < lastindex){
+        $(element).addClass("middle");
+      }
+      if (index == lastindex){
+        $(element).addClass("last");
+      }
+    });
+  }
+
+}
+
+function unbeautifyWebsiteList(){
+  $(".websitewrapper").removeClass("first");
+  $(".websitewrapper").removeClass("middle");
+  $(".websitewrapper").removeClass("last");
+}
 
 $("#updateinfo").click(function(e){
 
@@ -499,7 +541,7 @@ $("#hidemodelist").click(function(e){
   $("#modelist").slideUp(800);
 });
 
-$("#groupsidelist li").click(function(e){
+$("#groupnav li").click(function(e){
   $(".groupmenu").fadeOut(0);
   var group_id = $(this).attr("group-id");
   $(".groupmenu[group-id=" + group_id + "]").fadeIn(400);
@@ -513,7 +555,29 @@ $(".userfirstletter").click(function(e){
 
 $(".groupuserlist").sortable();
 
-$(".usersidelist li").draggable({ helper: "clone", connectToSortable: ".groupuserlist"});
+$(".userlist li").draggable({ appendTo: "body", containment: "window", helper: "clone", connectToSortable: ".groupuserlist"});
+
+$("#scrolldown").mousedown(function(e){
+  var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
+  var scrollerheight = $("#userlist #scroller").outerHeight();
+  var viewportheight = $("#userlist").height();
+  if (current <= - scrollerheight + viewportheight){
+    return false;
+  }
+  var newvalue = (current - 10) + "px";
+  $("#userlist #scroller").css("top", newvalue);
+});
+
+$("#scrollup").mousedown(function(e){
+  var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
+  if (current == 0){
+    return false;
+  }
+  var newvalue = (current + 10) + "px";
+  console.log(current);
+  console.log(newvalue);
+  $("#userlist #scroller").css("top", newvalue);
+});
 
 $(".groupuserlist").on( "sortstop", function (e, ui){
 

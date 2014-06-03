@@ -3,16 +3,38 @@
 {% block content %}
 <div id="adminwrapper">
 <b>Manage Groups</b><br/><br/>
-<nav id="groupsidenav">
-<ul id="groupsidelist">
+<nav id="groupnav">
+<ul>
 {% for group in groups %}
   <li group-id={{group.id}}>{{group.name}}</li>
 {% endfor %}
 </ul>
-</nav>
+<div class="clear"></div>
+</nav><br/>
+<div id="userlistwrapper">
+  <div id="scrollup">
+    <img src="{{ url_for('static', filename='chevron-up-white.png') }}">
+  </div>
+  <div id="userlist">
+    <div id="scroller">
+      {% for letter in userlist.firstletters %}
+        <div letter="{{ letter }}" class="letterdivider">
+          {{ letter }}
+        </div>
+        <ul letter={{ letter }} class="userlist">
+          {% for user in userlist[letter] %}
+            <li class="user" user-id="{{ user.id }}">{{ user.username }}</li>
+          {% endfor %}
+        </ul>
+      {% endfor %}
+    </div>   
+  </div>   
+  <div id="scrolldown">
+    <img src="{{ url_for('static', filename='chevron-down-white.png') }}">
+  </div>
+</div>
 {% for group in groups %}
   <div group-id="{{group.id}}" class="groupmenu">
-    <div class="groupmenuinner">
     <span class="groupdescription">{{group.description}}</span><br>
      <ul group-id="{{group.id}}" tainted="false" class="groupuserlist">
      {% for member in group.members %}
@@ -22,27 +44,13 @@
       </li>
      {% endfor %}
      </ul>
-    </div>
-    <div class="usersidelist">
-      <header>
-      {% for letter in userlist.firstletters %}
-        <span letter="{{ letter }}" class="userfirstletter">
-          {{ letter }}
-        </span>
-      {% endfor %}
-      </header>
-      {% for letter in userlist.firstletters %}
-        <ul letter={{ letter }} class="userlist">
-          {% for user in userlist[letter] %}
-            <li user-id="{{ user.id }}">{{ user.username }}</li>
-          {% endfor %}
-        </ul>
-      {% endfor %}
-    </div>
-    <div class="clear"></div>
   </div>
 {% endfor %}
+  <div class="groupmenu" style="display:block">
+  Hi! Welcome to Group Management.
+  Select a group from the list above and drag users on this field
+  </div>
 <div class="clear"></div>
-<button id="updategroups" class="">Save</button>
+<button id="updategroups" class="submit">Save</button>
 </div>
 {% endblock %}

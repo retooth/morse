@@ -17,6 +17,7 @@
 
 from models import TopicFollow, PostRead, Topic, User, db
 from flask.ext.login import current_user
+from collections import defaultdict
 
 class PostWrapper (object):
 
@@ -139,3 +140,25 @@ class TopicWrapper (object):
     def id (self):
         return self.topic.id
 
+class AlphabeticUserList (object):
+
+    """ Sorts all users in the database into an alphabetic list, that can
+    be accessed by the [x]-operator, e.g. list['k'] returns all users
+    starting with k or K.
+    """
+
+    def __init__ (self):
+        users = User.query.all()
+        self.sortedusers = defaultdict(list)
+        for user in users:
+            firstletter = user.username[0].lower()
+            self.sortedusers[firstletter].append(user)
+
+    def __getitem__ (self, letter):
+        letter = letter.lower()
+        return self.sortedusers[letter] 
+
+    @property
+    def firstletters (self):
+        """ A list of all collected first letters """
+        return self.sortedusers.keys()

@@ -2,10 +2,13 @@
 {% extends "base.html" %}
 {% block content %}
  <div id="boardid" class="hidden">{{ board.id }}</div>
- <div id="boardtitle">
+ <div id="boardtitlewrapper">
   <h1 id="boardtitle"><a href="/" id="goback">..
    <span id="gobacktooltip">Back to board list</span>
   </a> {{ board.title }}</h1>
+  <div id="boardtools">
+  </div>
+  <div class="clear"></div>
  </div>
  {% include "topicinput.html" %}
  {% for topic in topics %}

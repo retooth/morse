@@ -2,23 +2,20 @@
 {% extends "base.html" %}
 {% block content %}
  <div id="topicid" class="hidden">{{ topic.id }}</div>
- <div id="topicheader">
  <div id="topictitlewrapper">
   <h1 id="topictitle">
    <a href="/board/{{ topic.board_id }}" id="goback">..
     <span id="gobacktooltip">Back to topic list</span>
    </a>{{ topic.title | safe }}
   </h1>
- </div>
- <div id="topictools">
-  {% if topic.followed %}
-    <div id="followswitch" class="unfollow" switched="Follow">Unfollow</div> 
-  {% else %}
-    <div id="followswitch" class="follow" switched="Unfollow">Follow</div> 
-  {% endif %}
+  <div id="topictools">
+   {% if topic.followed %}
+     <button id="followswitch" class="toolbutton unfollow" switched="Follow">Unfollow</button> 
+   {% else %}
+     <button id="followswitch" class="toolbutton follow" switched="Unfollow">Follow</button> 
+   {% endif %}
+  </div>
    <div class="clear"></div>
- </div>
- <div class="clear"></div>
  </div>
  {% include "postinput.html" %}
  {% for post in posts %}

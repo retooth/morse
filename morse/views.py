@@ -19,7 +19,7 @@ from . import app
 from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
 from models import Post, Topic, TopicFollow, PostRead
 from models import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
-from wrappers import PostWrapper, TopicWrapper
+from wrappers import PostWrapper, TopicWrapper, AlphabeticUserList
 from rights import admin_rights_required, check_ban, possibly_banned 
 from flask import render_template, url_for, request, g, jsonify, redirect
 from sqlalchemy import not_
@@ -80,7 +80,10 @@ def register():
     db.session.add(relationship)
     db.session.commit()
 
-    return render_template('login.html', alert = 'registered')
+    login_user(user)
+
+    # FIXME: redirect instead of render (bad req bug) - howto pass alert?
+    return render_template('index.html', alert = 'registered')
 
  
 @app.route('/login',methods=['GET','POST'])
