@@ -9,10 +9,12 @@
    </a>{{ topic.title | safe }}
   </h1>
   <div id="topictools">
-   {% if topic.followed %}
-     <button id="followswitch" class="toolbutton unfollow" switched="Follow">Unfollow</button> 
-   {% else %}
-     <button id="followswitch" class="toolbutton follow" switched="Unfollow">Follow</button> 
+   {% if not current_user.is_anonymous() %}
+     {% if topic.followed %}
+       <button id="followswitch" class="toolbutton unfollow" switched="Follow">Unfollow</button> 
+     {% else %}
+       <button id="followswitch" class="toolbutton follow" switched="Unfollow">Follow</button> 
+     {% endif %}
    {% endif %}
   </div>
    <div class="clear"></div>
