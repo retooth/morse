@@ -521,9 +521,10 @@ def post (topic_id):
     visible, readable, writable = get_my_boards(get_only_ids = True)
     if not topic.board_id in writable:
         return "forbidden", 403
- 
-    wrapper = TopicWrapper(topic)
-    wrapper.follow()
+
+    if not current_user.is_anonymous(): 
+        wrapper = TopicWrapper(topic)
+        wrapper.follow()
 
     text = request.values["text"]
     post = Post(current_user.id, text, topic_id, request.remote_addr)
@@ -553,7 +554,7 @@ def showtopic (topic_id):
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not topic.board_id in readable:
         return render_template('accessdenied.html', current_user = current_user)
-    posts = map(PostWrapper, topic.posts) 
+    posts = map(PostWrapper, topic.posts)
     return render_template("topic.html", topic = topic, \
                            posts = posts, current_user = current_user)
 

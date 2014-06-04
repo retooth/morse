@@ -16,7 +16,7 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from models import TopicFollow, PostRead, Topic, User, db
-from flask.ext.login import current_user
+from flask.ext.login import current_user, AnonymousUserMixin
 from collections import defaultdict
 
 class PostWrapper (object):
@@ -36,7 +36,7 @@ class PostWrapper (object):
 
     @property
     def creator (self):
-        return User.query.get(self.user_id)
+        return User.query.get(self.user_id) or AnonymousUserMixin()
 
     @property
     def remote_addr (self):

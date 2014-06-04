@@ -48,26 +48,34 @@
       <div group-id="{{group.id}}" class="colorpicker label4 {% if group.has_label(4) %} picked {% endif %}" label-id=4>
       </div>
       <div class="groupflags">
-       <label>
-        <input type="checkbox" class="groupflag mayclose" {% if group.may_close %} checked {% endif %}>
-        May close threads 
-       </label>
-       <label>
-        <input type="checkbox" class="groupflag mayedit" {% if group.may_edit %} checked {% endif %}>
-        May edit arbitrary posts
-       </label>
-       <label>
-        <input type="checkbox" class="groupflag maystick" {% if group.may_stick %} checked {% endif %}>
-        May create stickies
-       </label>
+       {% if not (group.id == 3 or group.id == 4) %}
+         <label>
+          <input type="checkbox" class="groupflag mayclose" {% if group.may_close %} checked {% endif %}>
+          May close threads 
+         </label>
+         <label>
+          <input type="checkbox" class="groupflag mayedit" {% if group.may_edit %} checked {% endif %}>
+          May edit arbitrary posts
+         </label>
+         <label>
+          <input type="checkbox" class="groupflag maystick" {% if group.may_stick %} checked {% endif %}>
+          May create stickies
+         </label>
+       {% endif %}
       </div>
       <div class="clear"></div>
     </div>
-     <ul group-id="{{group.id}}" tainted="false" class="groupuserlist">
+     <ul group-id="{{group.id}}" tainted="false" class="groupuserlist
+        {% if group.id == 3 or group.id == 4 %}
+          readonly
+        {% endif %}
+        ">
      {% for member in group.members %}
       <li user-id="{{member.id}}" class="user">
         {{ member.username }}
-        <img class="deletefromgroup" src="{{ url_for('static', filename='close-small.png')}}"/>
+        {% if not (group.id == 3 or group.id == 4) %}
+          <img class="deletefromgroup" src="{{ url_for('static', filename='close-small.png')}}"/>
+        {% endif %}
       </li>
      {% endfor %}
      </ul>

@@ -2,8 +2,13 @@
 <div class="postentry {% if post.isfresh %} fresh {% endif %}">
 <a id="post{{ post.id }}" class="postheader"></a>
   <aside class="postsidebar">
-    <div class="profileimage" style="background-image:url('{{ post.creator.profileimage }}')"></div>
-    <div class="postcreator">{{ post.creator.username }}</div>
+    {% if post.creator.is_anonymous() %}
+      <div class="profileimage" style="background-image:url('/static/anonymous.png')"></div>
+      <div class="postcreator">Guest</div>
+    {% else %}
+      <div class="profileimage" style="background-image:url('{{ post.creator.profileimage }}')"></div>
+      <div class="postcreator">{{ post.creator.username }}</div>
+    {% endif %}
   </aside>
   <article class="post">
    {{ post.content | safe }}

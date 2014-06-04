@@ -491,6 +491,14 @@ $(".grouplist").sortable({
   receive : allLiToHiddenInput
 });
 
+$("#modelistignorant").on("sortreceive", function (e, ui){
+  if(ui.item.attr("group-id") == ADMIN_GROUP_ID){
+    ui.item.remove()
+    ui.item.appendTo(ui.sender);
+    alertGlobal("lockoutprevented");
+  }
+});
+
 function allLiToHiddenInput (){
   $("#lihiddeninput").html("");
   liToHiddenInput( $("#modelistignorant li"), "ignorant");
@@ -566,13 +574,19 @@ $(".groupuserlist").on( "sortstop", function (e, ui){
   new_user.addClass("user");
   var id = new_user.attr("user-id");
 
+  // check for read-only groups (guest/register)
+  if ( $(this).hasClass("readonly") ){
+    alertGlobal("readonlygroup");
+    new_user.remove();
+  
   // This blob finds <li>s with the same user-id attr (which indicates
   // that this user is already in this group). It is >1 and not >0,
   // because at sortstop the new element is already added to <ul>
 
-  if ( $(this).children("li[user-id=\"" + id + "\"]").length > 1 ){
+  }else if ( $(this).children("li[user-id=\"" + id + "\"]").length > 1 ){
     alertGlobal("alreadyingroup");
     new_user.remove();
+
   }else{
     $(this).attr("tainted", true);
 
@@ -589,9 +603,16 @@ $(".groupuserlist").on( "sortstop", function (e, ui){
 
 $(".deletefromgroup").on("click", deleteFromGroup);
 
+ADMIN_GROUP_ID = "1"
+
 function deleteFromGroup(e){
-  $(this).parents(".groupuserlist").attr("tainted", true);
-  $(this).parents("li").remove();
+  if ( $(this).parents("li").attr("user-id") == $("#useravatar").attr("user-id") &&
+       $(this).parents(".groupuserlist").attr("group-id") == ADMIN_GROUP_ID ){
+    alertGlobal("lockoutprevented");
+  }else{
+    $(this).parents(".groupuserlist").attr("tainted", true);
+    $(this).parents("li").remove();
+  }
 }  
 
 $("#updategroups").click(function(e){

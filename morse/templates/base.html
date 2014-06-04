@@ -13,9 +13,9 @@
   </div>
 </a>
   {% if current_user.is_anonymous() %}
-   <div id="guestavatar" class="profileimage" style="background-image:url('anonymous.png')"></div>
+   <div id="guestavatar" class="profileimage" style="background-image:url('/static/anonymous.png')"></div>
   {% else %}
-   <div id="useravatar" class="profileimage" style="background-image:url('{{ current_user.profileimage }}')"></div>
+   <div id="useravatar" user-id="{{ current_user.id }}"class="profileimage" style="background-image:url('{{ current_user.profileimage }}')"></div>
   {% endif %}
   <div class="clear"></div>
 </header>
