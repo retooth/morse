@@ -62,7 +62,6 @@ function readVisiblePosts (){
       type: "POST",
       data: ids_json,
       error: handleAjaxErrorBy( alertGlobal ),
-                                 /* FIXME: transition doesn't seem to work */
       success: function (data) { posts.removeClass("fresh", 5000); },
       traditional: true
     });
