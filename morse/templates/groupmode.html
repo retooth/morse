@@ -11,7 +11,7 @@
     <header>No Rights</header>
     <ul class="grouplist">
      {% for group in board.ignorantgroups %}
-     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
      {% endfor %}
     </ul>
   </div>
@@ -19,7 +19,7 @@
     <header>Can see this board</header>
     <ul class="grouplist">
      {% for group in board.knowonlygroups %}
-     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
      {% endfor %}
     </ul>
   </div>
@@ -27,7 +27,7 @@
     <header>Can see and read this board</header>
     <ul class="grouplist">
      {% for group in board.readonlygroups %}
-     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
      {% endfor %}
     </ul>
   </div>
@@ -35,7 +35,7 @@
     <header>Can see and read this board and create posts</header>
     <ul class="grouplist">
      {% for group in board.postergroups %}
-     <li group-id="{{ group.id }}">{{ group.name }}</li>
+     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
      {% endfor %}
     </ul>
   </div>
