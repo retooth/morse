@@ -18,6 +18,7 @@
 from flask import request, render_template
 from flask.ext.login import current_user
 from models import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
+from protocols import ajax_triggered
 
 ALL_BOARDS = 0
 
@@ -69,6 +70,21 @@ def check_ban (board_id = ALL_BOARDS):
     if board_id != ALL_BOARDS:
         check_ban(ALL_BOARDS)
 
+def is_ajax_triggered (f):
+
+    """ traverses through the function decorator list looking
+    for an ajax_triggered decorator. Returns True, if it finds
+    one, return False if not """
+
+    while True:
+        if type(f) is ajax_triggered:
+            return True
+            break
+        try:
+            f = f.f
+        except AttributeError:
+            return False
+            break
 
 class possibly_banned (object):
 
@@ -90,11 +106,17 @@ class possibly_banned (object):
         except LimitedBan as b:
             # TODO: factor expiration timestamp in human readable
             # delta ("1 week, 4 days, 10 hours, 5 seconds to go")
-            return render_template('limitedban.html', current_user = current_user,\
-                                   reason = b.reason, expiration = b.expiration)
+            if is_ajax_triggered(self.f):
+                return "banned", 403
+            else:
+                return render_template('limitedban.html', current_user = current_user,\
+                                       reason = b.reason, expiration = b.expiration), 403
         except PermaBan as b:
-            return render_template('permaban.html', current_user = current_user,\
-                                   reason = b.reason)
+            if is_ajax_triggered(self.f):
+                return "banned", 403
+            else:
+                return render_template('permaban.html', current_user = current_user,\
+                                       reason = b.reason), 403
 
 class admin_rights_required (object):
 
@@ -111,5 +133,8 @@ class admin_rights_required (object):
 
     def __call__ (self, *args, **kwargs):
         if not current_user.may_structure:
-            return render_template('accessdenied.html', current_user = current_user), 403
+            if is_ajax_triggered(self.f):
+                return "forbidden", 403
+            else:
+                return render_template('accessdenied.html', current_user = current_user), 403
         return self.f(*args, **kwargs)

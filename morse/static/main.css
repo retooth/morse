@@ -409,7 +409,7 @@ header {
       float:left;
       color:#000;
       padding:2pt;
-      font-size:8pt;
+      font-size:10pt !important;
       margin-right:2pt;
     }
 
@@ -744,6 +744,19 @@ blockquote{
   background:none;
   outline:none;
   float:right;
+}
+
+#admintools{
+  padding:5pt;
+}
+
+#createnewboard{
+  float:right;
+}
+
+#createnewboard img{
+  height:16px;
+  width:auto;
 }
 
 #adminwrapper{

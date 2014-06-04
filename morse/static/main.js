@@ -15,6 +15,8 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/* enum */
+
 $(document).on("ready", function () {
 
 /* make multiline text inputs autogrow */
@@ -59,9 +61,9 @@ function readVisiblePosts (){
       contentType: "application/json",
       type: "POST",
       data: ids_json,
-      error: function () { alertGlobal("ajax"); },
+      error: handleAjaxErrorBy( alertGlobal ),
+                                 /* FIXME: transition doesn't seem to work */
       success: function (data) { posts.removeClass("fresh", 5000); },
-      dataType: "json",
       traditional: true
     });
   }
@@ -103,7 +105,7 @@ $("#docreate").on("click", function(){
     url: board_id + "/starttopic",
     type: "POST",
     data: { title: title, text: text },
-    error: function () { alertInput("ajax"); },
+    error: handleAjaxErrorBy( alertInput ),
     success: processNewTopicResponse,
     dataType: "json",
     traditional: true
@@ -122,7 +124,7 @@ $("#dopost").on("click", function(){
     url: topic_id + "/post",
     type: "POST",
     data: { text: text },
-    error: function () { alertInput("ajax"); },
+    error: handleAjaxErrorBy( alertInput ),
     success: processNewPostResponse,
     dataType: "json",
     traditional: true
@@ -130,21 +132,13 @@ $("#dopost").on("click", function(){
 });
 
 function processNewTopicResponse (response){
-  if (response.success == false){
-    alertInput("forbidden");
-  }else{
-    window.location.href = "/topic/" + response.topicId
-  }
+  window.location.href = "/topic/" + response.topicId
 }
 
 function processNewPostResponse (response){
-  if (response.success == false){
-    alertInput("forbidden");
-  }else{
     window.location.reload();
     // FIXME: how to scroll down AFTER reload??
     // TODO: maybe do an ajax implementation
-  }
 }
 
 /* This is a workaround for a bug, that adds a another blockquote,
@@ -276,9 +270,8 @@ $("#followswitch").click(function () {
       contentType: "application/json",
       type: "POST",
       data: jsonTopicId,
-      error: function () { alertGlobal("ajax"); },
+      error: handleAjaxErrorBy( alertGlobal ),
       success: function (data) { unfollow(); },
-      dataType: "json",
       traditional: true
     });
  }else{
@@ -287,9 +280,8 @@ $("#followswitch").click(function () {
       contentType: "application/json",
       type: "POST",
       data: jsonTopicId,
-      error: function () { alertGlobal("ajax"); },
+      error: handleAjaxErrorBy( alertGlobal ),
       success: function (data) { follow(); },
-      dataType: "json",
       traditional: true
     });
  }
@@ -423,10 +415,9 @@ $("#updateinfo").click(function(e){
     data: $.toJSON(info),
     error: function (e) {
         $("#updateinfo").removeClass("buttonspinner");
-        alertInfoSettings("ajax"); 
+        handleAjaxErrorBy(alertInfoSettings)(response);
     },
     success: function(data){ $("#updateinfo").removeClass("buttonspinner"); },
-    dataType: "json",
     traditional: true
   });
 
@@ -471,20 +462,11 @@ $("#updateaccount").click(function(e){
     data: $.toJSON(account),
     error: function (e) { 
       $("#updateaccount").removeClass("buttonspinner"); 
-      alertAccountSettings("ajax"); 
+      handleAjaxErrorBy(alertAccountSettings)(response);
     },
     success: function(data){ 
-
       $("#updateaccount").removeClass("buttonspinner"); 
-
-      if (data.success == false){
-        $("#oldpassword").addClass("redoutline");
-        alertAccountSettings("wrongpassword");
-        return false;
-      }
-
     },
-    dataType: "json",
     traditional: true
   });
 
@@ -633,12 +615,11 @@ $("#updategroups").click(function(e){
       type: "POST",
       contentType: "application/json",
       data: ids_json,
-      error: function (e) {
+      error: function (response) {
           $("#updategroups").removeClass("buttonspinner");
-          alertGlobal("ajax"); 
+          handleAjaxErrorBy(alertGlobal)(response);
       },
       success: function(data){ $("#updategroups").removeClass("buttonspinner"); },
-      dataType: "json",
       traditional: true
     });
   });
@@ -658,12 +639,11 @@ $("#updategroups").click(function(e){
       type: "POST",
       contentType: "application/json",
       data: $.toJSON(meta),
-      error: function (e) {
+      error: function (response) {
           $("#updategroups").removeClass("buttonspinner");
-          alertGlobal("ajax"); 
+          handleAjaxErrorBy(alertGlobal)(response);
       },
       success: function(data){ $("#updategroups").removeClass("buttonspinner"); },
-      dataType: "json",
       traditional: true
     });
   });
@@ -693,6 +673,20 @@ $(".groupflag").change(function(e){
 /* i put the alert functions in here, so they are in the right scope
 for the bottom script in base.html to call */
 
+function handleAjaxErrorBy (callback){
+  function handle (response){
+    var processable = Array();
+    processable.push(403);
+    if(processable.indexOf( response.status ) >= 0){
+      console.log(response.responseText);
+      callback(response.responseText);
+    }else{
+      callback("ajax");
+    }
+  }
+  return handle;
+}
+
 function alertInput (id){
   /* shows the appropriate error message beneath the toolbox */
   $("div[id^=\"inputalert_\"]").fadeOut(0);
@@ -712,6 +706,12 @@ function alertAccountSettings (id){
   $("div[id^=\"accountsettingsalert_\"]").fadeOut(0);
   $("#accountsettingsalert_"+id).slideDown(800);
   $("#accountsettingsalert_"+id).delay(2000).slideUp(800);
+
+  /* FIXME: develop clean highlighting system */
+  if (id == "wrongpassword"){
+    $("#oldpassword").addClass("redoutline");
+  }
+
 }
 
 function alertInfoSettings (id){

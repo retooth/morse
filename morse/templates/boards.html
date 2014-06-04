@@ -2,9 +2,12 @@
 {% extends "base.html" %}
 {% block content %}
 {% if current_user.may_structure %}
-  <a href="/newboard" id="createnewboard"><img src="{{ url_for('static', filename='newboard.png') }}"/></a>
-  <br/>
-  <br/>
+  <div id="admintools">
+    <div id="createnewboard">
+       <a href="/newboard"><img src="{{ url_for('static', filename='newboard.png') }}"/></a>
+    </div>
+    <div class="clear"></div>
+  </div>
 {% endif %}
 {% for board in boards %}
     {% include "boardentry.html" %}

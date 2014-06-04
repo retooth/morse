@@ -21,6 +21,7 @@ from models import Post, Topic, TopicFollow, PostRead
 from models import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
 from wrappers import PostWrapper, TopicWrapper, AlphabeticUserList
 from rights import admin_rights_required, check_ban, possibly_banned 
+from protocols import ajax_triggered
 from flask import render_template, url_for, request, g, jsonify, redirect
 from sqlalchemy import not_
 from flask.ext.login import LoginManager, login_user 
@@ -83,7 +84,7 @@ def register():
     login_user(user)
 
     # FIXME: redirect instead of render (bad req bug) - howto pass alert?
-    return render_template('index.html', alert = 'registered')
+    return render_template('boards.html', alert = 'registered')
 
  
 @app.route('/login',methods=['GET','POST'])
@@ -316,7 +317,7 @@ def updateboard(board_id):
 
     return redirect(url_for('index'))
 
-@app.route('/managegroups', methods=['GET', 'POST'])
+@app.route('/managegroups', methods=['GET'])
 @login_required
 @admin_rights_required
 def managegroups ():
@@ -327,8 +328,6 @@ def managegroups ():
         return render_template('managegroups.html', current_user = current_user,\
                                 groups = groups, userlist = userlist)
 
-    # TODO  
-
 def groupmember_to_user_id (groupmember):
     return groupmember.user_id
 
@@ -338,18 +337,11 @@ def to_intlist (item):
 @app.route('/updategroup/<int:group_id>', methods=['POST'])
 @login_required
 @admin_rights_required
-# TODO: this methods gets called via
-# ajax. if admin_rights_required fails
-# it returns html (instead of json) and 
-# a 403 status code.
-# this should probably work without
-# breaking the js, but i'm too lazy
-# to test atm
+@ajax_triggered
 def updategroup (group_id):
     """ 
     updates the group defined by group_id. this function is called
     by the javascript event handler for #updategroups in main.js
-    :rtype: json 
     """
     groupmembers = GroupMember.query.filter(GroupMember.group_id.like(group_id)).all()
     old_user_ids = map(groupmember_to_user_id, groupmembers)
@@ -372,17 +364,17 @@ def updategroup (group_id):
 
     db.session.commit()
 
-    return jsonify(success=True)
+    return ""
 
 @app.route('/updategroupmeta/<int:group_id>', methods=['POST'])
 @login_required
 @admin_rights_required
+@ajax_triggered
 def updategroupmeta (group_id):
     """ 
     updates the group meta defined by group_id. (label type and
     group flags) this function is called by the javascript 
     event handler for #updategroups in main.js.
-    :rtype: json 
     """
     meta = request.json
 
@@ -393,7 +385,7 @@ def updategroupmeta (group_id):
     group.may_stick = meta["may_stick"]
     db.session.commit()
 
-    return jsonify(success=True)
+    return ""
 
 
 def hyperlink (website):
@@ -425,11 +417,11 @@ def settings():
 @app.route('/settings/updateinfo', methods=['POST'])
 @login_required
 @possibly_banned
+@ajax_triggered
 def updateinfo ():
     """
     Updates bio/websites of user. Is called by the javascript
     event callback of #updateinfo
-    :rtype: json 
     """
     check_ban()
 
@@ -452,22 +444,22 @@ def updateinfo ():
         db.session.add(w)
 
     db.session.commit()
-    return jsonify(success=True)
+    return ""
 
 @app.route('/settings/updateaccount', methods=['POST'])
 @login_required
 @possibly_banned
+@ajax_triggered
 def updateaccount ():
     """
     Updates email/password of user. Is called by the javascript
     event callback of #updateaccount
-    :rtype: json 
     """
     check_ban()
 
     oldpassword = request.json["oldpassword"]
     if not current_user.has_password(oldpassword):
-        return jsonify(success=False)
+        return "wrongpassword", 403
 
     newpassword = request.json["newpassword"]
     if newpassword:
@@ -475,10 +467,11 @@ def updateaccount ():
 
     current_user.email = request.json["newemail"]
     db.session.commit()
-    return jsonify(success=True)
+    return ""
 
 @app.route('/board/<int:board_id>/starttopic', methods=['POST'])
 @possibly_banned
+@ajax_triggered
 def starttopic (board_id):
     """ 
     Creates a new topic. Is called by the javascript event
@@ -491,7 +484,7 @@ def starttopic (board_id):
 
     visible, readable, writable = get_my_boards( get_only_ids = True )
     if not board_id in writable:
-        return jsonify(success=False) 
+        return "forbidden", 403 
 
     title = request.values["title"]
     text = request.values["text"]
@@ -509,11 +502,12 @@ def starttopic (board_id):
     post = PostWrapper(post)
     post.read()
 
-    return jsonify(success=True, topicId=topic.id)
+    return jsonify(topicId=topic.id)
 
 
 @app.route('/topic/<topic_id>/post', methods=['POST'])
 @possibly_banned
+@ajax_triggered
 def post (topic_id):
     """ 
     Creates a new post. Is called by the javascript event
@@ -526,7 +520,7 @@ def post (topic_id):
 
     visible, readable, writable = get_my_boards(get_only_ids = True)
     if not topic.board_id in writable:
-        return jsonify(success=False)
+        return "forbidden", 403
  
     wrapper = TopicWrapper(topic)
     wrapper.follow()
@@ -538,7 +532,7 @@ def post (topic_id):
     post = PostWrapper(post)
     post.read()
 
-    return jsonify(success=True, postId = post.id)
+    return jsonify(postId = post.id)
 
 
 @app.route('/topic/<topic_id>', methods=['GET'])
@@ -564,16 +558,16 @@ def showtopic (topic_id):
                            posts = posts, current_user = current_user)
 
 @app.route('/read', methods=['POST'])
+@ajax_triggered
 def read ():
     """ 
     marks posts as read. this function is called via ajax
     by the javascript function readVisiblePosts in main.js
-    :rtype: json 
     """
     # just return success and do nothing
     # if user is guest
     if current_user.is_anonymous:
-        return jsonify(success=True)
+        return ""
 
     post_ids = request.json
     posts = []
@@ -583,32 +577,32 @@ def read ():
     posts = map(PostWrapper, posts)
     for post in posts:
         post.read()
-    return jsonify(success=True)
+    return ""
 
 @app.route('/follow', methods=['POST'])
 @login_required
+@ajax_triggered
 def follow ():
     """ 
     follows a topic. this function is called via ajax
     by the click event handler for #followswitch in main.js
-    :rtype: json 
     """
     topic_id = request.json
     topic = Topic.query.filter(Topic.id.like(topic_id)).first()
     topic = TopicWrapper(topic)
     topic.follow()
-    return jsonify(success=True)
+    return ""
 
 @app.route('/unfollow', methods=['POST'])
 @login_required
+@ajax_triggered
 def unfollow ():
     """ 
     unfollows a topic. this function is called via ajax
     by the click event handler for #followswitch in main.js
-    :rtype: json 
     """
     topic_id = request.json
     topic = Topic.query.filter(Topic.id.like(topic_id)).first()
     topic = TopicWrapper(topic)
     topic.unfollow()
-    return jsonify(success=True)
+    return ""
