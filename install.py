@@ -10,10 +10,10 @@ with app.app_context():
     print "configuring defaults...",
     
     # !important: dont't change the order
-    gadmin = Group("Administrators", "All Access Granted", True, True, True)
-    gmods = Group("Moderators", "Can close/edit threads", False, True, True)
-    gregistered = Group("Registered", "All Registered Users", False, False, False)
-    gguests = Group("Guests", "Users without a login", False, False, False)
+    gadmin = Group("Administrators", "All Access Granted", True, True, True, True, 0)
+    gmods = Group("Moderators", "Can close/edit threads", False, True, True, True, 0)
+    gregistered = Group("Registered", "All Registered Users", False, False, False, False, 0)
+    gguests = Group("Guests", "Users without a login", False, False, False, False, 0)
     
     db.session.add(gadmin)
     db.session.add(gmods)

@@ -278,13 +278,18 @@ class Group (db.Model):
     may_structure = db.Column(db.Boolean)
     may_edit = db.Column(db.Boolean)
     may_close = db.Column(db.Boolean)
+    may_stick = db.Column(db.Boolean)
+    label = db.Column(db.Integer)
 
-    def __init__ (self, name, description, may_structure = False, may_edit = False, may_close = False):
+    def __init__ (self, name, description, may_structure = False, \
+                  may_edit = False, may_close = False, may_stick = False, label=0):
         self.name = name
         self.description = description
         self.may_structure = may_structure
         self.may_edit = may_edit
         self.may_close = may_close
+        self.may_stick = may_stick
+        self.label = label
 
     @property
     def members (self):
@@ -296,6 +301,9 @@ class Group (db.Model):
             member = User.query.get(r.user_id)
             members.append(member)
         return members
+
+    def has_label (self, label):
+        return self.label == label
 
 class GroupMember (db.Model):
 

@@ -6,7 +6,7 @@
 <nav id="groupnav">
 <ul>
 {% for group in groups %}
-  <li group-id={{group.id}}>{{group.name}}</li>
+  <li group-id={{group.id}} class="label{{ group.label }}">{{group.name}}</li>
 {% endfor %}
 </ul>
 <div class="clear"></div>
@@ -35,7 +35,34 @@
 </div>
 {% for group in groups %}
   <div group-id="{{group.id}}" class="groupmenu">
-    <span class="groupdescription">{{group.description}}</span><br>
+    <!--span class="groupdescription">{{group.description}}</span><br-->
+    <div group-id="{{group.id}}" class="header" tainted="false">
+      <div group-id="{{group.id}}" class="colorpicker label0 {% if group.has_label(0) %} picked {% endif %}" label-id=0>
+      </div>
+      <div group-id="{{group.id}}" class="colorpicker label1 {% if group.has_label(1) %} picked {% endif %}" label-id=1>
+      </div>
+      <div group-id="{{group.id}}" class="colorpicker label2 {% if group.has_label(2) %} picked {% endif %}" label-id=2>
+      </div>
+      <div group-id="{{group.id}}" class="colorpicker label3 {% if group.has_label(3) %} picked {% endif %}" label-id=3>
+      </div>
+      <div group-id="{{group.id}}" class="colorpicker label4 {% if group.has_label(4) %} picked {% endif %}" label-id=4>
+      </div>
+      <div class="groupflags">
+       <label>
+        <input type="checkbox" class="groupflag mayclose" {% if group.may_close %} checked {% endif %}>
+        May close threads 
+       </label>
+       <label>
+        <input type="checkbox" class="groupflag mayedit" {% if group.may_edit %} checked {% endif %}>
+        May edit arbitrary posts
+       </label>
+       <label>
+        <input type="checkbox" class="groupflag maystick" {% if group.may_stick %} checked {% endif %}>
+        May create stickies
+       </label>
+      </div>
+      <div class="clear"></div>
+    </div>
      <ul group-id="{{group.id}}" tainted="false" class="groupuserlist">
      {% for member in group.members %}
       <li user-id="{{member.id}}" class="user">

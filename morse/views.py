@@ -374,6 +374,28 @@ def updategroup (group_id):
 
     return jsonify(success=True)
 
+@app.route('/updategroupmeta/<int:group_id>', methods=['POST'])
+@login_required
+@admin_rights_required
+def updategroupmeta (group_id):
+    """ 
+    updates the group meta defined by group_id. (label type and
+    group flags) this function is called by the javascript 
+    event handler for #updategroups in main.js.
+    :rtype: json 
+    """
+    meta = request.json
+
+    group = Group.query.get(group_id)
+    group.label = meta["label_id"]
+    group.may_edit = meta["may_edit"]
+    group.may_close = meta["may_close"]
+    group.may_stick = meta["may_stick"]
+    db.session.commit()
+
+    return jsonify(success=True)
+
+
 def hyperlink (website):
     """ mapping function (see below) """
     return website.hyperlink

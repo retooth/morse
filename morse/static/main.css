@@ -552,7 +552,29 @@ blockquote{
 }
 
 .redoutline{
- border-color:#F08D37 !important;
+  border-color:#F08D37 !important;
+}
+
+/* label palette made by ycc2106 (CC-BY-NC-SA) */ 
+
+.label0{
+  background:#8B8B8B !important;
+}
+
+.label1{
+  background:#41BFBD !important;
+}
+
+.label2{
+  background:#98EB2D !important;
+}
+
+.label3{
+  background:#F7DB1A !important;
+}
+
+.label4{
+  background:#FF937C !important;
 }
 
 /* ------------------------------------------- */
@@ -956,6 +978,32 @@ blockquote{
       padding:5pt;
       margin-left:20pt;
     }
+
+        .groupmenu .header{
+        }
+
+            .colorpicker{
+              width:20px;
+              height:20px;
+              float:left;
+              margin-right:2pt;
+              cursor:pointer;
+            }
+
+            .picked{
+              border-bottom:2px solid #000;
+              width:20px;
+              height:18px;
+            }
+
+            .groupflags{
+              float:left;
+            }
+
+            .groupflags input{
+              position:relative;
+              top:1px;
+            }
 
         .groupmenu ul{
           list-style-type:none;

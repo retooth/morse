@@ -643,7 +643,49 @@ $("#updategroups").click(function(e){
     });
   });
 
+  $.each($(".header[tainted=\"true\"]"), function (index, item){
 
+    var label_id  = $(item).children(".picked").attr("label-id");
+    var group_id  = $(item).attr("group-id");
+    var may_edit  = $(item).find(".mayedit").is(":checked");
+    var may_close = $(item).find(".mayclose").is(":checked");
+    var may_stick = $(item).find(".maystick").is(":checked");
+
+    var meta = new Object({ label_id : label_id, may_edit : may_edit, may_close : may_close, may_stick : may_stick });
+
+    $.ajax({
+      url: "updategroupmeta/" + group_id,
+      type: "POST",
+      contentType: "application/json",
+      data: $.toJSON(meta),
+      error: function (e) {
+          $("#updategroups").removeClass("buttonspinner");
+          alertGlobal("ajax"); 
+      },
+      success: function(data){ $("#updategroups").removeClass("buttonspinner"); },
+      dataType: "json",
+      traditional: true
+    });
+  });
+
+});
+
+$(".colorpicker").click(function(e){
+
+  var group_id = $(this).attr("group-id");
+  var old_label_id = $(".picked[group-id=\"" + group_id + "\"]").attr("label-id");
+  var new_label_id = $(this).attr("label-id");
+  console.log($("#groupnav li[group-id=\"" + group_id + "\"]"));
+  $("#groupnav li[group-id=\"" + group_id + "\"]").removeClass("label" + old_label_id);
+  $("#groupnav li[group-id=\"" + group_id + "\"]").addClass("label" + new_label_id);
+  $(".picked[group-id=\"" + group_id + "\"]").removeClass("picked");
+  $(this).addClass("picked");
+  $(this).parents(".header").attr("tainted", true);
+
+});
+
+$(".groupflag").change(function(e){
+  $(this).parents(".header").attr("tainted", true);
 });
 
 });
