@@ -566,9 +566,9 @@ def read ():
     """
     # just return success and do nothing
     # if user is guest
-    if current_user.is_anonymous:
+    if current_user.is_anonymous():
         return ""
-
+    
     post_ids = request.json
     posts = []
     for post_id in post_ids:
