@@ -19,692 +19,891 @@
 
 $(document).on("ready", function () {
 
-/* make multiline text inputs autogrow */
-$("#newtopictext").autogrow();
-$("#newposttext").autogrow();
+  /* make multiline text inputs autogrow */
+  $("#newtopictext").autogrow();
+  $("#newposttext").autogrow();
 
-/* mark posts on screen as read */
-readVisiblePosts();
-$(document).scroll(function (){
+  $.ajaxSetup({
+    contentType: "application/json",
+    traditional: true,
+    type: "POST"
+  });
+
+  /* mark posts on screen as read */
   readVisiblePosts();
-});
 
-function readVisiblePosts (){
-
-  /* 
-     readVisible() looks for posts in the current viewport and
-     marks them as read via ajax. this include removing the
-     css fresh class
-  */
-
-  var postfooters = $(".postfooter").filter( 
-                      function(index){ 
-                        return $(this).visible() 
-                      });
-
-
-  /* collect ids of visible posts */
-  var ids = Array();
-  $.each(postfooters, function (index, item) {
-    if ($(item).parent().hasClass("fresh")){
-      ids.push($(item).html());
-    }
+  $(document).scroll(function (){
+    readVisiblePosts();
   });
 
-  var posts = postfooters.parent();
-  var ids_json = JSON.stringify(ids);
-  
-  /* only send, if posts were found */
-  if (ids.length > 0){
-    $.ajax({
-      url: "/read",
-      contentType: "application/json",
-      type: "POST",
-      data: ids_json,
-      error: handleAjaxErrorBy( alertGlobal ),
-      success: function (data) { posts.removeClass("fresh", 5000); },
-      traditional: true
+
+  function readVisiblePosts (){
+
+    /* 
+       readVisible() looks for posts in the current viewport and
+       marks them as read via ajax. this include removing the
+       css fresh class
+       */
+
+    var postfooters = $(".postfooter").filter(function(){ 
+      return $(this).visible(); 
     });
+
+    /* collect ids of visible posts */
+    var ids = Array();
+    postfooters.each(function () {
+      if ($(this).parent().hasClass("fresh")){
+        ids.push($(this).html());
+      }
+    });
+
+    var posts = postfooters.parent();
+    var json = JSON.stringify(ids);
+
+    /* only send, if posts were found */
+    if (ids.length > 0){
+      $.ajax({
+        url: "/read",
+        data: json,
+        error: handleAjaxErrorBy( alertGlobal ),
+        success: function () { posts.removeClass("fresh", 5000); },
+      });
+    }
+
   }
 
-}
 
-$(document).keydown(function (keyevent){
- // TODO: this is a bit of a mess, clean up please
- $("#typinginfo").slideUp(0);
- $("#inputwrapper").slideDown(400);
- if ($(document.activeElement).attr("id") == "newtopictitle" && keyevent.which == 13){
-  $("#newtopictext").focus();
-  keyevent.preventDefault();
-  if ($("#newtopictitle").val() == ""){
-    $("#newtopictitle").val("No Topic");
-  }
- }else if ($(document.activeElement).attr("id") != "newtopictext" &&
-           $(document.activeElement).attr("id") != "newhref"){
-  /*if (keyevent.which == 13){
-    keyevent.preventDefault();
-  }*/
-  if ($("#newtopictitle").length == 0){
-    $("#newposttext").focus();
-  }else{
-    $("#newtopictitle").focus();
-  }
- }
-});
+  $(document).keydown(function (keyevent){
 
-$("#docreate").on("click", function(){
-  /* TODO: check blankpost
-     alertInput("blankpost");
-  */
-  var title = $("#newtopictitle").html();
-  var text = $("#newtopictext").html();
-  var board_id = $("#boardid").html();
+    /* This is what happens, when you ''just start typing''
+     * on the board or topic view
+    * */
 
-  $.ajax({
-    url: board_id + "/starttopic",
-    type: "POST",
-    data: { title: title, text: text },
-    error: handleAjaxErrorBy( alertInput ),
-    success: processNewTopicResponse,
-    dataType: "json",
-    traditional: true
+    $("#typinginfo").slideUp(0);
+    $("#inputwrapper").slideDown(400);
+
+    var activeID = $(document.activeElement).attr("id");
+    var atNewPost = $("#newposttext").length > 0;
+    var atNewTopic = $("#newtopictitle").length > 0;
+    var pressedReturn = (keyevent.which === 13);
+
+    if (activeID !== "newtopictitle" &&
+        activeID !== "newtopictext" &&
+        activeID !== "newposttext" &&
+        activeID !== "newhref"){
+
+      if (atNewPost){
+        $("#newposttext").focus();
+      }else if (atNewTopic){
+        $("#newtopictitle").focus();
+      }
+
+    }else if (activeID === "newtopictitle" && pressedReturn){
+      $("#newtopictext").focus();
+      keyevent.preventDefault();
+    }  
+
   });
-});
 
 
-$("#dopost").on("click", function(){
-  /* TODO: check blankpost
-     alertInput("blankpost");
-  */
-  var text = $("#newposttext").html();
-  var topic_id = $("#topicid").html();
+  $("#docreate").on("click", function(){
+    /* TODO: check blankpost
+       alertInput("blankpost");
+       */
+    var title = $("#newtopictitle").html();
+    var text = $("#newtopictext").html();
+    var board_id = $("#boardid").html();
 
-  $.ajax({
-    url: topic_id + "/post",
-    type: "POST",
-    data: { text: text },
-    error: handleAjaxErrorBy( alertInput ),
-    success: processNewPostResponse,
-    dataType: "json",
-    traditional: true
+    var data = new Object({ title: title, text: text });
+    var json = $.toJSON(data);
+
+    $.ajax({
+      url: board_id + "/starttopic",
+      data: json,
+      error: handleAjaxErrorBy( alertInput ),
+      success: processNewTopicResponse,
+      dataType: "json",
+    });
   });
-});
 
-function processNewTopicResponse (response){
-  window.location.href = "/topic/" + response.topicId
-}
 
-function processNewPostResponse (response){
+  $("#dopost").on("click", function(){
+    /* TODO: check blankpost
+       alertInput("blankpost");
+       */
+    var text = $("#newposttext").html();
+    var topic_id = $("#topicid").html();
+
+    var data = new Object({ text: text });
+    var json = $.toJSON(data);
+
+    $.ajax({
+      url: topic_id + "/post",
+      data: json,
+      error: handleAjaxErrorBy( alertInput ),
+      success: processNewPostResponse,
+      dataType: "json",
+    });
+  });
+
+
+  function processNewTopicResponse (response){
+    window.location.href = "/topic/" + response.topicId;
+  }
+
+
+  function processNewPostResponse (){
     window.location.reload();
     // FIXME: how to scroll down AFTER reload??
     // TODO: maybe do an ajax implementation
-}
-
-/* This is a workaround for a bug, that adds a another blockquote,
-if the user is inside a blockquote and presses enter */
-$("#newtopictext").on("keypress", blockquoteWorkaround);
-$("#newposttext").on("keypress", blockquoteWorkaround);
-
-function blockquoteWorkaround (keyevent) {
-  var range = window.getSelection().getRangeAt();
-  var element = range.commonAncestorContainer;
-  element = ((element.nodeType===1)?element:element.parentNode); 
-  if(element.nodeName == "BLOCKQUOTE" && keyevent.keyCode == 13 && !keyevent.shiftKey) {
-    keyevent.preventDefault();
-    document.execCommand('InsertParagraph');
-    document.execCommand('Outdent');    
   }
-}
 
-/* formatting toolbox */
 
-$("#makebold").mousedown(function (e){
-  if ($(document.activeElement).attr("id") == "newtopictext" ||
-      $(document.activeElement).attr("id") == "newposttext")
-  {
-    var wrap = document.createElement("strong");
-    var selection = getSelection().getRangeAt(0);
-    if (selection == "") {
-      alertInput("pleaseselect");
-    }else{
-      selection.surroundContents(wrap);
+  /* This is a workaround for a bug, that adds a another blockquote,
+     if the user is inside a blockquote and presses enter */
+  $("#newtopictext").on("keypress", blockquoteWorkaround);
+  $("#newposttext").on("keypress", blockquoteWorkaround);
+
+
+  function blockquoteWorkaround (keyevent) {
+
+    var range = window.getSelection().getRangeAt();
+    var element = range.commonAncestorContainer;
+
+    element = (element.nodeType===1) ? element : element.parentNode; 
+
+    if(element.nodeName === "BLOCKQUOTE" && keyevent.keyCode === 13 && !keyevent.shiftKey) {
+      keyevent.preventDefault();
+      document.execCommand("InsertParagraph");
+      document.execCommand("Outdent");    
     }
-  }
-});
 
-$("#makeitalic").mousedown(function (e){
-  if ($(document.activeElement).attr("id") == "newtopictext" ||
-      $(document.activeElement).attr("id") == "newposttext")
-  {
-    var wrap = document.createElement("em");
-    var selection = getSelection().getRangeAt(0);
-    if (selection == "") {
-      alertInput("pleaseselect");
-    }else{
-      selection.surroundContents(wrap);
+  }
+
+
+  /* formatting toolbox */
+
+  function formatSelectedTextBy (tag){
+    var activeID = $(document.activeElement).attr("id");
+    if (activeID === "newtopictext" ||
+        activeID === "newposttext")
+      {
+        var wrap = document.createElement(tag);
+        var selection = getSelection().getRangeAt(0);
+        if (selection === "") {
+          alertInput("pleaseselect");
+        }else{
+          selection.surroundContents(wrap);
+        }
+      }
+  }
+
+  $("#makebold").mousedown(function (){
+    formatSelectedTextBy("strong");
+  });
+
+
+  $("#makeitalic").mousedown(function (){
+    formatSelectedTextBy("em");
+  });
+
+
+  $("#makequote").mousedown(function (){
+    formatSelectedTextBy("blockquote");
+  });
+
+
+  $("#makelink").on("mousedown", function (){
+    var activeID = $(document.activeElement).attr("id");
+    if (activeID === "newtopictext" ||
+        activeID === "newposttext")
+      {
+        var wrap = document.createElement("span");
+        var selection = getSelection().getRangeAt(0);
+        wrap.setAttribute("id", "dummylink");
+        selection.surroundContents(wrap);
+
+        $("#newhref").val("http://");
+
+        $("#newhrefwrapper").slideDown(400);
+        $("#closenewhref").fadeIn(200);
+        $("#makelink").addClass("openrightborder");
+
+        $("#newtopictitle").removeAttr("contenteditable");
+        $("#newtopictext").removeAttr("contenteditable");
+        $("#newposttext").removeAttr("contenteditable");
+        $("#inputwrapper").addClass("disabledbox");
+      }
+  });
+
+
+  $("#makelink").on("mouseup", function (){
+    $("#newhref").focus();
+  });
+
+
+  $("#newhref").keypress(function (keyevent){
+    // if return is pressed
+    if(keyevent.which === 13){ 
+      $("#newhrefwrapper").slideUp(200);
+      $("#closenewhref").fadeOut(200);
+      $("#makelink").removeClass("openrightborder");
+
+      $("#newtopictitle").attr("contenteditable", "true");
+      $("#newtopictext").attr("contenteditable", "true");
+      $("#newposttext").attr("contenteditable", "true");
+      $("#inputwrapper").removeClass("disabledbox");
+
+      $("#newtopictext").focus();
+      $("#newposttext").focus();
+
+      var link = $("#dummylink").html();
+      var href = $("#newhref").val();
+      link = (link === "" ? href : link);
+      $("#dummylink").replaceWith("<a href=\"" + href +"\">" + link + "</a>");
     }
-  }
-});
+  });
 
-$("#makequote").mousedown(function (e){
-  if ($(document.activeElement).attr("id") == "newtopictext" ||
-      $(document.activeElement).attr("id") == "newposttext")
-  {
-    var wrap = document.createElement("blockquote");
-    var selection = getSelection().getRangeAt(0);
-    if (selection == "") {
-      alertInput("pleaseselect");
-    }else{
-      selection.surroundContents(wrap);
-    }
-  }
-});
+  $("#closenewhref").click(function(){
+    $("#newhrefwrapper").slideUp(200);
+    $(this).fadeOut(200);
+    $("#makelink").removeClass("openrightborder");
 
-$("#makelink").on("mousedown", function (e){
-  if ($(document.activeElement).attr("id") == "newtopictext" ||
-      $(document.activeElement).attr("id") == "newposttext")
-  {
-    var wrap = document.createElement("span");
-    var selection = getSelection().getRangeAt(0);
-    wrap.setAttribute("id", "dummylink");
-    $("#newhref").val("http://");
-    $("#newhrefwrapper").slideDown(400);
-    $("#closenewhref").fadeIn(200);
-    $("#makelink").addClass("openrightborder");
-    selection.surroundContents(wrap);
-    $("#newtopictitle").removeAttr('contenteditable');
-    $("#newtopictext").removeAttr('contenteditable');
-    $("#newposttext").removeAttr('contenteditable');
-    $("#inputwrapper").addClass("disabledbox");
-  }
-});
-
-$("#makelink").on("mouseup", function (){
-  $("#newhref").focus();
-});
-
-$("#newhref").keypress(function (keyevent){
-  if(keyevent.which == 13){
+    $("#newtopictitle").attr("contenteditable", "true");
+    $("#newtopictext").attr("contenteditable", "true");
+    $("#newposttext").attr("contenteditable", "true");
     $("#inputwrapper").removeClass("disabledbox");
-    $("#newtopictitle").attr('contenteditable', "true");
-    $("#newtopictext").attr('contenteditable', "true");
-    $("#newposttext").attr('contenteditable', "true");
+
     $("#newtopictext").focus();
     $("#newposttext").focus();
-    $("#newhrefwrapper").slideUp(200);
-    $("#closenewhref").fadeOut(200);
-    $("#makelink").removeClass("openrightborder");
-    var link = $("#dummylink").html();
-    var href = $("#newhref").val();
-    if (link == ""){
-      link = href;
-    }
-    $("#dummylink").replaceWith("<a href=\"" + href +"\">" + link + "</a>");
+    // FIXME: there is a bug, that doesn't do these last two
+    // lines (at least the outline of dummylink is visible)
+    // after that link creating doesn't work any more, probably
+    // because more than one #dummylink exists. this has something
+    // to do with multi-line-selecting, but i couldn't reproduce it
+    // probably.
+    var old = $("#dummylink").html();
+    $("#dummylink").replaceWith(old);
+  });
+
+
+  /* board info banners (TODO: replace with something good) */
+  $(".boardentry").on("mouseenter", function (){
+  });
+
+  $(".boardentry").on("mouseleave", function (){
+  });
+
+
+  /* user navbar */
+  $("#useravatar").click(function (){
+    $("#usernav").slideToggle();
+  });
+
+  $("#guestavatar").click(function (){
+    $("#guestnav").slideToggle();
+  });
+
+
+  /* follow switch */
+  $("#followswitch").click(function () {
+
+    jsonTopicId = JSON.stringify($("#topicid").html());
+    notFollowed = $(this).hasClass("follow");
+    $.ajax({
+      url: notFollowed ? "/follow" : "/unfollow",
+      data: jsonTopicId,
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: notFollowed ? unfollow : follow,
+    });
+
+  });
+
+  function unfollow (){
+    switchFollow();
+    $("#followswitch").addClass("unfollow", 500);
+    $("#followswitch").removeClass("follow", 500);
   }
-});
 
-/* board info banners (TODO: replace with something good) */
-$(".boardentry").on("mouseenter", function (){
-});
+  function follow (){
+    switchFollow();
+    $("#followswitch").addClass("follow", 500);
+    $("#followswitch").removeClass("unfollow", 500);
+  }
 
-$(".boardentry").on("mouseleave", function (){
-});
+  function switchFollow (){
+    var oldhtml = $("#followswitch").html(); 
+    var newhtml = $("#followswitch").attr("switched");
+    $("#followswitch").html(newhtml);
+    $("#followswitch").attr("switched", oldhtml);
+  }
 
-/* user navbar */
-$("#useravatar").click(function (){
-  $("#usernav").slideToggle();
-});
 
-$("#guestavatar").click(function (){
-  $("#guestnav").slideToggle();
-});
+  /* goback tooltip */
+  $("#goback").mouseenter(function(){
+    $("#gobacktooltip").spellFadeIn(800,10);
+  });
 
-/* follow switch */
-$("#followswitch").click(function () {
-  jsonTopicId = JSON.stringify($("#topicid").html());
-  console.log(jsonTopicId);
-  if ($(this).hasClass("follow")){
-    $.ajax({
-      url: "/follow",
-      contentType: "application/json",
-      type: "POST",
-      data: jsonTopicId,
-      error: handleAjaxErrorBy( alertGlobal ),
-      success: function (data) { unfollow(); },
-      traditional: true
-    });
- }else{
-    $.ajax({
-      url: "/unfollow",
-      contentType: "application/json",
-      type: "POST",
-      data: jsonTopicId,
-      error: handleAjaxErrorBy( alertGlobal ),
-      success: function (data) { follow(); },
-      traditional: true
-    });
- }
+  $("#goback").mouseleave(function(){
+    $("#gobacktooltip").spellFadeOut(800,100);
+  });
 
-});
 
-function unfollow (){
-  switchFollow()
-  $("#followswitch").addClass("unfollow", 500);
-  $("#followswitch").removeClass("follow", 500);
-}
+  /* settings (info) ------------------------------ */
 
-function follow (){
-  switchFollow()
-  $("#followswitch").addClass("follow", 500);
-  $("#followswitch").removeClass("unfollow", 500);
-}
-
-function switchFollow (){
-  var oldhtml = $("#followswitch").html(); 
-  var newhtml = $("#followswitch").attr("switched");
-  $("#followswitch").html(newhtml);
-  $("#followswitch").attr("switched", oldhtml);
-}
-
-/* goback tooltip */
-$("#goback").mouseenter(function(e){
-  $("#gobacktooltip").spellFadeIn(800,10);
-});
-
-$("#goback").mouseleave(function(e){
-  $("#gobacktooltip").spellFadeOut(800,100);
-});
-
-$("#closenewhref").click(function(e){
-  $("#makelink").removeClass("openrightborder");
-  $("#inputwrapper").removeClass("disabledbox");
-  $("#newtopictitle").attr('contenteditable', "true");
-  $("#newtopictext").attr('contenteditable', "true");
-  $("#newposttext").attr('contenteditable', "true");
-  $("#newtopictext").focus();
-  $("#newposttext").focus();
-  $("#newhrefwrapper").slideUp(200);
-  $(this).fadeOut(200);
-  // FIXME: there is a bug, that doesn't do these last two
-  // lines (at least the outline of dummylink is visible)
-  // after that link creating doesn't work any more, probably
-  // because more than one #dummylink exists. this has something
-  // to do with multi-line-selecting, but i couldn't reproduce it
-  // probably.
-  var old = $("#dummylink").html();
-  $("#dummylink").replaceWith(old);
-});
-
-//FIXME: delay until remove
-$(".deletewebsite").on("click", function(e){
-  $(this).parent().slideUp(200).remove();
-  beautifyWebsiteList();
-});
-
-/* settings */
-$("#anotherwebsite").click(function(e){
-
-  var website = $(".websitewrapper").first().clone();
-  website.css("display", "none");
-  website.children("input").val("");
-  website.children("input").attr("placeholder", "...");
-  website.insertBefore($("#anotherwebsitebr"));
-
-  beautifyWebsiteList();
-
-  website.slideDown(200);
-  website.children("button").fadeIn(1200);
-
-  /* rebind it (since new .deletewebsite 
-     elements were added) */
-  $(".deletewebsite").off("click");
-  //FIXME: see above
-  $(".deletewebsite").on("click", function(e){
+  //FIXME: delay until remove
+  $(".deletewebsite").on("click", function(){
     $(this).parent().slideUp(200).remove();
     beautifyWebsiteList();
   });
 
-});
+  $("#anotherwebsite").click(function(){
 
-function beautifyWebsiteList(){
-  
-  var lastindex = $(".websitewrapper").length - 1;
+    var website = $(".websitewrapper").first().clone();
+    website.css("display", "none");
+    website.children("input").val("");
+    website.children("input").attr("placeholder", "...");
+    website.insertBefore($("#anotherwebsitebr"));
 
-  if (lastindex == 0){
+    beautifyWebsiteList();
+
+    website.slideDown(200);
+    website.children("button").fadeIn(1200);
+
+    /* rebind it (since new .deletewebsite elements were added) */
+    $(".deletewebsite").off("click");
+    //FIXME: see above
+    $(".deletewebsite").on("click", function(){
+      $(this).parent().slideUp(200).remove();
+      beautifyWebsiteList();
+    });
+
+  });
+
+  function beautifyWebsiteList(){
+
+    /* makes website input list look like 
+     * a block with round edges */
+ 
+    var lastindex = $(".websitewrapper").length - 1;
     unbeautifyWebsiteList();
-  }else{
-    unbeautifyWebsiteList();
-    $.each($(".websitewrapper"), function (index, element){
-      if (index == 0){
-        $(element).addClass("first");
-      }
-      if (index > 0 && index < lastindex){
-        $(element).addClass("middle");
-      }
-      if (index == lastindex){
-        $(element).addClass("last");
-      }
+
+    if (lastindex !== 0){
+      $(".websitewrapper").each(function (index){
+        if (index === 0){
+          $(this).addClass("first");
+        }
+        if (index > 0 && index < lastindex){
+          $(this).addClass("middle");
+        }
+        if (index === lastindex){
+          $(this).addClass("last");
+        }
+      });
+    }
+
+  }
+
+  function unbeautifyWebsiteList(){
+    $(".websitewrapper").removeClass("first");
+    $(".websitewrapper").removeClass("middle");
+    $(".websitewrapper").removeClass("last");
+  }
+
+  $("#updateinfo").click(function(){
+
+    var bio = $("#bio").val();
+    var websites = Array();
+    $(".websitewrapper input").each(function (){
+      websites.push($(this).val());
     });
-  }
 
-}
+    var info = new Object({ bio : bio, websites : websites});
 
-function unbeautifyWebsiteList(){
-  $(".websitewrapper").removeClass("first");
-  $(".websitewrapper").removeClass("middle");
-  $(".websitewrapper").removeClass("last");
-}
-
-$("#updateinfo").click(function(e){
-
-  var bio = $("#bio").val();
-  var websites = Array()
-  $.each($(".websitewrapper input"), function (index, item){
-    websites.push($(item).val());
-  });
-
-  var info = new Object({ bio : bio, websites : websites});
-
-  $(this).addClass("buttonspinner");
-
-  $.ajax({
-    url: "settings/updateinfo",
-    type: "POST",
-    contentType: "application/json",
-    data: $.toJSON(info),
-    error: function (e) {
-        $("#updateinfo").removeClass("buttonspinner");
-        handleAjaxErrorBy(alertInfoSettings)(response);
-    },
-    success: function(data){ $("#updateinfo").removeClass("buttonspinner"); },
-    traditional: true
-  });
-
-});
-
-$(".accountdetail").keypress(function(e){
-
-  // see http://stackoverflow.com/questions/11627531
-  $("#chromebugmask").slideDown(800);
-  $("#updateaccount").fadeIn(400);
-
-});
-
-$("#updateaccount").click(function(e){
-
-
-  $("div[id^=\"accountsettingsalert_\"]").fadeOut(0);
-  
-  $("#newpassword").removeClass("redoutline");
-  $("#newpasswordagain").removeClass("redoutline");
-  $("#oldpassword").removeClass("redoutline");
-
-  $(this).addClass("buttonspinner");
-  var newpasswd = $("#newpassword").val();
-  var newpasswdrepeat = $("#newpasswordagain").val();
-  if (newpasswd != newpasswdrepeat){
-    alertAccountSettings("passwordsdontmatch");
-    $("#newpassword").addClass("redoutline");
-    $("#newpasswordagain").addClass("redoutline");
-    $(this).removeClass("buttonspinner");
-    return false;
-  }
-
-  var oldpasswd = $("#oldpassword").val();
-  var newemail = $("#newemail").val();
-  var account = { newemail : newemail, newpassword : newpasswd, oldpassword : oldpasswd };
-
-  $.ajax({
-    url: "settings/updateaccount",
-    type: "POST",
-    contentType: "application/json",
-    data: $.toJSON(account),
-    error: function (e) { 
-      $("#updateaccount").removeClass("buttonspinner"); 
-      handleAjaxErrorBy(alertAccountSettings)(response);
-    },
-    success: function(data){ 
-      $("#updateaccount").removeClass("buttonspinner"); 
-    },
-    traditional: true
-  });
-
-});
-
-/* administration */
-$("#boardsettings").submit(function(e){
-  // prevent blank board title
-  if ($("#newboardtitle").val() != ""){
-    return;
-  }
-  $("#newboardtitle").addClass("redoutline");
-  $("#newboardtitle").focus();
-  alertBoardSettings("blanktitle");
-  e.preventDefault();
-});
-
-
-$(".grouplist").sortable({ 
-  connectWith : ".grouplist",
-  placeholder : 'ddplaceholder',
-  create : allLiToHiddenInput,
-  receive : allLiToHiddenInput
-});
-
-$("#modelistignorant").on("sortreceive", function (e, ui){
-  if(ui.item.attr("group-id") == ADMIN_GROUP_ID){
-    ui.item.remove()
-    ui.item.appendTo(ui.sender);
-    alertGlobal("lockoutprevented");
-  }
-});
-
-function allLiToHiddenInput (){
-  $("#lihiddeninput").html("");
-  liToHiddenInput( $("#modelistignorant li"), "ignorant");
-  liToHiddenInput( $("#modelistknowonly li"), "knowonly");
-  liToHiddenInput( $("#modelistreadonly li"), "readonly");
-  liToHiddenInput( $("#modelistposter li"), "poster");
-}
-
-function liToHiddenInput (lilist, prefix){
-  $.each ( lilist, function (index, item){
-    var group_id = $(item).attr("group-id");
-    var hiddeninput = $("<input/>");
-    hiddeninput.attr("type", "hidden");
-    hiddeninput.attr("name", prefix + index);
-    hiddeninput.val(group_id);
-    hiddeninput.appendTo("#lihiddeninput");
-  });
-}
-
-$("#showmodelist").click(function(e){
-  $("#showmodelist").fadeOut(0);
-  $("#hidemodelist").fadeIn(0);
-  $("#modelist").slideDown(800);
-});
-
-$("#hidemodelist").click(function(e){
-  $("#hidemodelist").fadeOut(0);
-  $("#showmodelist").fadeIn(0);
-  $("#modelist").slideUp(800);
-});
-
-$("#groupnav li").click(function(e){
-  $(".groupmenu").fadeOut(0);
-  var group_id = $(this).attr("group-id");
-  $(".groupmenu[group-id=" + group_id + "]").fadeIn(400);
-});
-
-$(".userfirstletter").click(function(e){
-  var letter = $(this).attr("letter")
-  $(".usersidelist ul").fadeOut(0);
-  $(".usersidelist ul[letter=" + letter + "]").fadeIn(400);
-});
-
-$(".groupuserlist").sortable();
-
-$(".userlist li").draggable({ appendTo: "body", containment: "window", helper: "clone", connectToSortable: ".groupuserlist"});
-
-$("#scrolldown").mousedown(function(e){
-  var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
-  var scrollerheight = $("#userlist #scroller").outerHeight();
-  var viewportheight = $("#userlist").height();
-  if (current <= - scrollerheight + viewportheight){
-    return false;
-  }
-  var newvalue = (current - 10) + "px";
-  $("#userlist #scroller").css("top", newvalue);
-});
-
-$("#scrollup").mousedown(function(e){
-  var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
-  if (current == 0){
-    return false;
-  }
-  var newvalue = (current + 10) + "px";
-  console.log(current);
-  console.log(newvalue);
-  $("#userlist #scroller").css("top", newvalue);
-});
-
-$(".groupuserlist").on( "sortstop", function (e, ui){
-
-  var new_user = ui.item
-  new_user.addClass("user");
-  var id = new_user.attr("user-id");
-
-  // check for read-only groups (guest/register)
-  if ( $(this).hasClass("readonly") ){
-    alertGlobal("readonlygroup");
-    new_user.remove();
-  
-  // This blob finds <li>s with the same user-id attr (which indicates
-  // that this user is already in this group). It is >1 and not >0,
-  // because at sortstop the new element is already added to <ul>
-
-  }else if ( $(this).children("li[user-id=\"" + id + "\"]").length > 1 ){
-    alertGlobal("alreadyingroup");
-    new_user.remove();
-
-  }else{
-    $(this).attr("tainted", true);
-
-    // we can be sure, that there always be at least one
-    // .deletefromgroup. By cloning we can change the close
-    // button in the template without the need to change it here
-    var closebutton = $(".deletefromgroup").first().clone()
-    closebutton.appendTo(new_user);
-    $(".deletefromgroup").off("click");
-    $(".deletefromgroup").on("click", deleteFromGroup);
-  }
-
-});
-
-$(".deletefromgroup").on("click", deleteFromGroup);
-
-ADMIN_GROUP_ID = "1"
-
-function deleteFromGroup(e){
-  if ( $(this).parents("li").attr("user-id") == $("#useravatar").attr("user-id") &&
-       $(this).parents(".groupuserlist").attr("group-id") == ADMIN_GROUP_ID ){
-    alertGlobal("lockoutprevented");
-  }else{
-    $(this).parents(".groupuserlist").attr("tainted", true);
-    $(this).parents("li").remove();
-  }
-}  
-
-$("#updategroups").click(function(e){
-
-  //FIXME: buttonspinner shows endless when no change happened
-  $(this).addClass("buttonspinner");
-  $.each($(".groupuserlist[tainted=\"true\"]"), function (index, grouplist){
-    var users = $(grouplist).children("li");
-    var user_ids = Array();
-    $.each (users, function (index, user){
-        var id = $(user).attr("user-id");
-        user_ids.push(id);
-    });
-    var group_id = $(grouplist).attr("group-id");
-    var ids_json = JSON.stringify(user_ids);
-    console.log(group_id);
-    console.log(ids_json);
-    $.ajax({
-      url: "updategroup/" + group_id,
-      type: "POST",
-      contentType: "application/json",
-      data: ids_json,
-      error: function (response) {
-          $("#updategroups").removeClass("buttonspinner");
-          handleAjaxErrorBy(alertGlobal)(response);
-      },
-      success: function(data){ $("#updategroups").removeClass("buttonspinner"); },
-      traditional: true
-    });
-  });
-
-  $.each($(".header[tainted=\"true\"]"), function (index, item){
-
-    var label_id  = $(item).children(".picked").attr("label-id");
-    var group_id  = $(item).attr("group-id");
-    var may_edit  = $(item).find(".mayedit").is(":checked");
-    var may_close = $(item).find(".mayclose").is(":checked");
-    var may_stick = $(item).find(".maystick").is(":checked");
-
-    var meta = new Object({ label_id : label_id, may_edit : may_edit, may_close : may_close, may_stick : may_stick });
+    $(this).addClass("buttonspinner");
 
     $.ajax({
-      url: "updategroupmeta/" + group_id,
-      type: "POST",
-      contentType: "application/json",
-      data: $.toJSON(meta),
-      error: function (response) {
-          $("#updategroups").removeClass("buttonspinner");
-          handleAjaxErrorBy(alertGlobal)(response);
-      },
-      success: function(data){ $("#updategroups").removeClass("buttonspinner"); },
-      traditional: true
+      url: "settings/updateinfo",
+      data: $.toJSON(info),
+      error: handleAjaxErrorBy( alertInfoSettings ),
+      complete: function(){ $("#updateinfo").removeClass("buttonspinner"); },
     });
+
   });
 
-});
 
-$(".colorpicker").click(function(e){
+  /* settings (account) --------------------------- */
 
-  var group_id = $(this).attr("group-id");
-  var old_label_id = $(".picked[group-id=\"" + group_id + "\"]").attr("label-id");
-  var new_label_id = $(this).attr("label-id");
-  console.log($("#groupnav li[group-id=\"" + group_id + "\"]"));
-  $("#groupnav li[group-id=\"" + group_id + "\"]").removeClass("label" + old_label_id);
-  $("#groupnav li[group-id=\"" + group_id + "\"]").addClass("label" + new_label_id);
-  $(".picked[group-id=\"" + group_id + "\"]").removeClass("picked");
-  $(this).addClass("picked");
-  $(this).parents(".header").attr("tainted", true);
+  $(".accountdetail").keypress(function(){
+    // see http://stackoverflow.com/questions/11627531
+    $("#chromebugmask").slideDown(800);
+    $("#updateaccount").fadeIn(400);
+  });
 
-});
+  $("#updateaccount").click(function(){
 
-$(".groupflag").change(function(e){
-  $(this).parents(".header").attr("tainted", true);
-});
+    $("#newpassword").removeClass("redoutline");
+    $("#newpasswordagain").removeClass("redoutline");
+    $("#oldpassword").removeClass("redoutline");
+
+    $(this).addClass("buttonspinner");
+
+    var newPassword = $("#newpassword").val();
+    var newPasswordAgain = $("#newpasswordagain").val();
+
+    if (newPassword !== newPasswordAgain){
+      alertAccountSettings("passwordsdontmatch");
+      $("#newpassword").addClass("redoutline");
+      $("#newpasswordagain").addClass("redoutline");
+      $(this).removeClass("buttonspinner");
+      return false;
+    }
+
+    var oldPassword = $("#oldpassword").val();
+    var newEmail = $("#newemail").val();
+    /* TODO: convention for json identifiers in pipe main.js <- ajax -> views.py */
+    var account = { newemail : newEmail, newpassword : newPassword, oldpassword : oldPassword };
+
+    $.ajax({
+      url: "settings/updateaccount",
+      data: $.toJSON(account),
+      error: handleAjaxErrorBy( alertAccountSettings ),
+      complete: function(){ 
+        $("#updateaccount").removeClass("buttonspinner"); 
+      },
+    });
+
+  });
+
+
+  /* administration (boards) ---------------------- */
+
+  $("#boardsettings").submit(function(e){
+    // prevent blank board title
+    if ($("#newboardtitle").val() !== ""){
+      return;
+    }
+    $("#newboardtitle").addClass("redoutline");
+    $("#newboardtitle").focus();
+    alertBoardSettings("blanktitle");
+    e.preventDefault();
+  });
+
+  $(".grouplist").sortable({ 
+    connectWith : ".grouplist",
+    placeholder : "ddplaceholder",
+    create : allLiToHiddenInput,
+    receive : allLiToHiddenInput
+  });
+
+  function allLiToHiddenInput (){
+    $("#lihiddeninput").html("");
+    liToHiddenInput( $("#modelistignorant li"), "ignorant");
+    liToHiddenInput( $("#modelistknowonly li"), "knowonly");
+    liToHiddenInput( $("#modelistreadonly li"), "readonly");
+    liToHiddenInput( $("#modelistposter li"), "poster");
+  }
+
+  function liToHiddenInput (lilist, prefix){
+    lilist.each(function (index){
+
+      var group_id = $(this).attr("group-id");
+
+      var hiddeninput = $("<input/>");
+      hiddeninput.attr("type", "hidden");
+      hiddeninput.attr("name", prefix + index);
+      hiddeninput.val(group_id);
+      hiddeninput.appendTo("#lihiddeninput");
+
+    });
+  }
+
+  $("#showmodelist").click(function(){
+    $("#showmodelist").fadeOut(0);
+    $("#hidemodelist").fadeIn(0);
+    $("#modelist").slideDown(800);
+  });
+
+  $("#hidemodelist").click(function(){
+    $("#hidemodelist").fadeOut(0);
+    $("#showmodelist").fadeIn(0);
+    $("#modelist").slideUp(800);
+  });
+
+  $("#modelistignorant").on("sortreceive", function (e, ui){
+    if(ui.item.attr("group-id") === ADMIN_GROUP_ID){
+      ui.item.remove();
+      ui.item.appendTo(ui.sender);
+      alertGlobal("lockoutprevented");
+    }
+  });
+
+  /* administration (group management) ------------ */
+
+  function changeToGroupMenu (groupID){
+    $(".groupmenu").fadeOut(0);
+    console.log("found " + $(".groupmenu").length + " menus to fade out"); 
+    console.log("changeto " + groupID); 
+    $(".groupmenu[group-id=" + groupID + "]").fadeIn(400);
+  }
+
+  rebindGroupNavEvents();
+
+  function rebindGroupNavEvents (){
+    $("#groupnav li").off("click");
+    $("#groupnav li").on("click", function(){
+      /* tab control */
+      var groupID = $(this).attr("group-id");
+      $("#groupnav li").removeClass("selected");
+      $(this).addClass("selected");
+      changeToGroupMenu(groupID);
+    });
+  }
+
+  $(".groupuserlist").sortable();
+
+  $(".userlist li").draggable({ 
+    appendTo: "body", 
+    containment: "window", 
+    helper: "clone", 
+    connectToSortable: ".groupuserlist"
+  });
+
+  /* user scroll list */
+
+  $("#scrolldown").mousedown(function(){
+    var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
+    var scrollerheight = $("#userlist #scroller").outerHeight();
+    var viewportheight = $("#userlist").height();
+    if (current <= - scrollerheight + viewportheight){
+      return false;
+    }
+    var newvalue = (current - 10) + "px";
+    $("#userlist #scroller").css("top", newvalue);
+  });
+
+  $("#scrollup").mousedown(function(){
+    var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
+    if (current === 0){
+      return false;
+    }
+    var newvalue = (current + 10) + "px";
+    $("#userlist #scroller").css("top", newvalue);
+  });
+
+  rebindGroupUserDragAndDropEvents();
+
+  function rebindGroupUserDragAndDropEvents(){
+    $(".groupuserlist").off("sortstop"); 
+    $(".groupuserlist").on("sortstop", function (e, ui){
+
+      var new_user = ui.item;
+      new_user.addClass("user");
+      var id = new_user.attr("user-id");
+
+      // check for read-only groups (guest/register)
+      if ( $(this).parent(".groupmenu").hasClass("readonly") ){
+        alertGlobal("readonlygroup");
+        new_user.remove();
+
+      }else if ( $(this).children("li[user-id=\"" + id + "\"]").length > 1 ){
+                 // This blob finds <li>s with the same user-id attr (which indicates
+                 // that this user is already in this group). It is >1 and not >0,
+                 // because at sortstop the new element is already added to <ul>
+
+        alertGlobal("alreadyingroup");
+        new_user.remove();
+
+      }else{
+        $(this).attr("tainted", true);
+
+        // this section adds a close button to the
+        // li element before it gets integrated into
+        // the group view. it may seem pedestrian,
+        // but simply adding the button to new_user
+        // caused it to be added every time the user
+        // reordered the list. if you know a more
+        // elegant solution, please fork and code.
+
+        var user_id = new_user.attr("user-id");
+        var username = $(".user[user-id=" + user_id +"]").html();
+
+        var newelement = $("<li></li>");
+        newelement.html(username);
+        newelement.attr("user-id", user_id);    
+
+        // we can be sure, that there is always at least one
+        // .deletefromgroup. By cloning we can change the close
+        // button in the template without the need to change it here
+        var closebutton = $(".deletefromgroup").first().clone();
+        closebutton.appendTo(newelement);
+
+        ui.item.replaceWith(newelement);
+
+        // rebind click events
+        $(".deletefromgroup").off("click");
+        $(".deletefromgroup").on("click", deleteFromGroup);
+      }
+
+    });
+  }
+
+  $(".deletefromgroup").on("click", deleteFromGroup);
+
+  ADMIN_GROUP_ID = "1";
+
+  function deleteFromGroup(){
+
+    var listItem = $(this).parents("li");
+    var groupUserList = $(this).parents(".groupuserlist");
+
+    if ( listItem.attr("user-id") === $("#useravatar").attr("user-id") &&
+         groupUserList.attr("group-id") === ADMIN_GROUP_ID ){
+      alertGlobal("lockoutprevented");
+    }else{
+      groupUserList.attr("tainted", true);
+      listItem.remove();
+    }
+
+  }  
+
+  $("#updategroups").click(function(){
+
+    /* sends all tainted data of tainted groupmenus
+     * via ajax to the server
+     * */
+
+    var taintedLists = $(".groupuserlist[tainted=\"true\"]"); 
+    var taintedSettings = $(".header[tainted=\"true\"]"); 
+
+    if ( taintedLists.length === 0 && taintedSettings.length === 0){
+      return False;
+    }
+
+    $(this).addClass("buttonspinner");
+
+    taintedLists.each(function (){
+
+      var users = $(this).children("li");
+
+      var userIDs = Array();
+      users.each(function (){
+        var id = $(this).attr("user-id");
+        userIDs.push(id);
+      });
+
+      var groupID = $(this).parents(".groupmenu").attr("group-id");
+      var json = JSON.stringify(userIDs);
+      $.ajax({
+        url: "updategroup/" + groupID,
+        data: json,
+        error: handleAjaxErrorBy(alertGlobal),
+        complete: function(){ $("#updategroups").removeClass("buttonspinner"); },
+      });
+
+    });
+
+    taintedSettings.each(function (){
+
+      var label_id  = $(this).children(".picked").attr("label-id");
+      var group_id  = $(this).parents(".groupmenu").attr("group-id");
+      var may_edit  = $(this).find(".mayedit").is(":checked");
+      var may_close = $(this).find(".mayclose").is(":checked");
+      var may_stick = $(this).find(".maystick").is(":checked");
+
+      var meta = new Object({ label_id : label_id, may_edit : may_edit, may_close : may_close, may_stick : may_stick });
+
+      $.ajax({
+        url: "updategroupmeta/" + group_id,
+        data: $.toJSON(meta),
+        error: handleAjaxErrorBy(alertGlobal),
+        success: function(){ $("#updategroups").removeClass("buttonspinner"); },
+      });
+    });
+
+  });
+
+  rebindColorPickerEvents();
+
+  function rebindColorPickerEvents (){
+    $(".colorpicker").off("click");
+    $(".colorpicker").on("click", function(){
+
+      var groupMenu = $(this).parents(".groupmenu");
+      var groupID = groupMenu.attr("group-id");
+
+      var pickedLabel = groupMenu.find(".picked");
+      var oldLabelID = pickedLabel.attr("label-id");
+      var newLabelID = $(this).attr("label-id");
+
+      var groupTab = $("#groupnav li[group-id=\"" + groupID + "\"]");
+      groupTab.removeClass("label" + oldLabelID);
+      groupTab.addClass("label" + newLabelID);
+      
+      $(this).addClass("picked");
+      pickedLabel.removeClass("picked");
+      
+      $(this).parents(".header").attr("tainted", true);
+
+    });
+  }
+
+  rebindGroupFlagEvents();
+
+  function rebindGroupFlagEvents (){
+    $(".groupflag").off("change");
+    $(".groupflag").on("change", function(){
+      $(this).parents(".header").attr("tainted", true);
+    });
+  }
+
+  $("#newgroup").click(function(){
+    /* in case the user doesn't click on input directly*/
+    $("#newgroupname").focus();
+  });
+
+  $("#newgroupname").keypress(function(keyevent){
+    if (keyevent.which === 13){
+     
+      var name = $(this).val()
+      var data = new Object({ name: name });
+      var json = $.toJSON(data);
+
+      $.ajax({
+        url: "creategroup",
+        data: json,
+        error: handleAjaxErrorBy( alertGlobal ),
+        success: loadNewGroup,
+        dataType: "json",
+      });
+
+     }
+  });
+
+  function loadNewGroup (response){
+    var groupID = response.newGroupID;
+    var name = response.name;
+
+    var newLi = $("<li>");
+    newLi.attr("group-id", groupID);
+    newLi.addClass("label0"); 
+    newLi.html(name);
+    newLi.insertBefore("#newgroup");
+    console.log("das neue li hat die group-id " + newLi.attr("group-id"));
+    rebindGroupNavEvents();
+
+    var newGroup = $(".groupmenu[group-id=1]").clone();
+    newGroup.attr("group-id", groupID);
+
+    /* make clean */
+    newGroup.find("input").each(function(){
+      $(this).prop("checked", false);
+    });
+    newGroup.find(".picked").removeClass("picked");
+    newGroup.find(".colorpicker[label-id=0]").addClass("picked");
+    newGroup.find(".groupuserlist").html("");
+    newGroup.find(".groupuserlist").sortable();
+
+    /* insert delete button*/
+    var deleteButton = $("<button/>");
+    deleteButton.addClass("deletegroup");
+    var deleteImage = $("<img/>");
+    deleteImage.attr("src", "/static/trash.png");
+    deleteImage.appendTo(deleteButton);
+    var toolDiv = newGroup.find(".grouptools");
+    deleteButton.appendTo(toolDiv);
+
+    newGroup.insertAfter("#userlistwrapper");
+    rebindColorPickerEvents();
+    rebindGroupFlagEvents();
+    rebindGroupUserDragAndDropEvents();
+    rebindDeleteGroupEvents();
+
+    changeToGroupMenu(groupID);
+    $("#newgroupname").val("");
+
+  }
+
+  rebindDeleteGroupEvents();
+
+  function rebindDeleteGroupEvents (){
+    $(".deletegroup").off("click");
+    $(".deletegroup").on("click", function(){
+      var groupMenu = $(this).parents(".groupmenu");
+      showDialog("deletegroup", groupMenu);
+
+      groupMenu.on("click", "[dialog-control=\"1\"]", function(){
+        hideDialogs();
+
+        var groupID = $(this).parents(".groupmenu").attr("group-id");
+        var data = new Object({ groupID: groupID });
+        var json = $.toJSON(data);
+
+        $.ajax({
+          url: "deletegroup",
+          data: json,
+          error: handleAjaxErrorBy( alertGlobal ),
+          success: function(){
+            $("#groupnav li[group-id=\"" + groupID + "\"]").fadeOut(800);
+            $(".groupmenu").fadeOut(0);
+            $("#welcomegrouptip").fadeIn(400);
+            $(".groupmenu[group-id=\"" + groupID + "\"]").remove();
+          },
+        });
+      });
+
+      groupMenu.on("click", "[dialog-control=\"2\"]", function(){
+        hideDialogs();
+      });
+
+    });
+  }
+
+  function removeOldGroup (){
+
+  }
+
+  function handleAjaxErrorBy (callback){
+
+    function handle (response){
+
+      var processable = Array();
+      processable.push(403);
+
+      if(processable.indexOf( response.status ) >= 0){
+        console.log(response.responseText);
+        callback(response.responseText);
+      }else{
+        callback("ajax");
+      }
+
+    }
+
+    return handle;
+  }
 
 });
 
 /* i put the alert functions in here, so they are in the right scope
-for the bottom script in base.html to call */
+   for the bottom script in base.html to call */
 
-function handleAjaxErrorBy (callback){
-  function handle (response){
-    var processable = Array();
-    processable.push(403);
-    if(processable.indexOf( response.status ) >= 0){
-      console.log(response.responseText);
-      callback(response.responseText);
-    }else{
-      callback("ajax");
-    }
-  }
-  return handle;
+function showDialog (id, parent){
+  hideDialogs();
+
+  var dialog = $("#dialog_"+id); 
+  var newDialogWrapper = dialog.parents(".dialogwrapper").clone();
+  newDialogWrapper.appendTo(parent);
+
+  var closebutton = newDialogWrapper.find(".close");
+  closebutton.click(function(){
+    hideDialogs();
+  });
+
+  newDialogWrapper.fadeIn(200);
+}
+
+function hideDialogs(){
+  $(".dialogwrapper").fadeOut(0);
 }
 
 function alertInput (id){
@@ -728,7 +927,7 @@ function alertAccountSettings (id){
   $("#accountsettingsalert_"+id).delay(2000).slideUp(800);
 
   /* FIXME: develop clean highlighting system */
-  if (id == "wrongpassword"){
+  if (id === "wrongpassword"){
     $("#oldpassword").addClass("redoutline");
   }
 

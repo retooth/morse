@@ -1,6 +1,7 @@
 <!doctype html>
 {% extends "base.html" %}
 {% block content %}
+{% include "dialogs.html" %}
 <div id="adminwrapper">
 <b>Manage Groups</b><br/><br/>
 <nav id="groupnav">
@@ -8,6 +9,9 @@
 {% for group in groups %}
   <li group-id={{group.id}} class="label{{ group.label }}">{{group.name}}</li>
 {% endfor %}
+  <li group-id="0" id="newgroup">
+  <input id="newgroupname" placeholder="New group"/>
+  </li>
 </ul>
 <div class="clear"></div>
 </nav><br/>
@@ -34,18 +38,22 @@
   </div>
 </div>
 {% for group in groups %}
-  <div group-id="{{group.id}}" class="groupmenu">
+  <div group-id="{{group.id}}" class="groupmenu
+        {% if group.id == 3 or group.id == 4 %}
+          readonly
+        {% endif %}
+        ">
     <!--span class="groupdescription">{{group.description}}</span><br-->
-    <div group-id="{{group.id}}" class="header" tainted="false">
-      <div group-id="{{group.id}}" class="colorpicker label0 {% if group.has_label(0) %} picked {% endif %}" label-id=0>
+    <div class="header" tainted="false">
+      <div class="colorpicker label0 {% if group.has_label(0) %} picked {% endif %}" label-id=0>
       </div>
-      <div group-id="{{group.id}}" class="colorpicker label1 {% if group.has_label(1) %} picked {% endif %}" label-id=1>
+      <div class="colorpicker label1 {% if group.has_label(1) %} picked {% endif %}" label-id=1>
       </div>
-      <div group-id="{{group.id}}" class="colorpicker label2 {% if group.has_label(2) %} picked {% endif %}" label-id=2>
+      <div class="colorpicker label2 {% if group.has_label(2) %} picked {% endif %}" label-id=2>
       </div>
-      <div group-id="{{group.id}}" class="colorpicker label3 {% if group.has_label(3) %} picked {% endif %}" label-id=3>
+      <div class="colorpicker label3 {% if group.has_label(3) %} picked {% endif %}" label-id=3>
       </div>
-      <div group-id="{{group.id}}" class="colorpicker label4 {% if group.has_label(4) %} picked {% endif %}" label-id=4>
+      <div class="colorpicker label4 {% if group.has_label(4) %} picked {% endif %}" label-id=4>
       </div>
       <div class="groupflags">
        {% if not (group.id == 3 or group.id == 4) %}
@@ -61,15 +69,11 @@
           <input type="checkbox" class="groupflag maystick" {% if group.may_stick %} checked {% endif %}>
           May create stickies
          </label>
-       {% endif %}
-      </div>
-      <div class="clear"></div>
+         {% endif %}
+     </div>
+     <div class="clear"></div>
     </div>
-     <ul group-id="{{group.id}}" tainted="false" class="groupuserlist
-        {% if group.id == 3 or group.id == 4 %}
-          readonly
-        {% endif %}
-        ">
+     <ul tainted="false" class="groupuserlist">
      {% for member in group.members %}
       <li user-id="{{member.id}}" class="user">
         {{ member.username }}
@@ -79,11 +83,21 @@
       </li>
      {% endfor %}
      </ul>
+     <div class="grouptools">
+      {% if group.id > 4 %}
+        <button class="deletegroup"><img src="{{ url_for('static', filename='trash.png') }}"/></button>
+      {% endif %}
+     </div>
+    <div class="clear"></div>
   </div>
 {% endfor %}
-  <div class="groupmenu" style="display:block">
-  Hi! Welcome to Group Management.
-  Select a group from the list above and drag users on this field
+  <div id="welcomegrouptip" class="groupmenu groupmenutip" style="display:block">
+    Select a group from the list above<br/>
+    and drag users onto this field
+  </div>
+  <div id="newgrouptip" class="groupmenu groupmenutip" group-id="0">
+     Want to create a new group?<br/>
+     Type the name and hit Enter
   </div>
 <div class="clear"></div>
 <button id="updategroups" class="submit">Save</button>

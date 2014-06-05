@@ -40,6 +40,11 @@ USER_ID_GUESTS = 0
 
 ALL_BOARDS = 0
 
+# group modes save the default state
+# with this dummy board id. default state
+# is shown when creating a new board
+DEFAULT_MODE_DUMMY_ID = 0
+
 # Integration into flask login extension
 
 login_manager = LoginManager()
@@ -387,6 +392,58 @@ def updategroupmeta (group_id):
 
     return ""
 
+@app.route('/creategroup', methods=['POST'])
+@login_required
+@admin_rights_required
+@ajax_triggered
+def creategroup ():
+    """ 
+    creates a new group and returns its id as json
+    this function is called by the javascript 
+    event handler for #newgroupname in main.js.
+    """
+    name = request.json['name']
+    group = Group(name)
+    db.session.add(group)
+    db.session.commit()
+
+    boards = Board.query.all()
+    for board in boards:
+        mode = GroupMode(board.id, group.id)
+        db.session.add(mode)
+
+    mode_default = GroupMode(DEFAULT_MODE_DUMMY_ID, group.id)
+    db.session.add(mode_default)
+
+    db.session.commit()
+
+    return jsonify(newGroupID = group.id, name = name)
+
+@app.route('/deletegroup', methods=['POST'])
+@login_required
+@admin_rights_required
+@ajax_triggered
+def deletegroup ():
+    """ 
+    deletes a group and all its dependencies
+    this function is called by the javascript 
+    event handler for .deletegroup in main.js.
+    """
+    group_id = request.json['groupID']
+
+    members = GroupMember.query.filter(GroupMember.group_id.like(group_id)).all()
+    for m in members:
+        db.session.delete(m)
+
+    modes = GroupMode.query.filter(GroupMode.group_id.like(group_id)).all()
+    for m in modes:
+        db.session.delete(m)
+
+    group = Group.query.get(group_id)
+    db.session.delete(group)
+
+    db.session.commit()
+    return ""
 
 def hyperlink (website):
     """ mapping function (see below) """
@@ -486,8 +543,8 @@ def starttopic (board_id):
     if not board_id in writable:
         return "forbidden", 403 
 
-    title = request.values["title"]
-    text = request.values["text"]
+    title = request.json["title"]
+    text = request.json["text"]
 
     topic = Topic(board_id, title)
     db.session.add(topic)
@@ -526,7 +583,7 @@ def post (topic_id):
         wrapper = TopicWrapper(topic)
         wrapper.follow()
 
-    text = request.values["text"]
+    text = request.json["text"]
     post = Post(current_user.id, text, topic_id, request.remote_addr)
     db.session.add(post)
     db.session.commit()

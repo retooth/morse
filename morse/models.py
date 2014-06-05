@@ -274,17 +274,15 @@ class Group (db.Model):
     __tablename__ = "groups"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    description = db.Column(db.String(100))
     may_structure = db.Column(db.Boolean)
     may_edit = db.Column(db.Boolean)
     may_close = db.Column(db.Boolean)
     may_stick = db.Column(db.Boolean)
     label = db.Column(db.Integer)
 
-    def __init__ (self, name, description, may_structure = False, \
+    def __init__ (self, name, may_structure = False, \
                   may_edit = False, may_close = False, may_stick = False, label=0):
         self.name = name
-        self.description = description
         self.may_structure = may_structure
         self.may_edit = may_edit
         self.may_close = may_close
