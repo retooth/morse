@@ -79,6 +79,15 @@ $(document).on("ready", function () {
      * on the board or topic view
     * */
 
+    if ($("#topic").length === 0 &&
+        $("#board").length === 0){
+        return true;
+    }
+
+    if($("#topic").attr("topic-closed") === "True"){
+      return true;
+    }
+
     $("#typinginfo").slideUp(0);
     $("#inputwrapper").slideDown(400);
 
@@ -112,13 +121,13 @@ $(document).on("ready", function () {
        */
     var title = $("#newtopictitle").html();
     var text = $("#newtopictext").html();
-    var board_id = $("#boardid").html();
+    var boardID = $("#board").attr("board-id");
 
     var data = new Object({ title: title, text: text });
     var json = $.toJSON(data);
 
     $.ajax({
-      url: board_id + "/starttopic",
+      url: boardID + "/starttopic",
       data: json,
       error: handleAjaxErrorBy( alertInput ),
       success: processNewTopicResponse,
@@ -132,7 +141,7 @@ $(document).on("ready", function () {
        alertInput("blankpost");
        */
     var text = $("#newposttext").html();
-    var topic_id = $("#topicid").html();
+    var topic_id = $("#topic").attr("topic-id");
 
     var data = new Object({ text: text });
     var json = $.toJSON(data);
@@ -308,7 +317,7 @@ $(document).on("ready", function () {
   /* follow switch */
   $("#followswitch").click(function () {
 
-    jsonTopicId = JSON.stringify($("#topicid").html());
+    jsonTopicId = JSON.stringify($("#topic").attr("topic-id"));
     notFollowed = $(this).hasClass("follow");
     $.ajax({
       url: notFollowed ? "/follow" : "/unfollow",
@@ -859,9 +868,43 @@ $(document).on("ready", function () {
     });
   }
 
-  function removeOldGroup (){
+  $("button.closethread").click(function(){
+    var topicID = $(this).parents(".topicentry").attr("topic-id");
+    var data = new Object({ topicID: topicID });
+    var json = $.toJSON(data);
 
-  }
+    $.ajax({
+      url: "/closethread",
+      data: json,
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        topicID = response.closedID;
+        var entry = $(".topicentry[topic-id=\"" + topicID + "\"]");
+        entry.addClass("topicclosed");
+        entry.find(".closethread").fadeOut(0);
+        entry.find(".openthread").fadeIn(200);
+      },
+    });
+  });
+
+  $("button.openthread").click(function(){
+    var topicID = $(this).parents(".topicentry").attr("topic-id");
+    var data = new Object({ topicID: topicID });
+    var json = $.toJSON(data);
+
+    $.ajax({
+      url: "/openthread",
+      data: json,
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        topicID = response.openedID;
+        var entry = $(".topicentry[topic-id=\"" + topicID + "\"]");
+        entry.removeClass("topicclosed");
+        entry.find(".openthread").fadeOut(0);
+        entry.find(".closethread").fadeIn(200);
+      },
+    });
+  });
 
   function handleAjaxErrorBy (callback){
 
@@ -871,7 +914,6 @@ $(document).on("ready", function () {
       processable.push(403);
 
       if(processable.indexOf( response.status ) >= 0){
-        console.log(response.responseText);
         callback(response.responseText);
       }else{
         callback("ajax");

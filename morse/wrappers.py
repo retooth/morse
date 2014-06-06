@@ -140,6 +140,14 @@ class TopicWrapper (object):
     def id (self):
         return self.topic.id
 
+    @property
+    def closed(self):
+        return self.topic.closed
+
+    @property
+    def sticky(self):
+        return self.topic.sticky
+
 class AlphabeticUserList (object):
 
     """ Sorts all users in the database into an alphabetic list, that can

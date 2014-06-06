@@ -5,5 +5,9 @@
     {% include "inputtools.html" %}
   </div>
 </div>
-<div id="typinginfo">To create a new post just start typing</div>
+{% if topic.closed %}
+  <div id="typinginfo" class="closedinfo">This topic is closed</div>
+{% else %}
+  <div id="typinginfo">To create a new post just start typing</div>
+{% endif %}
 <br/>

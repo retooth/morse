@@ -1,7 +1,7 @@
 <!doctype html>
 {% extends "base.html" %}
 {% block content %}
- <div id="topicid" class="hidden">{{ topic.id }}</div>
+<div id="topic" topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}">
  <div id="topictitlewrapper">
   <h1 id="topictitle">
    <a href="/board/{{ topic.board_id }}" id="goback">..
@@ -23,4 +23,5 @@
  {% for post in posts %}
   {% include "post.html" %}
  {% endfor %}
+</div>
 {% endblock %}

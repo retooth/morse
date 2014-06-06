@@ -138,3 +138,47 @@ class admin_rights_required (object):
             else:
                 return render_template('accessdenied.html', current_user = current_user), 403
         return self.f(*args, **kwargs)
+
+def certain_rights_required (may_close = False, may_edit = False, may_stick = False):
+
+    """ 
+    certain_rights_required is a function decorator that makes sure,
+    that the current user has certain privileges. if not it renders
+    the accessdenied template and returns a 403 status code
+
+    privileges are set as named parameters, they correspond with
+    the privilige flag defined in models.Group
+
+    Example:
+    @certain_rights_required(may_close=True)
+    def foo ():
+        pass
+    """
+
+    # Note: this is only a wrapper to allow named argument calling
+    # For the inner workings see _certain_rights_required    
+
+    def _wrapper (f):
+        return _certain_rights_required(f, may_close, may_edit, may_stick)
+    return _wrapper
+
+
+class _certain_rights_required (object):
+
+    def __init__ (self, f, may_close = False, may_edit = False, may_stick = False):
+        self.f = f
+        self.required = { 'may_close': may_close, 'may_edit': may_edit, 'may_stick': may_stick }
+        # needed for flask integration
+        self.__name__ = self.f.__name__
+
+    def _access_denied (self):
+        if is_ajax_triggered(self.f):
+            return "forbidden", 403
+        else:
+            return render_template('accessdenied.html', current_user = current_user), 403
+
+    def __call__ (self, *args, **kwargs):
+        for prop, prop_required in self.required.items():
+            if prop_required and not getattr(current_user, prop):
+                return self._accessdenied()
+        return self.f(*args, **kwargs)

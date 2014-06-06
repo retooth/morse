@@ -169,15 +169,24 @@ header {
   background:#eef;
 }
 
-    .boardtitle {
-      font-weight:bold;
-      font-size:12pt;
-      color:#000;
+    .boardtitlewrapper{
+      float:left;
+      width:95%;
     }
 
-    .boarddescription {
-      font-size:10pt;
-      color:#000;
+        .boardtitle {
+          font-weight:bold;
+          font-size:12pt;
+          color:#000;
+        }
+
+        .boarddescription {
+          font-size:10pt;
+          color:#000;
+        }
+
+    .boardtools{
+      float:right;
     }
 
 /* --------------------------------------------- */
@@ -186,57 +195,104 @@ header {
 
 /* board --------------------------------------- */
 
-#boardtitle {
-  font-weight:bold;
-  color:#000;
-  margin-top: -5pt;
-  padding:0;
-  font-size:30pt;
-  float:left;
+#board{
 }
 
-#boardtools {
-  float:left;
-  margin-left:10pt;
-}
-
-.topicentry {
-  border-radius: 3pt;
-  border: 1pt solid #ccc;
-  padding:5pt 5pt 5pt 5pt;
-  margin-bottom:5pt;
-}
-
-.topicentry:hover {
-  background:#eef;
-}
-
-    .topictitle{
-      color:#000;
+    #boardtitle {
       font-weight:bold;
+      color:#000;
+      margin-top: -5pt;
+      padding:0;
+      font-size:30pt;
+      float:left;
     }
 
-    .lastpost {
-      display:none;
-      background: #BDF067;
-      border-radius-bottom-left: 3pt;
-      border-radius-bottom-right: 3pt;
-      padding:5pt;
-      margin:-5pt;
-      margin-top:2pt;
-      font-size:10pt;
+    #boardtools {
+      float:left;
+      margin-left:10pt;
     }
 
-    .lasttopics {
-      display:none;
-      background: #DDEAD0;
-      border-radius-bottom-left: 3pt;
-      border-radius-bottom-right: 3pt;
-      padding:5pt;
-      margin:-5pt;
-      margin-top:2pt;
-      font-size:10pt;
+    .topicentry {
+      border-radius: 3pt;
+      border: 1pt solid #ccc;
+      padding:5pt 5pt 5pt 5pt;
+      margin-bottom:5pt;
     }
+
+    .topicentry:hover {
+      background:#eef;
+    }
+
+    .topicclosed{
+      background:#DB3026;
+      color:#fff;
+    }
+
+    .topicclosed:hover {
+      background:#FB5046;
+      color:#fff;
+    }
+
+        .topictitle{
+          color:#000;
+          font-weight:bold;
+          width:95%;
+          float:left;
+        }
+
+        .topictools{
+          float:right;
+        }
+
+        .closethread{
+          border:none;
+          display:none;
+          padding:0;
+          background:none;
+          outline:none;
+          border-radius:0;
+          height:16px;
+          width:13px;
+          background-image: url('unlocked.png');
+          background-size:auto 16px;
+          background-repeat:no-repeat;
+        }
+
+        .openthread{
+          display:none;
+          border:none;
+          padding:0;
+          background:none;
+          outline:none;
+          border-radius:0;
+          height:16px;
+          width:13px;
+          background-image: url('locked.png');
+          background-size:auto 16px;
+          background-repeat:no-repeat;
+        }
+
+        .lastpost {
+          display:none;
+          background: #BDF067;
+          border-radius-bottom-left: 3pt;
+          border-radius-bottom-right: 3pt;
+          padding:5pt;
+          margin:-5pt;
+          margin-top:2pt;
+          font-size:10pt;
+        }
+
+        .lasttopics {
+          display:none;
+          background: #DDEAD0;
+          border-radius-bottom-left: 3pt;
+          border-radius-bottom-right: 3pt;
+          padding:5pt;
+          margin:-5pt;
+          margin-top:2pt;
+          font-size:10pt;
+        }
 
 .accessdenied{
   margin-top:30pt;
@@ -255,77 +311,80 @@ header {
 
 /* topic --------------------------------------- */
 
-#topictitle {
-  font-weight:bold;
-  color:#000;
-  margin-top: -5pt;
-  padding:0;
-  font-size:30pt;
-  float:left;
+#topic{
 }
 
-#topictools{
-  float:left;
-  padding-left:10pt;
-}
+    #topictitle {
+      font-weight:bold;
+      color:#000;
+      margin-top: -5pt;
+      padding:0;
+      font-size:30pt;
+      float:left;
+    }
 
-#gobacktooltip{
-  display:none;
-}
+    #topictools{
+      float:left;
+      padding-left:10pt;
+    }
 
-.postentry {
-  border-radius: 3pt;
-  border: 1pt solid #ccc;
-  padding:5pt 5pt 5pt 5pt;
-  margin-bottom:5pt;
-}
+    #gobacktooltip{
+      display:none;
+    }
 
-  .post{
-    font-size:11pt;
-    float:left;
-    width:88%;
-    padding:5pt;
-    min-height:120px;
-    border-left:1pt solid #ccc;
-  }
+    .postentry {
+      border-radius: 3pt;
+      border: 1pt solid #ccc;
+      padding:5pt 5pt 5pt 5pt;
+      margin-bottom:5pt;
+    }
 
-  .postsidebar{
-    text-align:center;
-    float:left;
-    min-width:64px;
-    width:7%;
-    padding:5pt;
-    height:100%;
-    margin-right:5pt;
-  }
-
-      .postsidebar .profileimage{
-        background-size: 64px 64px;
-        border-radius: 50%;
-        display: block;
-        height: 64px;
-        width: 64px;
-        border:2pt solid white;
-        cursor:pointer;
+      .post{
+        font-size:11pt;
+        float:left;
+        width:88%;
+        padding:5pt;
+        min-height:120px;
+        border-left:1pt solid #ccc;
       }
 
-      .postcreator{
-        padding:2pt;
-        font-weight:bold;
-        font-size:10pt;
+      .postsidebar{
         text-align:center;
-        white-space: pre-wrap;      /* CSS3 */   
-        white-space: -moz-pre-wrap; /* Firefox */    
-        white-space: -pre-wrap;     /* Opera <7 */   
-        white-space: -o-pre-wrap;   /* Opera 7 */    
-        word-wrap: break-word;      /* IE */
+        float:left;
+        min-width:64px;
+        width:7%;
+        padding:5pt;
+        height:100%;
+        margin-right:5pt;
       }
 
-  .postfooter{
-    width:0;
-    height:0;
-    font-size:0;
-  }
+          .postsidebar .profileimage{
+            background-size: 64px 64px;
+            border-radius: 50%;
+            display: block;
+            height: 64px;
+            width: 64px;
+            border:2pt solid white;
+            cursor:pointer;
+          }
+
+          .postcreator{
+            padding:2pt;
+            font-weight:bold;
+            font-size:10pt;
+            text-align:center;
+            white-space: pre-wrap;      /* CSS3 */   
+            white-space: -moz-pre-wrap; /* Firefox */    
+            white-space: -pre-wrap;     /* Opera <7 */   
+            white-space: -o-pre-wrap;   /* Opera 7 */    
+            word-wrap: break-word;      /* IE */
+          }
+
+      .postfooter{
+        width:0;
+        height:0;
+        font-size:0;
+      }
 
 /* --------------------------------------------- */
 
@@ -529,6 +588,13 @@ header {
 #typinginfo{
   font-size:10pt;
   font-weight:900;
+}
+
+.closedinfo{
+  border-radius:3pt;
+  background:#DB3026;
+  color:#fff;
+  padding:5pt;
 }
 
 /* ------------------------------------------- */
@@ -741,10 +807,15 @@ blockquote{
 
 .editboard{
   border:none;
-  padding:none;
+  padding:0;
   background:none;
   outline:none;
-  float:right;
+  border-radius:0;
+  height:16px;
+  width:16px;
+  background-image: url('edit.png');
+  background-size:auto 16px;
+  background-repeat:no-repeat;
 }
 
 #admintools{

@@ -1,9 +1,27 @@
-<div class="topicentry {% if topic.isfresh %} fresh {% endif %}">
- <a class="divwrapper" href="/topic/{{ topic.id }}">
-  <div class="topictitle">
-   <span class="topictitle">{{ topic.title | safe }}</span> 
- </div>
- </a> 
+<div topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}" class="topicentry 
+    {% if topic.isfresh %} fresh {% endif %}
+    {% if topic.closed %} topicclosed {% endif %}
+    ">
+  <a class="divwrapper" href="/topic/{{ topic.id }}">
+    <div class="topictitle">
+     <span class="topictitle">{{ topic.title | safe }}</span> 
+    </div>
+   </a> 
+   <div class="topictools">
+   {% if current_user.may_close %}
+     {% if topic.closed %}
+       <button class="closethread"></button>
+       <button class="openthread" style="display:block"></button>
+     {% else %}
+       <button class="closethread" style="display:block"></button>
+       <button class="openthread"></button>
+     {% endif %}
+   {% else %}
+     {% if topic.closed %}
+       <div class="openthread" style="display:block"></div>
+     {% endif %}
+   {% endif %}
+   </div>
 <div class="lastpost"><b>XYZ</b> wrote in <i>Main topic</i>: What a boring topic</div>
 <div class="clear"></div>
 </div>

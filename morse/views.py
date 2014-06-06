@@ -20,7 +20,7 @@ from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode
 from models import Post, Topic, TopicFollow, PostRead
 from models import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
 from wrappers import PostWrapper, TopicWrapper, AlphabeticUserList
-from rights import admin_rights_required, check_ban, possibly_banned 
+from rights import admin_rights_required, certain_rights_required, check_ban, possibly_banned 
 from protocols import ajax_triggered
 from flask import render_template, url_for, request, g, jsonify, redirect
 from sqlalchemy import not_
@@ -197,6 +197,47 @@ def board(board_id):
     topics = map(TopicWrapper, topics)
     return render_template('board.html', board = board, \
                             topics = topics, current_user = current_user)
+
+@app.route('/closethread', methods=['POST'])
+@login_required
+@certain_rights_required(may_close=True)
+@ajax_triggered
+def closethread ():
+    """ 
+    closes a thread defined by topicID in ajax request. 
+    this function is called by the javascript event handler 
+    for .closethread in main.js
+    """
+    # XXX: check for bans? should moderators be bannable?
+    topic_id = request.json['topicID']
+    topic = Topic.query.get(topic_id)
+    # FIXME (global) always check if ids were found
+    topic.closed = True
+    db.session.commit()
+    #XXX see return of openthread
+    return jsonify(closedID=topic_id)
+
+@app.route('/openthread', methods=['POST'])
+@login_required
+@certain_rights_required(may_close=True)
+@ajax_triggered
+def openthread ():
+    """ 
+    closes a thread defined by topicID in ajax request. 
+    this function is called by the javascript event handler 
+    for .openthread in main.js
+    """
+    # XXX: check for bans? should moderators be bannable?
+    topic_id = request.json['topicID']
+    topic = Topic.query.get(topic_id)
+    topic.closed = False
+    db.session.commit()
+    # XXX: this seems to be the only solution
+    # for the ajax callback to know which button
+    # was pressed. however it seems strange and
+    # unclean to me. maybe i'm just missing
+    # something...
+    return jsonify(openedID=topic_id)
 
 @app.route('/admin')
 @login_required

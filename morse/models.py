@@ -112,7 +112,7 @@ class User (db.Model):
         return False
 
     @property
-    def may_edit ():
+    def may_edit (self):
         """ signifies if user may edit *ALL* posts. This is typically a moderator's right.
         This property is read only. To change it for a specific user, move him/her
         to the moderator / admin group or create a group with the may_edit flag """
@@ -125,11 +125,11 @@ class User (db.Model):
         return False
 
     @property
-    def may_close ():
+    def may_close (self):
         """ signifies if user may close threads. This is typically a moderator's right.
         This property is read only. To change it for a specific user, move him/her
         to the moderator / admin group or create a group with the may_close flag """
-        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+        relations = GroupMember.query.filter(GroupMember.user_id.like(self.id)).all() 
         for r in relations:
             group = Group.query.get(r.group_id)
             if group.may_close:
@@ -378,12 +378,14 @@ class Topic (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     board_id = db.Column(db.Integer, db.ForeignKey('boards.id'))
     title = db.Column(db.String(100))
+    closed = db.Column(db.Boolean)
     sticky = db.Column(db.Boolean)
 
     def __init__ (self, board_id, title):
         self.board_id = board_id
         self.title = title
         self.sticky = False
+        self.closed = False
 
     @property
     def posts (self):
