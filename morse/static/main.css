@@ -246,7 +246,7 @@ header {
 
         .closethread{
           border:none;
-          display:none;
+          display:block;
           padding:0;
           background:none;
           outline:none;
@@ -259,7 +259,7 @@ header {
         }
 
         .openthread{
-          display:none;
+          display:block;
           border:none;
           padding:0;
           background:none;
@@ -806,6 +806,7 @@ blockquote{
 /* admin --------------------------------------- */
 
 .editboard{
+  display:block;
   border:none;
   padding:0;
   background:none;

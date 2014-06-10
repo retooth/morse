@@ -10,11 +10,11 @@
    <div class="topictools">
    {% if current_user.may_close %}
      {% if topic.closed %}
-       <button class="closethread"></button>
-       <button class="openthread" style="display:block"></button>
-     {% else %}
-       <button class="closethread" style="display:block"></button>
+       <button class="closethread" style="display:none"></button>
        <button class="openthread"></button>
+     {% else %}
+       <button class="closethread"></button>
+       <button class="openthread" style="display:none"></button>
      {% endif %}
    {% else %}
      {% if topic.closed %}
