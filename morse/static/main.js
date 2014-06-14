@@ -550,9 +550,9 @@ $(document).on("ready", function () {
   /* administration (group management) ------------ */
 
   function changeToGroupMenu (groupID){
+    $("#groupnav li").removeClass("selected");
+    $("#groupnav li[group-id=\"" + groupID + "\"]").addClass("selected");
     $(".groupmenu").fadeOut(0);
-    console.log("found " + $(".groupmenu").length + " menus to fade out"); 
-    console.log("changeto " + groupID); 
     $(".groupmenu[group-id=" + groupID + "]").fadeIn(400);
   }
 
@@ -563,97 +563,82 @@ $(document).on("ready", function () {
     $("#groupnav li").on("click", function(){
       /* tab control */
       var groupID = $(this).attr("group-id");
-      $("#groupnav li").removeClass("selected");
-      $(this).addClass("selected");
       changeToGroupMenu(groupID);
     });
   }
 
-  $(".groupuserlist").sortable();
+  rebindUserMenuEvents();
 
-  $(".userlist li").draggable({ 
-    appendTo: "body", 
-    containment: "window", 
-    helper: "clone", 
-    connectToSortable: ".groupuserlist"
-  });
+  function rebindUserMenuEvents (){
+    $(".groupmenu .newuser input").off("keyup");
+    $(".groupmenu .newuser input").on("keyup", function(){
+      var li = $(this).parents(".newuser");
+      var menu = li.find(".newusermenu");
+      var menulist = menu.find("ul");
+      var pattern = $(this).val();
 
-  /* user scroll list */
+      var position = li.position();
+      menu.css("top", position.top + li.outerHeight());
+      menu.css("left", position.left);
 
-  $("#scrolldown").mousedown(function(){
-    var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
-    var scrollerheight = $("#userlist #scroller").outerHeight();
-    var viewportheight = $("#userlist").height();
-    if (current <= - scrollerheight + viewportheight){
-      return false;
-    }
-    var newvalue = (current - 10) + "px";
-    $("#userlist #scroller").css("top", newvalue);
-  });
+      $.ajax({
+        url: "/userlist.json?pattern=" + pattern,
+        type: "GET",
+        success: function(response){
+          var users = response.users;
+          menulist.html("");
+          for (var i = 0; i < users.length; i++){
+            var id = users[i][0];
+            var name = users[i][1];
+            console.log(users[i]);
+            var newli = $("<li user-id=\"" + id + "\">" + name + "</li>");
+            newli.appendTo(menulist);
+          }
+          menu.fadeIn(200);
+        },
+        error: handleAjaxErrorBy(alertGlobal),
+      });
 
-  $("#scrollup").mousedown(function(){
-    var current = parseInt( $("#userlist #scroller").css("top").replace(/[^-\d\.]/g, "") );
-    if (current === 0){
-      return false;
-    }
-    var newvalue = (current + 10) + "px";
-    $("#userlist #scroller").css("top", newvalue);
-  });
+    });
+    $(".newusermenu ul").off("click");
+    $(".newusermenu ul").on("click", "li", function(){
+      var userID = $(this).attr("user-id");
+      var groupID = $(this).parents(".groupmenu").attr("group-id");
+      addUserToGroup(userID, groupID);
+    });
+  }
 
-  rebindGroupUserDragAndDropEvents();
+  function addUserToGroup (userID, groupID){
+    var ul = $(".groupmenu[group-id=\"" + groupID + "\"] ul");
+    var username = ul.find(".newusermenu li[user-id=\"" + userID + "\"]").html();
+    var data = new Object({ userID : userID, groupID : groupID });
+    $.ajax({
+      url: "/groups/adduser",
+      data: $.toJSON(data),
+      success: function(response){
 
-  function rebindGroupUserDragAndDropEvents(){
-    $(".groupuserlist").off("sortstop"); 
-    $(".groupuserlist").on("sortstop", function (e, ui){
-
-      var new_user = ui.item;
-      new_user.addClass("user");
-      var id = new_user.attr("user-id");
-
-      // check for read-only groups (guest/register)
-      if ( $(this).parent(".groupmenu").hasClass("readonly") ){
-        alertGlobal("readonlygroup");
-        new_user.remove();
-
-      }else if ( $(this).children("li[user-id=\"" + id + "\"]").length > 1 ){
-                 // This blob finds <li>s with the same user-id attr (which indicates
-                 // that this user is already in this group). It is >1 and not >0,
-                 // because at sortstop the new element is already added to <ul>
-
-        alertGlobal("alreadyingroup");
-        new_user.remove();
-
-      }else{
-        $(this).attr("tainted", true);
-
-        // this section adds a close button to the
-        // li element before it gets integrated into
-        // the group view. it may seem pedestrian,
-        // but simply adding the button to new_user
-        // caused it to be added every time the user
-        // reordered the list. if you know a more
-        // elegant solution, please fork and code.
-
-        var user_id = new_user.attr("user-id");
-        var username = $(".user[user-id=" + user_id +"]").html();
-
-        var newelement = $("<li></li>");
-        newelement.html(username);
-        newelement.attr("user-id", user_id);    
+        var newli = $("<li></li>");
+        newli.html(username);
+        newli.attr("user-id", userID);    
 
         // we can be sure, that there is always at least one
         // .deletefromgroup. By cloning we can change the close
         // button in the template without the need to change it here
         var closebutton = $(".deletefromgroup").first().clone();
-        closebutton.appendTo(newelement);
+        closebutton.appendTo(newli);
 
-        ui.item.replaceWith(newelement);
+        $(".newuser input").val("");
+        $(".newusermenu").fadeOut(200);
+
+        newUserLi = ul.find(".newuser");
+        newli.insertBefore(newUserLi);
 
         // rebind click events
         $(".deletefromgroup").off("click");
         $(".deletefromgroup").on("click", deleteFromGroup);
-      }
 
+      },
+      error: handleAjaxErrorBy(alertGlobal),
     });
   }
 
@@ -664,73 +649,28 @@ $(document).on("ready", function () {
   function deleteFromGroup(){
 
     var listItem = $(this).parents("li");
-    var groupUserList = $(this).parents(".groupuserlist");
+    var groupMenu = $(this).parents(".groupmenu");
+    var userID = listItem.attr("user-id");
+    var groupID = groupMenu.attr("group-id");
 
-    if ( listItem.attr("user-id") === $("#useravatar").attr("user-id") &&
-         groupUserList.attr("group-id") === ADMIN_GROUP_ID ){
+    if ( userID === $("#useravatar").attr("user-id") &&
+         groupID === ADMIN_GROUP_ID ){
       alertGlobal("lockoutprevented");
     }else{
-      groupUserList.attr("tainted", true);
-      listItem.remove();
+      var data = new Object({ userID : userID, groupID : groupID });
+      $.ajax({
+        url: "/groups/removeuser",
+        data: $.toJSON(data),
+        success: function(response){
+          listItem.remove();
+          $(".newuser input").val("");
+          $(".newusermenu").fadeOut(200);
+        },
+        error: handleAjaxErrorBy(alertGlobal),
+      });
     }
 
   }  
-
-  $("#updategroups").click(function(){
-
-    /* sends all tainted data of tainted groupmenus
-     * via ajax to the server
-     * */
-
-    var taintedLists = $(".groupuserlist[tainted=\"true\"]"); 
-    var taintedSettings = $(".header[tainted=\"true\"]"); 
-
-    if ( taintedLists.length === 0 && taintedSettings.length === 0){
-      return False;
-    }
-
-    $(this).addClass("buttonspinner");
-
-    taintedLists.each(function (){
-
-      var users = $(this).children("li");
-
-      var userIDs = Array();
-      users.each(function (){
-        var id = $(this).attr("user-id");
-        userIDs.push(id);
-      });
-
-      var groupID = $(this).parents(".groupmenu").attr("group-id");
-      var json = JSON.stringify(userIDs);
-      $.ajax({
-        url: "updategroup/" + groupID,
-        data: json,
-        error: handleAjaxErrorBy(alertGlobal),
-        complete: function(){ $("#updategroups").removeClass("buttonspinner"); },
-      });
-
-    });
-
-    taintedSettings.each(function (){
-
-      var label_id  = $(this).children(".picked").attr("label-id");
-      var group_id  = $(this).parents(".groupmenu").attr("group-id");
-      var may_edit  = $(this).find(".mayedit").is(":checked");
-      var may_close = $(this).find(".mayclose").is(":checked");
-      var may_stick = $(this).find(".maystick").is(":checked");
-
-      var meta = new Object({ label_id : label_id, may_edit : may_edit, may_close : may_close, may_stick : may_stick });
-
-      $.ajax({
-        url: "updategroupmeta/" + group_id,
-        data: $.toJSON(meta),
-        error: handleAjaxErrorBy(alertGlobal),
-        success: function(){ $("#updategroups").removeClass("buttonspinner"); },
-      });
-    });
-
-  });
 
   rebindColorPickerEvents();
 
@@ -741,18 +681,26 @@ $(document).on("ready", function () {
       var groupMenu = $(this).parents(".groupmenu");
       var groupID = groupMenu.attr("group-id");
 
-      var pickedLabel = groupMenu.find(".picked");
-      var oldLabelID = pickedLabel.attr("label-id");
-      var newLabelID = $(this).attr("label-id");
+      var oldLabel = groupMenu.find(".picked");
+      var oldLabelID = oldLabel.attr("label-id");
+      var newLabel = $(this);
+      var newLabelID = newLabel.attr("label-id");
 
       var groupTab = $("#groupnav li[group-id=\"" + groupID + "\"]");
-      groupTab.removeClass("label" + oldLabelID);
-      groupTab.addClass("label" + newLabelID);
-      
-      $(this).addClass("picked");
-      pickedLabel.removeClass("picked");
-      
-      $(this).parents(".header").attr("tainted", true);
+
+      var data = new Object({ groupID: groupID, labelID: newLabelID })
+
+      $.ajax({
+        url: "/groups/changelabel",
+        data: $.toJSON(data),
+        error: handleAjaxErrorBy( alertGlobal ),
+        success: function(){
+          groupTab.removeClass("label" + oldLabelID);
+          groupTab.addClass("label" + newLabelID);
+          newLabel.addClass("picked");
+          oldLabel.removeClass("picked");
+        },
+      });
 
     });
   }
@@ -762,7 +710,25 @@ $(document).on("ready", function () {
   function rebindGroupFlagEvents (){
     $(".groupflag").off("change");
     $(".groupflag").on("change", function(){
-      $(this).parents(".header").attr("tainted", true);
+      var flagMenu = $(this).parents(".groupflags");
+      var groupMenu = $(this).parents(".groupmenu");
+      var groupID = groupMenu.attr("group-id");
+      var changed = $(this);
+
+      var mayEdit  = flagMenu.find(".mayedit").is(":checked");
+      var mayClose = flagMenu.find(".mayclose").is(":checked");
+      var mayStick = flagMenu.find(".maystick").is(":checked");
+
+      var data = new Object({ groupID: groupID, mayEdit : mayEdit, mayClose : mayClose, mayStick : mayStick });
+      console.log("changed");
+      $.ajax({
+        url: "groups/updateflags",
+        data: $.toJSON(data),
+        error: [handleAjaxErrorBy(alertGlobal), function(){
+          /* reset the flag */
+          changed.prop("checked", !changed.prop("checked"));
+        }],
+      });
     });
   }
 
@@ -779,7 +745,7 @@ $(document).on("ready", function () {
       var json = $.toJSON(data);
 
       $.ajax({
-        url: "creategroup",
+        url: "groups/create",
         data: json,
         error: handleAjaxErrorBy( alertGlobal ),
         success: loadNewGroup,
@@ -811,7 +777,12 @@ $(document).on("ready", function () {
     newGroup.find(".picked").removeClass("picked");
     newGroup.find(".colorpicker[label-id=0]").addClass("picked");
     newGroup.find(".groupuserlist").html("");
-    newGroup.find(".groupuserlist").sortable();
+
+    // we can be sure, that there is always at least one
+    // .newuser li. By cloning we can change the close
+    // button in the template without the need to change it here
+    var newUserLi = $(".newuser").first().clone();
+    newGroup.find(".groupuserlist").append(newUserLi);
 
     /* insert delete button*/
     var deleteButton = $("<button/>");
@@ -822,14 +793,15 @@ $(document).on("ready", function () {
     var toolDiv = newGroup.find(".grouptools");
     deleteButton.appendTo(toolDiv);
 
-    newGroup.insertAfter("#userlistwrapper");
+    newGroup.insertBefore(".groupmenu[group-id=\"1\"]");
     rebindColorPickerEvents();
     rebindGroupFlagEvents();
-    rebindGroupUserDragAndDropEvents();
     rebindDeleteGroupEvents();
+    rebindUserMenuEvents();
 
     changeToGroupMenu(groupID);
     $("#newgroupname").val("");
+    $(".newuser input:visible").focus();
 
   }
 
@@ -849,7 +821,7 @@ $(document).on("ready", function () {
         var json = $.toJSON(data);
 
         $.ajax({
-          url: "deletegroup",
+          url: "groups/delete",
           data: json,
           error: handleAjaxErrorBy( alertGlobal ),
           success: function(){
@@ -867,6 +839,8 @@ $(document).on("ready", function () {
 
     });
   }
+
+  /* moderation (group management) ------------ */
 
   $("button.closethread").click(function(){
     var topicID = $(this).parents(".topicentry").attr("topic-id");
@@ -906,12 +880,15 @@ $(document).on("ready", function () {
     });
   });
 
+  /* error handling --------------------------- */
+
   function handleAjaxErrorBy (callback){
 
     function handle (response){
 
       var processable = Array();
       processable.push(403);
+      processable.push(412);
 
       if(processable.indexOf( response.status ) >= 0){
         callback(response.responseText);

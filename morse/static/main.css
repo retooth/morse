@@ -1016,14 +1016,20 @@ blockquote{
           with this element. why is it 13pt? shouldn't it be 
           2*padding + font-size? 20pt is way bigger than this */
           height:13pt; 
+          box-shadow:1px 1px #ddd;
         }
 
         #groupnav .selected{
-          font-weight:bold;
-          letter-spacing:2pt;
+          margin-left:5pt;
+          margin-right:6pt;
+          margin-top:-2px;
+          height:16pt;
+          font-size:11pt;
+          box-shadow:3px 3px 1px #ddd;
         }
 
         #newgroup{
+          margin-left:1pt;
         }
 
         #newgroupname{
@@ -1110,20 +1116,14 @@ blockquote{
 
     .groupmenu {
       position:relative; /* this is set so dialogue is bound to .groupmenu */
-      background-image: url("userdropbg.png");
-      background-repeat:no-repeat;
-      background-position:50% 75%;
       padding-left:15pt;
       display:none;
-      width:60%;
-      float:left;
       font-size:10pt;
-      background-color:#f0f0f0;
+      background-color:#eaeaea;
       min-height:237pt;
       border:1pt solid #ccc;
       border-radius:3pt;
       padding:5pt;
-      margin-left:20pt;
     }
 
     .groupmenutip {
@@ -1147,6 +1147,7 @@ blockquote{
               float:left;
               margin-right:2pt;
               cursor:pointer;
+              box-shadow:1px 1px #ddd;
             }
 
             .picked{
@@ -1175,6 +1176,7 @@ blockquote{
               background:none;
               border-radius:0;
               padding:0;
+              box-shadow:none;
             }
 
             .deletegroup img{
@@ -1197,17 +1199,64 @@ blockquote{
         .groupmenu li{
           display:block;
           cursor:default;
-          background:#ccc;
+          background:#fff;
           margin-right:5pt;
           padding:5pt;
           font-size:10pt;
           float:left;
+          height:13pt;
+          box-shadow:1px 1px #ddd;
         }
 
                 .deletefromgroup{
                   cursor:pointer;
                   margin-left:5pt;
                 }
+
+        .groupmenu .newuser{
+          background:#fff;
+         }
+
+        .groupmenu .newuser input{
+          outline:none;
+          outline-offset:0;
+          margin-top:-2pt;
+          padding:0;
+          border:none;
+          background:none;
+          border-radius:0;
+          background:#fff;
+          width:150pt;
+        }
+
+        .newusermenu{
+          width:160pt;
+          position:absolute;
+          display:none;
+          padding:0;
+          height:100pt;
+          overflow-y:scroll;
+          background:#fafafa;
+        }
+
+        .newusermenu ul{
+          padding:0;
+        }
+
+        .newusermenu li{
+          background:#fafafa;
+          float:none;
+          clear:both;
+          cursor:pointer;
+          color:#555;
+          border-bottom:1pt solid #ddd;
+          box-shadow:none;
+        }
+
+        .newusermenu li:hover {
+          color:#000;
+          background:#f8f8f8;
+        }
 
     .groupdescription {
     }
@@ -1310,6 +1359,7 @@ a.divwrapper{
       padding:0;
       border:none;
       background:none;
+      box-shadow:none;
     }
 
     .dialog .controls{
@@ -1320,4 +1370,5 @@ a.divwrapper{
       border:none;
       background:#333;
       font-size:11pt;
+      box-shadow:1px 1px #E68A34;
     }

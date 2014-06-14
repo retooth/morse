@@ -3,7 +3,7 @@
 {% block content %}
 {% include "dialogs.html" %}
 <div id="adminwrapper">
-<b>Manage Groups</b><br/><br/>
+<b>Manage Groups</b><br/>
 <nav id="groupnav">
 <ul>
 {% for group in groups %}
@@ -15,28 +15,6 @@
 </ul>
 <div class="clear"></div>
 </nav><br/>
-<div id="userlistwrapper">
-  <div id="scrollup">
-    <img src="{{ url_for('static', filename='chevron-up-white.png') }}">
-  </div>
-  <div id="userlist">
-    <div id="scroller">
-      {% for letter in userlist.firstletters %}
-        <div letter="{{ letter }}" class="letterdivider">
-          {{ letter }}
-        </div>
-        <ul letter={{ letter }} class="userlist">
-          {% for user in userlist[letter] %}
-            <li class="user" user-id="{{ user.id }}">{{ user.username }}</li>
-          {% endfor %}
-        </ul>
-      {% endfor %}
-    </div>   
-  </div>   
-  <div id="scrolldown">
-    <img src="{{ url_for('static', filename='chevron-down-white.png') }}">
-  </div>
-</div>
 {% for group in groups %}
   <div group-id="{{group.id}}" class="groupmenu
         {% if group.id == 3 or group.id == 4 %}
@@ -44,7 +22,7 @@
         {% endif %}
         ">
     <!--span class="groupdescription">{{group.description}}</span><br-->
-    <div class="header" tainted="false">
+    <div class="header"> 
       <div class="colorpicker label0 {% if group.has_label(0) %} picked {% endif %}" label-id=0>
       </div>
       <div class="colorpicker label1 {% if group.has_label(1) %} picked {% endif %}" label-id=1>
@@ -73,7 +51,7 @@
      </div>
      <div class="clear"></div>
     </div>
-     <ul tainted="false" class="groupuserlist">
+     <ul class="groupuserlist">
      {% for member in group.members %}
       <li user-id="{{member.id}}" class="user">
         {{ member.username }}
@@ -81,7 +59,15 @@
           <img class="deletefromgroup" src="{{ url_for('static', filename='close-small.png')}}"/>
         {% endif %}
       </li>
-     {% endfor %}
+      {% endfor %}
+      {% if not (group.id == 3 or group.id == 4) %}
+      <li user-id="0" class="newuser">
+      <input placeholder="Add user"/>
+      <div class="newusermenu">
+          <ul></ul>
+      </div>  
+      </li>
+      {% endif %}
      </ul>
      <div class="grouptools">
       {% if group.id > 4 %}
@@ -92,14 +78,13 @@
   </div>
 {% endfor %}
   <div id="welcomegrouptip" class="groupmenu groupmenutip" style="display:block">
-    Select a group from the list above<br/>
-    and drag users onto this field
+    Hi! Welcome to group management. <br/>
+    Please select a group from the list above<br/>
   </div>
   <div id="newgrouptip" class="groupmenu groupmenutip" group-id="0">
      Want to create a new group?<br/>
      Type the name and hit Enter
   </div>
 <div class="clear"></div>
-<button id="updategroups" class="submit">Save</button>
 </div>
 {% endblock %}

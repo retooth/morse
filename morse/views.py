@@ -19,7 +19,7 @@ from . import app
 from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
 from models import Post, Topic, TopicFollow, PostRead
 from models import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
-from wrappers import PostWrapper, TopicWrapper, AlphabeticUserList
+from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, certain_rights_required, check_ban, possibly_banned 
 from protocols import ajax_triggered
 from flask import render_template, url_for, request, g, jsonify, redirect
@@ -406,83 +406,138 @@ def updateboard(board_id):
 @login_required
 @admin_rights_required
 def managegroups ():
-    
-    if request.method == 'GET':
-        groups = Group.query.all()
-        userlist = AlphabeticUserList()
-        return render_template('managegroups.html', current_user = current_user,\
-                                groups = groups, userlist = userlist)
+    """ 
+    Renders the group management view
+    :rtype: html
+    """
+    groups = Group.query.all()
+    return render_template('managegroups.html', current_user = current_user,\
+                            groups = groups)
 
-def groupmember_to_user_id (groupmember):
-    return groupmember.user_id
-
-def to_intlist (item):
-    return int(item)
-
-@app.route('/updategroup/<int:group_id>', methods=['POST'])
+@app.route('/userlist.json', methods=['GET'])
 @login_required
 @admin_rights_required
 @ajax_triggered
-def updategroup (group_id):
+def get_users ():
     """ 
-    updates the group defined by group_id. this function is called
-    by the javascript event handler for #updategroups in main.js
+    Gets a list of users matching GET 
+    parameter pattern.
+    :rtype: json
     """
-    groupmembers = GroupMember.query.filter(GroupMember.group_id.like(group_id)).all()
-    old_user_ids = map(groupmember_to_user_id, groupmembers)
-    new_user_ids = map(to_intlist,request.json)
+    pattern = request.args.get('pattern')
+    if pattern:
+        users = User.query.filter(User.username.ilike('%' + pattern + '%'))
+    else:
+        users = User.query.all()
 
-    # make them sets and check the difference
-    old_user_ids = set(old_user_ids)
-    new_user_ids = set(new_user_ids)
-    to_add = list( new_user_ids.difference(old_user_ids) )
-    to_delete = list( old_user_ids.difference(new_user_ids) )
+    userlist = []
+    for u in users:
+        userlist.append([u.id, u.username])
 
-    for id in to_add:
-        g = GroupMember(id, group_id)
-        db.session.add(g)
+    return jsonify(users = userlist)    
 
-    for id in to_delete:
-        g = GroupMember.query.filter(GroupMember.user_id.like(id), \
-                                     GroupMember.group_id.like(group_id)).first()
-        db.session.delete(g)
+@app.route('/groups/adduser', methods=['POST'])
+@login_required
+@admin_rights_required
+@ajax_triggered
+def add_user_to_group():
+    """
+    Adds new user to a group.
+    """
+    user_id = request.json["userID"]
+    group_id = request.json["groupID"]
+    # check if user is already in group
+    already_in_group = GroupMember.query.filter(GroupMember.user_id.like(user_id),
+                                                GroupMember.group_id.like(group_id)).first()
+    if already_in_group:
+        return "alreadyingroup", 412
 
+    rel = GroupMember(user_id, group_id)
+    db.session.add(rel)
     db.session.commit()
 
     return ""
 
-@app.route('/updategroupmeta/<int:group_id>', methods=['POST'])
+@app.route('/groups/removeuser', methods=['POST'])
 @login_required
 @admin_rights_required
 @ajax_triggered
-def updategroupmeta (group_id):
+def remove_user_from_group():
+    """
+    Removes a user from a group.
+    """
+    user_id = request.json["userID"]
+    group_id = request.json["groupID"]
+    # check if user is already in group
+    rel = GroupMember.query.filter(GroupMember.user_id.like(user_id),
+                                   GroupMember.group_id.like(group_id)).first()
+    if not rel:
+        return "notingroup", 404
+
+    db.session.delete(rel)
+    db.session.commit()
+
+    return ""
+
+@app.route('/groups/changelabel', methods=['POST'])
+@login_required
+@admin_rights_required
+@ajax_triggered
+def change_group_label():
+    """
+    changes the label of a group.
+    """
+    group_id = request.json["groupID"]
+    label_id = request.json["labelID"]
+    # check if user is already in group
+    group = Group.query.get(group_id)
+    if not group:
+        return "groupnotfound", 404
+
+    group.label = label_id
+    db.session.commit()
+
+    return ""
+
+@app.route('/groups/updateflags', methods=['POST'])
+@login_required
+@admin_rights_required
+@ajax_triggered
+def update_group_flags ():
     """ 
-    updates the group meta defined by group_id. (label type and
+    updates the group flags defined by groupID. (label type and
     group flags) this function is called by the javascript 
     event handler for #updategroups in main.js.
     """
-    meta = request.json
-
+    group_id = request.json["groupID"]
     group = Group.query.get(group_id)
-    group.label = meta["label_id"]
-    group.may_edit = meta["may_edit"]
-    group.may_close = meta["may_close"]
-    group.may_stick = meta["may_stick"]
+    if not group:
+        return "groupnotfound", 404
+
+    group.may_edit = request.json["mayEdit"]
+    group.may_close = request.json["mayClose"]
+    group.may_stick = request.json["mayStick"]
     db.session.commit()
 
     return ""
 
-@app.route('/creategroup', methods=['POST'])
+@app.route('/groups/create', methods=['POST'])
 @login_required
 @admin_rights_required
 @ajax_triggered
-def creategroup ():
+def create_group ():
     """ 
     creates a new group and returns its id as json
     this function is called by the javascript 
     event handler for #newgroupname in main.js.
     """
     name = request.json['name']
+
+    #check if group already exists
+    already_exists = Group.query.filter(Group.name.like(name)).first()
+    if already_exists:
+        return "groupexists", 412
+
     group = Group(name)
     db.session.add(group)
     db.session.commit()
@@ -499,11 +554,11 @@ def creategroup ():
 
     return jsonify(newGroupID = group.id, name = name)
 
-@app.route('/deletegroup', methods=['POST'])
+@app.route('/groups/delete', methods=['POST'])
 @login_required
 @admin_rights_required
 @ajax_triggered
-def deletegroup ():
+def delete_group ():
     """ 
     deletes a group and all its dependencies
     this function is called by the javascript 
