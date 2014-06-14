@@ -18,6 +18,7 @@
 body {
   font-family:'Roboto';
   font-size:11pt;
+  background:#f3f3f3;
 }
 
 input {
@@ -33,6 +34,7 @@ button {
   padding:5pt;
   border-radius:3pt;
   cursor:pointer;
+  box-shadow:1px 1px #ddd;
 }
 
 textarea { 
@@ -46,6 +48,7 @@ header {
   border-radius: 3pt;
   padding:5pt 5pt 5pt 5pt; 
   color:#fff !important;
+  box-shadow:1px 1px #ddd;
 }
 
     header a {
@@ -85,7 +88,7 @@ header {
         .navmenu{
           position:absolute;
           display:none;
-          background:#eee; 
+          background:#fafafa; 
           border-radius:3pt;
           border:1pt solid #ccc;
           padding:5pt;
@@ -94,26 +97,27 @@ header {
           float:right;
           width:200pt;
           left:70%;
+          box-shadow:1px 1px #ddd;
         }
 
             #gotologin{
               background:#FABE28;
               border:1pt solid #FABE28;
-              width:41%;
+              width:46%;
               margin-left:5pt;
             }
 
             #gotoregister{
               background:#FF8A00;
               border:1pt solid #FF8A00;
-              width:41%;
+              width:46%;
               margin-left:5pt;
             }
 
             #dologout{
               background:#DB3026;
               border:1pt solid #DB3026;
-              width:41%;
+              width:46%;
               margin-left:5pt;
             }
 
@@ -121,7 +125,7 @@ header {
             #showsettings{
               background:#67DAD7;
               border:1pt solid #67DAD7;
-              width:41%;
+              width:46%;
               margin-left:5pt;
             }
 
@@ -163,10 +167,12 @@ header {
   border: 1pt solid #ccc;
   padding:5pt 5pt 5pt 5pt;
   margin-bottom:5pt;
+  background:#fcfcfc;
+  box-shadow:1px 1px #ddd;
 }
 
 .boardentry:hover {
-  background:#eef;
+  background:#fff;
 }
 
     .boardtitlewrapper{
@@ -205,6 +211,7 @@ header {
       padding:0;
       font-size:30pt;
       float:left;
+      text-shadow:1px 1px #ddd;
     }
 
     #boardtools {
@@ -217,10 +224,12 @@ header {
       border: 1pt solid #ccc;
       padding:5pt 5pt 5pt 5pt;
       margin-bottom:5pt;
+      background:#fcfcfc;
+      box-shadow:1px 1px #ddd;
     }
 
     .topicentry:hover {
-      background:#eef;
+      background:#fff;
     }
 
     .topicclosed{
@@ -229,7 +238,7 @@ header {
     }
 
     .topicclosed:hover {
-      background:#FB5046;
+      background:#DE3329;
       color:#fff;
     }
 
@@ -256,6 +265,8 @@ header {
           background-image: url('unlocked.png');
           background-size:auto 16px;
           background-repeat:no-repeat;
+          margin-top:2px;
+          box-shadow:none;
         }
 
         .openthread{
@@ -270,6 +281,8 @@ header {
           background-image: url('locked.png');
           background-size:auto 16px;
           background-repeat:no-repeat;
+          margin-top:2px;
+          box-shadow:none;
         }
 
         .lastpost {
@@ -337,6 +350,8 @@ header {
       border: 1pt solid #ccc;
       padding:5pt 5pt 5pt 5pt;
       margin-bottom:5pt;
+      background:#fff;
+      box-shadow:1px 1px #ddd;
     }
 
       .post{
@@ -396,8 +411,10 @@ header {
 #inputwrapper{
   display:none;
   border-radius: 3pt;
-  padding:5pt;
+  padding:0;
+  background:#fff;
   border: 1pt solid #ccc;
+  box-shadow:1px 1px #ddd;
 }
 
   #newtopictitle{
@@ -405,7 +422,7 @@ header {
     outline:none;
     border:none;
     width:80%;
-    padding:4pt;
+    padding:5pt;
     font-weight:bold;
     font-size:12pt;
   }
@@ -416,7 +433,7 @@ header {
     border:none;
     width:98%;
     overflow:hidden;
-    padding:4pt;
+    padding:5pt;
   }
 
   #newposttext{
@@ -425,7 +442,7 @@ header {
     border:none;
     width:98%;
     overflow:hidden;
-    padding:4pt;
+    padding:5pt;
   }
 
 /* ------------------------------------------- */
@@ -457,7 +474,10 @@ header {
 /* input toolbar ----------------------------- */
 
 #toolfooter{
+  border-bottom-right-radius:3pt;
+  border-bottom-left-radius:3pt;
   padding:5pt;
+  background:#e8e8e8;
 }
 
     #dopost{
@@ -496,6 +516,7 @@ header {
       float:left;
       cursor:pointer;
       color:#000;
+      background:#fff;
     }
 
     #makebold{
@@ -673,6 +694,8 @@ blockquote{
       background:#88C100;
       border:1pt solid #88C100;
       font-size: 12pt;
+      margin-top:5pt;
+      margin-bottom:5pt;
       width:180pt;
     }
 
@@ -714,7 +737,12 @@ blockquote{
 /* settings ------------------------------------ */
 
 #settingswrapper{
-  padding:5pt;
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+  background:#fcfcfc;
+  box-shadow:1px 1px #ddd;
 }
 
     #bio{
@@ -734,6 +762,7 @@ blockquote{
       border-radius:3pt;
       margin-top:5pt;
       padding:5pt;
+      background:#fff;
     }
 
         .websitewrapper button{
@@ -741,6 +770,7 @@ blockquote{
           background:none;
           padding:0;
           margin:0;
+          box-shadow:none;
         }
 
         .websitewrapper button img{
@@ -814,6 +844,8 @@ blockquote{
   border-radius:0;
   height:16px;
   width:16px;
+  margin-top:2px;
+  box-shadow:none;
   background-image: url('edit.png');
   background-size:auto 16px;
   background-repeat:no-repeat;
@@ -837,6 +869,8 @@ blockquote{
   border: 1pt solid #ccc;
   padding:5pt 5pt 5pt 5pt;
   margin-bottom:5pt;
+  background:#fcfcfc;
+  box-shadow:1px 1px #ddd;
 }
 
     /* new board / update board ---------------- */
@@ -897,16 +931,14 @@ blockquote{
     #modelist{
       display:none;
       width:85%;
+      background:#f3f3f3;
       border-radius: 0 0 3pt 3pt;
       border:1pt solid #ccc;
       padding:5pt 5pt 5pt 5pt; 
     }
 
     .grouplistwrapper{
-      background:#eee;
       width:23%;
-      border-radius:3pt;
-      border:1pt solid #ccc;
       float:left;
       margin-right:10pt;
       min-height:200pt;
@@ -921,13 +953,14 @@ blockquote{
 	}
 
     .grouplist li{
-      background: #ADF057;
       padding:2pt;
+      border-radius:1pt;
+      box-shadow:1px 1px #ddd;
 	  font-size:11pt;
 	  cursor:move;
       margin-left:0;
       display:block;
-      margin-bottom:1pt;
+      margin-bottom:2pt;
 	}
 
     .ui-sortable-helper{
@@ -946,11 +979,13 @@ blockquote{
 
 	.grouplistwrapper header{
 	  font-size:10pt;
-	  border-radius:3pt 3pt 0pt 0pt;
+	  /*border-radius:3pt 3pt 0pt 0pt;*/
 	  margin:0;
+      margin-bottom:5pt;
 	  padding:5pt;
 	  min-height:30pt;
-	  background:#333;
+	  background:#fff;
+      color:#000 !important;
 	}
 
     /* group management ------------------------ */
@@ -1036,10 +1071,10 @@ blockquote{
 
             .letterdivider{
               font-size:10pt;
-              background:#5D524E;
-              border:1pt solid #5D524E; 
+	          background:#f0f0f0;
+              border:1pt solid #f0f0f0; 
               padding:5pt 5pt 5pt 5pt; 
-              color:#fff;
+              color:#000;
               text-align:center;
             }
 
