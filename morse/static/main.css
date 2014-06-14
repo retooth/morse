@@ -61,6 +61,7 @@ header {
 
     #headertitle{
       float:left;
+      text-shadow:1px 1px #333;
     }
 
         #community {
@@ -334,6 +335,7 @@ header {
       padding:0;
       font-size:30pt;
       float:left;
+      text-shadow:1px 1px #ddd;
     }
 
     #topictools{
