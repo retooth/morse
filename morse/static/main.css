@@ -1255,9 +1255,12 @@ blockquote{
           box-shadow:none;
         }
 
+        .newusermenu .selected{
+          background:#ccc;
+        }
+
         .newusermenu li:hover {
           color:#000;
-          background:#f8f8f8;
         }
 
     .groupdescription {

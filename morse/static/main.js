@@ -16,6 +16,9 @@
 */
 
 /* enum */
+KEY_DOWN = 40;
+KEY_UP = 38;
+KEY_RETURN = 13;
 
 $(document).on("ready", function () {
 
@@ -94,7 +97,7 @@ $(document).on("ready", function () {
     var activeID = $(document.activeElement).attr("id");
     var atNewPost = $("#newposttext").length > 0;
     var atNewTopic = $("#newtopictitle").length > 0;
-    var pressedReturn = (keyevent.which === 13);
+    var pressedReturn = (keyevent.which === KEY_RETURN);
 
     if (activeID !== "newtopictitle" &&
         activeID !== "newtopictext" &&
@@ -181,7 +184,7 @@ $(document).on("ready", function () {
 
     element = (element.nodeType===1) ? element : element.parentNode; 
 
-    if(element.nodeName === "BLOCKQUOTE" && keyevent.keyCode === 13 && !keyevent.shiftKey) {
+    if(element.nodeName === "BLOCKQUOTE" && keyevent.keyCode === KEY_RETURN && !keyevent.shiftKey) {
       keyevent.preventDefault();
       document.execCommand("InsertParagraph");
       document.execCommand("Outdent");    
@@ -252,8 +255,7 @@ $(document).on("ready", function () {
 
 
   $("#newhref").keypress(function (keyevent){
-    // if return is pressed
-    if(keyevent.which === 13){ 
+    if(keyevent.which === KEY_RETURN){ 
       $("#newhrefwrapper").slideUp(200);
       $("#closenewhref").fadeOut(200);
       $("#makelink").removeClass("openrightborder");
@@ -571,11 +573,68 @@ $(document).on("ready", function () {
 
   function rebindUserMenuEvents (){
     $(".groupmenu .newuser input").off("keyup");
-    $(".groupmenu .newuser input").on("keyup", function(){
+    $(".groupmenu .newuser input").on("keyup", function(keyevent){
+
       var li = $(this).parents(".newuser");
       var menu = li.find(".newusermenu");
       var menulist = menu.find("ul");
+
+      /* drop down behavior */
+      if (keyevent.which === KEY_RETURN){
+        var selected = menu.find(".selected");
+        if (selected.length === 0){
+          return true;
+        }
+        var userID = selected.attr("user-id");
+        var group = $(this).parents(".groupmenu");
+        var groupID = group.attr("group-id");
+        console.log(groupID);
+        addUserToGroup(userID, groupID);
+        return true;
+      }
+
+      if (keyevent.which === KEY_DOWN){
+        var selected = menu.find(".selected");
+        if (selected.length === 0){
+          var first = menulist.children().first().addClass("selected");
+          first.addClass("selected");
+          $(this).val( first.html() );
+          return true;
+        }
+        selected.removeClass("selected");
+        var next = selected.next();
+        if (next.length === 0){
+          var original = $(this).attr("original-value");
+          $(this).val(original);
+          return true;
+        }
+        next.addClass("selected");
+        $(this).val( next.html() );
+        return true;
+      }
+
+      if (keyevent.which === KEY_UP){
+        var selected = menu.find(".selected");
+        if (selected.length === 0){
+          var last = menulist.children("li").last()
+          last.addClass("selected");
+          $(this).val( last.html() );
+          return true;
+        }
+        selected.removeClass("selected");
+        var prev = selected.prev();
+        if (prev.length === 0){
+          var original = $(this).attr("original-value");
+          $(this).val(original);
+          return true;
+        }
+        prev.addClass("selected");
+        $(this).val( prev.html() );
+        return true;
+      }
+
       var pattern = $(this).val();
+      $(this).attr("original-value", pattern);
 
       var position = li.position();
       menu.css("top", position.top + li.outerHeight());
@@ -738,7 +797,7 @@ $(document).on("ready", function () {
   });
 
   $("#newgroupname").keypress(function(keyevent){
-    if (keyevent.which === 13){
+    if (keyevent.which === KEY_RETURN){
      
       var name = $(this).val()
       var data = new Object({ name: name });
