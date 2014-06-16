@@ -15,7 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
+from enum import GROUP_ID_GUESTS, USER_ID_GUESTS
 from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy import not_
+from flask.ext.login import current_user
 from sqlalchemy import func
 from hashlib import md5, sha512
 from urllib import urlencode
@@ -137,6 +140,12 @@ class User (db.Model):
                 break
         return False
 
+    def may_post_in (self, board):
+        """ signifies if a user may post in a specific board. This is used in
+        in templates to decide, if the post dialog is shown"""
+        readable, writable, visible = get_my_boards(user = self, get_only_ids = True)
+        return board.id in writable
+
 class UserWebsite (db.Model):
     __tablename__ = "userwebsites"
     id = db.Column(db.Integer, primary_key=True)
@@ -214,6 +223,54 @@ class LimitedUserBan (Ban):
 def groupmode_to_group (groupmode):
     """ maps a groupmode relationship to its group object """
     return Group.query.get(groupmode.group_id)
+
+def get_my_boards (user = current_user, get_only_ids = False):
+    """ returns a triplet (visible, readable, writable) with each element
+    being a list of boards. the triplet is a representation of the current
+    user's rights on the community """
+    if user.is_anonymous():
+        dummy = GroupMember(USER_ID_GUESTS, GROUP_ID_GUESTS)
+        relations = [dummy]
+    else:
+        user_id = user.id
+        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+
+    # stack rights
+    boardmodes = {}
+    for r in relations:
+        # exclude the 0 board id, because it is only used to save the groupmode default
+        # (there is no corresponding board for it)
+        modes = GroupMode.query.filter(GroupMode.group_id.like(r.group_id), not_(GroupMode.board_id.like(0))).all()
+        for mode in modes:
+            board_id = mode.board_id
+            if not boardmodes.has_key(board_id):
+                boardmodes[board_id] = GroupMode(board_id)
+            boardmodes[ board_id ].r |= mode.r
+            boardmodes[ board_id ].w |= mode.w
+            boardmodes[ board_id ].v |= mode.v
+    # filter invisible boards and split
+    # into readable and writable boards
+    readable_boards = []
+    visible_boards  = []
+    writable_boards = []
+    for board_id, mode in boardmodes.iteritems():
+        if mode.v:
+            board = Board.query.filter(Board.id.like(board_id)).first()
+            if mode.w:
+                if get_only_ids: 
+                    writable_boards.append(board.id)
+                else:
+                    writable_boards.append(board)
+            if mode.r:
+                if get_only_ids: 
+                    readable_boards.append(board.id)
+                else:
+                    readable_boards.append(board)
+            if get_only_ids:
+                visible_boards.append(board.id)
+            else:
+                visible_boards.append(board)
+    return visible_boards, readable_boards, writable_boards 
 
 class Board (db.Model):
     __tablename__ = "boards"

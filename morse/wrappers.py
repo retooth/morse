@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from models import TopicFollow, PostRead, Topic, User, db
+from models import TopicFollow, PostRead, Topic, Board, User, db
 from flask.ext.login import current_user, AnonymousUserMixin
 from collections import defaultdict
 
@@ -135,6 +135,10 @@ class TopicWrapper (object):
     @property
     def board_id (self):
         return self.topic.board_id
+
+    @property
+    def board (self):
+        return Board.query.get(self.board_id)
 
     @property
     def id (self):

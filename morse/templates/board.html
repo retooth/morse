@@ -1,7 +1,7 @@
 <!doctype html>
 {% extends "base.html" %}
 {% block content %}
-<div id="board" board-id="{{ board.id }}">
+<div id="board" may-post="{{ current_user.may_post_in (board) }}" board-id="{{ board.id }}">
  <div id="boardtitlewrapper">
   <h1 id="boardtitle"><a href="/" id="goback">..
    <span id="gobacktooltip">Back to board list</span>

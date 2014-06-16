@@ -16,29 +16,20 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import app
+from enum import GROUP_ID_REGISTERED
+from mixins import GuestMixin
 from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
-from models import Post, Topic, TopicFollow, PostRead
+from models import Post, Topic, TopicFollow, PostRead, get_my_boards
 from models import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
 from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, certain_rights_required, check_ban, possibly_banned 
 from protocols import ajax_triggered
 from flask import render_template, url_for, request, g, jsonify, redirect
-from sqlalchemy import not_
 from flask.ext.login import LoginManager, login_user 
 from flask.ext.login import logout_user, login_required 
 from flask.ext.login import current_user
 
 """ This module contains all views of morse """
-
-# enum
-GROUP_ID_ADMIN = 1
-GROUP_ID_MODERATORS = 2
-GROUP_ID_REGISTERED = 3
-GROUP_ID_GUESTS = 4
-
-USER_ID_GUESTS = 0
-
-ALL_BOARDS = 0
 
 # group modes save the default state
 # with this dummy board id. default state
@@ -49,6 +40,7 @@ DEFAULT_MODE_DUMMY_ID = 0
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
+login_manager.anonymous_user = GuestMixin
 
 @login_manager.user_loader
 def load_user(id):
@@ -159,52 +151,6 @@ def logout():
     logout_user()
     return redirect(url_for('index')) 
 
-def get_my_boards (get_only_ids = False):
-
-    """ returns a triplet (visible, readable, writable) with each element
-    being a list of boards. the triplet is a representation of the current
-    user's rights on the community """
-
-    if current_user.is_anonymous():
-        dummy = GroupMember(USER_ID_GUESTS, GROUP_ID_GUESTS)
-        relations = [dummy]
-    else:
-        user_id = current_user.id
-        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
-
-    # stack rights
-    boardmodes = {}
-    for r in relations:
-        # exclude the 0 board id, because it is only used to save the groupmode default
-        # (there is no corresponding board for it)
-        modes = GroupMode.query.filter(GroupMode.group_id.like(r.group_id), not_(GroupMode.board_id.like(0))).all()
-        for mode in modes:
-            board_id = mode.board_id
-            if not boardmodes.has_key(board_id):
-                boardmodes[board_id] = GroupMode(board_id)
-            boardmodes[ board_id ].r |= mode.r
-            boardmodes[ board_id ].w |= mode.w
-            boardmodes[ board_id ].v |= mode.v
-    # filter invisible boards and split
-    # into readable and writable boards
-    readable_boards = []
-    visible_boards  = []
-    writable_boards = []
-    for board_id, mode in boardmodes.iteritems():
-        if mode.v:
-            board = Board.query.filter(Board.id.like(board_id)).first()
-            if mode.w:
-                if get_only_ids: 
-                    writable_boards.append(board.id)
-                else:
-                    writable_boards.append(board)
-            if mode.r:
-                if get_only_ids: 
-                    readable_boards.append(board.id)
-                else:
-                    readable_boards.append(board)
-            visible_boards.append(board)
-    return visible_boards, readable_boards, writable_boards 
 
 @app.route('/')
 @possibly_banned

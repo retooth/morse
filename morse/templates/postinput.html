@@ -8,6 +8,10 @@
 {% if topic.closed %}
   <div id="typinginfo" class="closedinfo">This topic is closed</div>
 {% else %}
-  <div id="typinginfo">To create a new post just start typing</div>
+  {% if current_user.may_post_in( topic.board ) %}
+    <div id="typinginfo">To create a new post just start typing</div>
+  {% else %}
+    <div id="typinginfo">You may not post here</div>
+  {% endif %}
 {% endif %}
 <br/>

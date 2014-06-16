@@ -6,5 +6,9 @@
     {% include "inputtools.html" %}
   </div>
 </div>
-<div id="typinginfo">To create a new topic just start typing</div>
+{% if current_user.may_post_in( board ) %}
+  <div id="typinginfo">To create a new post just start typing</div>
+{% else %}
+  <div id="typinginfo">You may not post here</div>
+{% endif %}
 <br/>

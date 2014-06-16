@@ -1,7 +1,7 @@
 <!doctype html>
 {% extends "base.html" %}
 {% block content %}
-<div id="topic" topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}">
+<div id="topic" may-post="{{ current_user.may_post_in(topic.board) }}" topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}">
  <div id="topictitlewrapper">
   <h1 id="topictitle">
    <a href="/board/{{ topic.board_id }}" id="goback">..

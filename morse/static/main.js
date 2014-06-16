@@ -91,6 +91,14 @@ $(document).on("ready", function () {
       return true;
     }
 
+    if($("#topic").attr("may-post") === "False"){
+      return true;
+    }
+
+    if($("#board").attr("may-post") === "False"){
+      return true;
+    }
+
     $("#typinginfo").slideUp(0);
     $("#inputwrapper").slideDown(400);
 
