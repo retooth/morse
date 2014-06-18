@@ -109,13 +109,13 @@ class possibly_banned (object):
             if is_ajax_triggered(self.f):
                 return "banned", 403
             else:
-                return render_template('limitedban.html', current_user = current_user,\
+                return render_template('4xx/403-limitedban.html', current_user = current_user,\
                                        reason = b.reason, expiration = b.expiration), 403
         except PermaBan as b:
             if is_ajax_triggered(self.f):
                 return "banned", 403
             else:
-                return render_template('permaban.html', current_user = current_user,\
+                return render_template('4xx/403-permaban.html', current_user = current_user,\
                                        reason = b.reason), 403
 
 class admin_rights_required (object):
@@ -123,7 +123,7 @@ class admin_rights_required (object):
     """ 
     admin_rights_required is a function decorator that makes sure,
     that the current user has admin privileges. if not it renders
-    the accessdenied template and returns a 403 status code
+    the 403 default template and returns a 403 status code
     """
 
     def __init__ (self, f):
@@ -136,7 +136,7 @@ class admin_rights_required (object):
             if is_ajax_triggered(self.f):
                 return "forbidden", 403
             else:
-                return render_template('accessdenied.html', current_user = current_user), 403
+                return render_template('4xx/403-default.html', current_user = current_user), 403
         return self.f(*args, **kwargs)
 
 def certain_rights_required (may_close = False, may_edit = False, may_stick = False):
@@ -144,7 +144,7 @@ def certain_rights_required (may_close = False, may_edit = False, may_stick = Fa
     """ 
     certain_rights_required is a function decorator that makes sure,
     that the current user has certain privileges. if not it renders
-    the accessdenied template and returns a 403 status code
+    the 403 default template and returns a 403 status code
 
     privileges are set as named parameters, they correspond with
     the privilige flag defined in models.Group
@@ -175,7 +175,7 @@ class _certain_rights_required (object):
         if is_ajax_triggered(self.f):
             return "forbidden", 403
         else:
-            return render_template('accessdenied.html', current_user = current_user), 403
+            return render_template('4xx/403-default.html', current_user = current_user), 403
 
     def __call__ (self, *args, **kwargs):
         for prop, prop_required in self.required.items():

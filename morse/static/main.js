@@ -442,7 +442,7 @@ $(document).on("ready", function () {
     $(this).addClass("buttonspinner");
 
     $.ajax({
-      url: "settings/updateinfo",
+      url: "/account/updateinfo",
       data: $.toJSON(info),
       error: handleAjaxErrorBy( alertInfoSettings ),
       complete: function(){ $("#updateinfo").removeClass("buttonspinner"); },
@@ -484,7 +484,7 @@ $(document).on("ready", function () {
     var account = { newemail : newEmail, newpassword : newPassword, oldpassword : oldPassword };
 
     $.ajax({
-      url: "settings/updateaccount",
+      url: "/account/update",
       data: $.toJSON(account),
       error: handleAjaxErrorBy( alertAccountSettings ),
       complete: function(){ 
@@ -789,7 +789,7 @@ $(document).on("ready", function () {
       var data = new Object({ groupID: groupID, mayEdit : mayEdit, mayClose : mayClose, mayStick : mayStick });
       console.log("changed");
       $.ajax({
-        url: "groups/updateflags",
+        url: "/groups/updateflags",
         data: $.toJSON(data),
         error: [handleAjaxErrorBy(alertGlobal), function(){
           /* reset the flag */
@@ -812,7 +812,7 @@ $(document).on("ready", function () {
       var json = $.toJSON(data);
 
       $.ajax({
-        url: "groups/create",
+        url: "/groups/create",
         data: json,
         error: handleAjaxErrorBy( alertGlobal ),
         success: loadNewGroup,
@@ -888,7 +888,7 @@ $(document).on("ready", function () {
         var json = $.toJSON(data);
 
         $.ajax({
-          url: "groups/delete",
+          url: "/groups/delete",
           data: json,
           error: handleAjaxErrorBy( alertGlobal ),
           success: function(){

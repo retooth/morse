@@ -19,11 +19,11 @@
   {% endif %}
   <div class="clear"></div>
 </header>
-{% include "alerts.html" %}
+{% include "alerts/global.html" %}
 {% if current_user.is_anonymous() %}
- {% include "guestnav.html" %}
+ {% include "menu/guests.html" %}
 {% else %}
- {% include "usernav.html" %}
+ {% include "menu/user.html" %}
 {% endif %}
 <br />
 {% block content %}{% endblock %}

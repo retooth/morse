@@ -85,14 +85,14 @@ def install ():
 
     return redirect(url_for('index'))
 
-@app.route('/register' , methods=['GET','POST'])
+@app.route('/account/register' , methods=['GET','POST'])
 def register():
     """ 
     Renders the register view on GET / registers a new user on POST
     :rtype: html
     """
     if request.method == 'GET':
-        return render_template('register.html')
+        return render_template('account/register.html')
     
     username = request.form['username']
     password = request.form['password']
@@ -105,7 +105,7 @@ def register():
     # for one email)
     user_exists = User.query.filter(User.username.like(username)).first()
     if user_exists:
-        return render_template('register.html', alert = 'userexists');
+        return render_template('account/register.html', alert = 'userexists');
 
     # all fine, create the new user
     user = User(username, password, email)
@@ -123,26 +123,26 @@ def register():
     return render_template('boards.html', alert = 'registered')
 
  
-@app.route('/login',methods=['GET','POST'])
+@app.route('/account/login',methods=['GET','POST'])
 def login():
     """ 
     Renders the login view on GET / logs a user in on POST
     :rtype: html
     """
     if request.method == 'GET':
-        return render_template('login.html')
+        return render_template('account/login.html')
 
     username = request.form['username']
     password = request.form['password']
     registered_user = User.query.filter(User.username.like(username)).first()
 
     if not registered_user or not registered_user.has_password(password):
-        return render_template('login.html', alert = 'loginfailed')
+        return render_template('account/login.html', alert = 'loginfailed')
 
     login_user(registered_user)
     return redirect(request.args.get('next') or url_for('index'))
 
-@app.route('/logout')
+@app.route('/account/logout')
 def logout():
     """ 
     Logs out and redirects to index
@@ -161,7 +161,7 @@ def index():
     """
     check_ban()
     visible, readable, writable = get_my_boards()
-    return render_template('boards.html', boards = visible, current_user = current_user)
+    return render_template('index.html', boards = visible, current_user = current_user)
 
 @app.route('/board/<board_id>')
 @possibly_banned
@@ -175,7 +175,7 @@ def board(board_id):
     # TODO: order topics by timestamp
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not int(board_id) in readable:
-        return render_template('accessdenied.html', current_user = current_user)
+        return render_template('4xx/403-default.html', current_user = current_user), 403
 
     board  = Board.query.filter(Board.id.like(board_id)).first()
     topics = Topic.query.filter(Topic.board_id.like(board_id)).all()
@@ -266,7 +266,7 @@ def DummyBoard ():
     board.id = 0
     return board
 
-@app.route('/newboard', methods=["GET", "POST"])
+@app.route('/admin/newboard', methods=["GET", "POST"])
 @login_required
 @admin_rights_required
 def newboard():
@@ -277,7 +277,7 @@ def newboard():
     """
     if request.method == 'GET':
         dummy = DummyBoard()
-        return render_template('newboard.html', current_user = current_user, board = dummy)
+        return render_template('admin/newboard.html', current_user = current_user, board = dummy)
 
     title = request.form['boardtitle']
     description = request.form['boardescription']
@@ -315,7 +315,7 @@ def update_groupmodes (board_id, group_ids, r, w, v):
         groupmode.w = w
         groupmode.v = v
 
-@app.route('/updateboard/<board_id>', methods=["GET", "POST"])
+@app.route('/admin/updateboard/<board_id>', methods=["GET", "POST"])
 @login_required
 @admin_rights_required
 def updateboard(board_id):
@@ -329,7 +329,7 @@ def updateboard(board_id):
         return "", 400
 
     if request.method == 'GET':
-        return render_template('updateboard.html', current_user = current_user, board = board)
+        return render_template('admin/updateboard.html', current_user = current_user, board = board)
 
     board.title = request.form['boardtitle']
     board.description = request.form['boardescription']
@@ -348,16 +348,16 @@ def updateboard(board_id):
 
     return redirect(url_for('index'))
 
-@app.route('/managegroups', methods=['GET'])
+@app.route('/admin/groups', methods=['GET'])
 @login_required
 @admin_rights_required
-def managegroups ():
+def manage_groups ():
     """ 
     Renders the group management view
     :rtype: html
     """
     groups = Group.query.all()
-    return render_template('managegroups.html', current_user = current_user,\
+    return render_template('admin/groups.html', current_user = current_user,\
                             groups = groups)
 
 @app.route('/userlist.json', methods=['GET'])
@@ -530,7 +530,7 @@ def hyperlink (website):
     """ mapping function (see below) """
     return website.hyperlink
 
-@app.route('/settings')
+@app.route('/account/settings')
 @login_required
 @possibly_banned
 def settings():
@@ -549,10 +549,10 @@ def settings():
     bio = current_user.bio
     email = current_user.email
 
-    return render_template('settings.html', current_user = current_user, \
+    return render_template('account/settings.html', current_user = current_user, \
                             websites = websites, bio = bio, email = email)
 
-@app.route('/settings/updateinfo', methods=['POST'])
+@app.route('/account/updateinfo', methods=['POST'])
 @login_required
 @possibly_banned
 @ajax_triggered
@@ -584,7 +584,7 @@ def updateinfo ():
     db.session.commit()
     return ""
 
-@app.route('/settings/updateaccount', methods=['POST'])
+@app.route('/account/update', methods=['POST'])
 @login_required
 @possibly_banned
 @ajax_triggered
@@ -694,7 +694,8 @@ def showtopic (topic_id):
     topic = TopicWrapper(topic)
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not topic.board_id in readable:
-        return render_template('accessdenied.html', current_user = current_user)
+        return render_template('4xx/403-default.html', current_user = current_user), 403
+
     posts = map(PostWrapper, topic.posts)
     return render_template("topic.html", topic = topic, \
                            posts = posts, current_user = current_user)

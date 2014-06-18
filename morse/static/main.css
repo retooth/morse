@@ -163,7 +163,7 @@ header {
   text-decoration:none;
 }
 
-.boardentry {
+.boarditem {
   border-radius: 3pt;
   border: 1pt solid #ccc;
   padding:5pt 5pt 5pt 5pt;
@@ -172,7 +172,7 @@ header {
   box-shadow:1px 1px #ddd;
 }
 
-.boardentry:hover {
+.boarditem:hover {
   background:#fff;
 }
 
@@ -220,7 +220,7 @@ header {
       margin-left:10pt;
     }
 
-    .topicentry {
+    .topicitem {
       border-radius: 3pt;
       border: 1pt solid #ccc;
       padding:5pt 5pt 5pt 5pt;
@@ -229,7 +229,7 @@ header {
       box-shadow:1px 1px #ddd;
     }
 
-    .topicentry:hover {
+    .topicitem:hover {
       background:#fff;
     }
 
@@ -347,7 +347,7 @@ header {
       display:none;
     }
 
-    .postentry {
+    .postitem {
       border-radius: 3pt;
       border: 1pt solid #ccc;
       padding:5pt 5pt 5pt 5pt;

@@ -1,4 +1,4 @@
-<div class="boardentry">
+<div class="boarditem">
  <a class="divwrapper" href="/board/{{ board.id }}">
   <div class="boardtitlewrapper">
    <span class="boardtitle">{{ board.title }}</span> 
@@ -7,7 +7,7 @@
  </a>
  <div class="boardtools">
    {% if current_user.may_structure %}
-   <a href="/updateboard/{{ board.id }}">
+   <a href="/admin/updateboard/{{ board.id }}">
        <button class="editboard"></button>
    </a>
    {% endif %}

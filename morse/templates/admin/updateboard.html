@@ -3,17 +3,17 @@
 {% block content %}
 <div id="adminwrapper">
 <b>Update Board</b><br/><br/>
-<form id="boardsettings" action="/updateboard/{{ board.id }}" method="POST">
+<form id="boardsettings" action="/admin/updateboard/{{ board.id }}" method="POST">
     <input type="text" name="boardtitle" id="newboardtitle" 
            class="first" value="{{board.title}}" placeholder="Name of the board"/>
     <input type="text" name="boardescription" id="newboarddescription" 
            class="last" value="{{board.description}}" placeholder="A little description"/>
     <br/>
     <br/>
-    {% include "groupmode.html" %}
+    {% include "admin/groupmode.html" %}
     <br/>
     <input type="submit" class="submit floatleft" value="Update"/>
-    {% include "boardsettingsalerts.html" %}
+    {% include "alerts/boardsettings.html" %}
     <div class="clear"></div>
 </form>
 </div>

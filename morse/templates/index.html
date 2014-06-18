@@ -4,12 +4,12 @@
 {% if current_user.may_structure %}
   <div id="admintools">
     <div id="createnewboard">
-       <a href="/newboard"><img src="{{ url_for('static', filename='plus.png') }}"/></a>
+       <a href="/admin/newboard"><img src="{{ url_for('static', filename='plus.png') }}"/></a>
     </div>
     <div class="clear"></div>
   </div>
 {% endif %}
 {% for board in boards %}
-    {% include "boardentry.html" %}
+    {% include "items/board.html" %}
 {% endfor %}
 {% endblock %}
