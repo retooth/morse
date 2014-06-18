@@ -37,7 +37,6 @@ from flask.ext.login import current_user
 DEFAULT_MODE_DUMMY_ID = 0
 
 # Integration into flask login extension
-
 login_manager = LoginManager()
 login_manager.login_view = 'login'
 login_manager.anonymous_user = GuestMixin
@@ -45,6 +44,10 @@ login_manager.anonymous_user = GuestMixin
 @login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+@app.context_processor
+def inject_user():
+    return dict(current_user=current_user)
 
 @app.route('/install')
 def install ():
@@ -161,7 +164,7 @@ def index():
     """
     check_ban()
     visible, readable, writable = get_my_boards()
-    return render_template('index.html', boards = visible, current_user = current_user)
+    return render_template('index.html', boards = visible)
 
 @app.route('/board/<board_id>')
 @possibly_banned
@@ -175,13 +178,12 @@ def board(board_id):
     # TODO: order topics by timestamp
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not int(board_id) in readable:
-        return render_template('4xx/403-default.html', current_user = current_user), 403
+        return render_template('4xx/403-default.html'), 403
 
     board  = Board.query.filter(Board.id.like(board_id)).first()
     topics = Topic.query.filter(Topic.board_id.like(board_id)).all()
     topics = map(TopicWrapper, topics)
-    return render_template('board.html', board = board, \
-                            topics = topics, current_user = current_user)
+    return render_template('board.html', board = board, topics = topics)
 
 @app.route('/closethread', methods=['POST'])
 @login_required
@@ -232,7 +234,7 @@ def admin():
     Renders the admin view
     :rtype: html
     """
-    return render_template('admin.html', current_user = current_user)
+    return render_template('admin.html')
 
 def formlist_to_group_ids (form, prefix):
     i = 0
@@ -277,7 +279,7 @@ def newboard():
     """
     if request.method == 'GET':
         dummy = DummyBoard()
-        return render_template('admin/newboard.html', current_user = current_user, board = dummy)
+        return render_template('admin/newboard.html', board = dummy)
 
     title = request.form['boardtitle']
     description = request.form['boardescription']
@@ -329,7 +331,7 @@ def updateboard(board_id):
         return "", 400
 
     if request.method == 'GET':
-        return render_template('admin/updateboard.html', current_user = current_user, board = board)
+        return render_template('admin/updateboard.html', board = board)
 
     board.title = request.form['boardtitle']
     board.description = request.form['boardescription']
@@ -357,8 +359,7 @@ def manage_groups ():
     :rtype: html
     """
     groups = Group.query.all()
-    return render_template('admin/groups.html', current_user = current_user,\
-                            groups = groups)
+    return render_template('admin/groups.html', groups = groups)
 
 @app.route('/userlist.json', methods=['GET'])
 @login_required
@@ -549,7 +550,7 @@ def settings():
     bio = current_user.bio
     email = current_user.email
 
-    return render_template('account/settings.html', current_user = current_user, \
+    return render_template('account/settings.html', \
                             websites = websites, bio = bio, email = email)
 
 @app.route('/account/updateinfo', methods=['POST'])
@@ -694,11 +695,10 @@ def showtopic (topic_id):
     topic = TopicWrapper(topic)
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not topic.board_id in readable:
-        return render_template('4xx/403-default.html', current_user = current_user), 403
+        return render_template('4xx/403-default.html'), 403
 
     posts = map(PostWrapper, topic.posts)
-    return render_template("topic.html", topic = topic, \
-                           posts = posts, current_user = current_user)
+    return render_template("topic.html", topic = topic, posts = posts)
 
 @app.route('/read', methods=['POST'])
 @ajax_triggered
