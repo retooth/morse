@@ -97,7 +97,7 @@ header {
           margin-top:5pt;
           float:right;
           width:200pt;
-          left:70%;
+          right:6pt;
           box-shadow:1px 1px #ddd;
         }
 
@@ -378,7 +378,7 @@ header {
           .postsidebar .profileimage{
             background-size: 64px 64px;
             border-radius: 50%;
-            display: block;
+            display: inline-block;
             height: 64px;
             width: 64px;
             border:2pt solid white;
