@@ -272,6 +272,16 @@ def get_my_boards (user = current_user, get_only_ids = False):
                 visible_boards.append(board)
     return visible_boards, readable_boards, writable_boards 
 
+def make_url_compatible (string):
+    """removes all characters except alphanumeric ones and
+    whitespaces, which are substituted with underscores"""
+    allowed = []
+    for char in string:
+        if char.isalnum() or char == " ":
+            allowed.append(char)
+    allowed = ''.join(allowed)
+    return allowed.replace(" ", "_")
+
 class Board (db.Model):
     __tablename__ = "boards"
     id = db.Column(db.Integer, primary_key=True)
@@ -281,6 +291,11 @@ class Board (db.Model):
     def __init__ (self, title="", description=""):
         self.title = title
         self.description = description
+
+    @property
+    def seostring (self):
+        string = str(self.id) + "-" + make_url_compatible(self.title) 
+        return string
 
     @property
     def ignorantgroups (self):
@@ -443,6 +458,11 @@ class Topic (db.Model):
         self.title = title
         self.sticky = False
         self.closed = False
+
+    @property
+    def seostring (self):
+        string = str(self.id) + "-" + make_url_compatible(self.title) 
+        return string
 
     @property
     def posts (self):

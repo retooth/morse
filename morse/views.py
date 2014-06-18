@@ -166,13 +166,15 @@ def index():
     visible, readable, writable = get_my_boards()
     return render_template('index.html', boards = visible)
 
-@app.route('/board/<board_id>')
+@app.route('/board/<board_str>')
 @possibly_banned
-def board(board_id):
+def board(board_str):
     """ 
     Renders the board view for board_id
     :rtype: html
     """
+    board_id = int(board_str.split("-")[0])
+
     check_ban(board_id)
 
     # TODO: order topics by timestamp
@@ -678,15 +680,16 @@ def post (topic_id):
     return jsonify(postId = post.id)
 
 
-@app.route('/topic/<topic_id>', methods=['GET'])
+@app.route('/topic/<topic_str>', methods=['GET'])
 @possibly_banned
-def showtopic (topic_id):
+def showtopic (topic_str):
     """ 
     renders topic view
     :param topic_id: indicates topic view to render
     :rtype: html 
     """
 
+    topic_id = int(topic_str.split("-")[0])
     # TODO: page numbers
     # TODO: order by timestamp
     topic = Topic.query.filter(Topic.id.like(topic_id)).first()

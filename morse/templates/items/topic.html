@@ -2,7 +2,7 @@
     {% if topic.isfresh %} fresh {% endif %}
     {% if topic.closed %} topicclosed {% endif %}
     ">
-  <a class="divwrapper" href="/topic/{{ topic.id }}">
+  <a class="divwrapper" href="/topic/{{ topic.seostring }}">
     <div class="topictitle">
      <span class="topictitle">{{ topic.title | safe }}</span> 
     </div>

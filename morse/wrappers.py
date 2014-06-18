@@ -91,6 +91,10 @@ class TopicWrapper (object):
                                         TopicFollow.topic_id.like(self.topic.id)).first()
 
     @property
+    def seostring (self):
+        return self.topic.seostring
+
+    @property
     def followed (self):
         """ signifies, if follow flag is set """
         relation = self._getfollowrelation()
