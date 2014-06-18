@@ -82,6 +82,12 @@ $(document).on("ready", function () {
      * on the board or topic view
     * */
 
+    // ignore keystrokes, that are not letters, numbers or signs
+    if (!(keyevent.which >= 65 && keyevent.which <= 90) &&
+        !(keyevent.which >= 48 && keyevent.which <= 57)){
+        return true;
+    }
+
     if ($("#topic").length === 0 &&
         $("#board").length === 0){
         return true;
