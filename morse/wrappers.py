@@ -60,10 +60,10 @@ class PostWrapper (object):
 
     @property
     def isfresh (self):
-        postread = PostRead.query.filter(PostRead.user_id.like(current_user.id),\
-                                         PostRead.post_id.like(self.post.id)).first()
+        postread = PostRead.query.filter(PostRead.user_id == current_user.id,\
+                                         PostRead.post_id == self.post.id).first()
 
-        topic = Topic.query.filter(Topic.id.like(self.topic_id)).first()
+        topic = Topic.query.get(self.topic_id)
         topic = TopicWrapper(topic)
         if not postread and topic.followed:
             return True
@@ -87,8 +87,8 @@ class TopicWrapper (object):
         self.topic = topic
 
     def _getfollowrelation(self):
-        return TopicFollow.query.filter(TopicFollow.user_id.like(current_user.id), \
-                                        TopicFollow.topic_id.like(self.topic.id)).first()
+        return TopicFollow.query.filter(TopicFollow.user_id == current_user.id, \
+                                        TopicFollow.topic_id == self.topic.id).first()
 
     @property
     def seostring (self):

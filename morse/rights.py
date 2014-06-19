@@ -45,22 +45,22 @@ def check_ban (board_id = ALL_BOARDS):
 
     ip = request.remote_addr
 
-    banned = LimitedIPBan.query.filter(LimitedIPBan.board_id.like(board_id)).all()
+    banned = LimitedIPBan.query.filter(LimitedIPBan.board_id == board_id).all()
     for b in banned:
         if ip in b.ip_range:
             raise LimitedBan(b.reason, b.expires)
 
-    banned = PermaIPBan.query.filter(PermaIPBan.board_id.like(board_id)).all()
+    banned = PermaIPBan.query.filter(PermaIPBan.board_id == board_id).all()
     for b in banned:
         if ip in b.ip_range:
             raise PermaBan(b.reason)
 
-    banned = LimitedUserBan.query.filter(LimitedUserBan.board_id.like(board_id)).all()
+    banned = LimitedUserBan.query.filter(LimitedUserBan.board_id == board_id).all()
     for b in banned:
         if current_user.id == b.user_id:
             raise LimitedBan(b.reason, b.expires)
 
-    banned = PermaUserBan.query.filter(PermaUserBan.board_id.like(board_id)).all()
+    banned = PermaUserBan.query.filter(PermaUserBan.board_id == board_id).all()
     for b in banned:
         if current_user.id == b.user_id:
             raise PermaBan(b.reason)

@@ -106,7 +106,7 @@ class User (db.Model):
         """ signifies if user may manipulate groups and create/delete/deactivate boards.
         This property is read only. To change it for a specific user, move him/her
         to the admin group or create a group with the may_structure flag """
-        relations = GroupMember.query.filter(GroupMember.user_id.like(self.id)).all() 
+        relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
         for r in relations:
             group = Group.query.get(r.group_id)
             if group.may_structure:
@@ -119,7 +119,7 @@ class User (db.Model):
         """ signifies if user may edit *ALL* posts. This is typically a moderator's right.
         This property is read only. To change it for a specific user, move him/her
         to the moderator / admin group or create a group with the may_edit flag """
-        relations = GroupMember.query.filter(GroupMember.user_id.like(self.id)).all() 
+        relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
         for r in relations:
             group = Group.query.get(r.group_id)
             if group.may_edit:
@@ -132,7 +132,7 @@ class User (db.Model):
         """ signifies if user may close threads. This is typically a moderator's right.
         This property is read only. To change it for a specific user, move him/her
         to the moderator / admin group or create a group with the may_close flag """
-        relations = GroupMember.query.filter(GroupMember.user_id.like(self.id)).all() 
+        relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
         for r in relations:
             group = Group.query.get(r.group_id)
             if group.may_close:
@@ -233,14 +233,14 @@ def get_my_boards (user = current_user, get_only_ids = False):
         relations = [dummy]
     else:
         user_id = user.id
-        relations = GroupMember.query.filter(GroupMember.user_id.like(user_id)).all() 
+        relations = GroupMember.query.filter(GroupMember.user_id == user_id).all() 
 
     # stack rights
     boardmodes = {}
     for r in relations:
         # exclude the 0 board id, because it is only used to save the groupmode default
         # (there is no corresponding board for it)
-        modes = GroupMode.query.filter(GroupMode.group_id.like(r.group_id), not_(GroupMode.board_id.like(0))).all()
+        modes = GroupMode.query.filter(GroupMode.group_id == r.group_id, not_(GroupMode.board_id == 0)).all()
         for mode in modes:
             board_id = mode.board_id
             if not boardmodes.has_key(board_id):
@@ -255,7 +255,7 @@ def get_my_boards (user = current_user, get_only_ids = False):
     writable_boards = []
     for board_id, mode in boardmodes.iteritems():
         if mode.v:
-            board = Board.query.filter(Board.id.like(board_id)).first()
+            board = Board.query.filter(Board.id == board_id).first()
             if mode.w:
                 if get_only_ids: 
                     writable_boards.append(board.id)
@@ -302,10 +302,10 @@ class Board (db.Model):
         """ returns groups that relate to this 
         board with no right flag at all 
         :rtype [Group] """
-        relationships = GroupMode.query.filter(GroupMode.board_id.like(self.id), \
-                                               GroupMode.v.like(0), \
-                                               GroupMode.r.like(0), \
-                                               GroupMode.w.like(0)).all()
+        relationships = GroupMode.query.filter(GroupMode.board_id == self.id, \
+                                               GroupMode.v == False, \
+                                               GroupMode.r == False, \
+                                               GroupMode.w == False).all()
         return map(groupmode_to_group, relationships)
 
     @property
@@ -313,10 +313,10 @@ class Board (db.Model):
         """ returns groups that relate to this 
         board with only a (v)isible flag 
         :rtype [Group] """
-        relationships = GroupMode.query.filter(GroupMode.board_id.like(self.id), \
-                                               GroupMode.v.like(1), \
-                                               GroupMode.r.like(0), \
-                                               GroupMode.w.like(0)).all()
+        relationships = GroupMode.query.filter(GroupMode.board_id == self.id, \
+                                               GroupMode.v == True, \
+                                               GroupMode.r == False, \
+                                               GroupMode.w == False).all()
         return map(groupmode_to_group, relationships)
         groups = []
 
@@ -325,10 +325,10 @@ class Board (db.Model):
         """ returns groups that relate to this 
         board with a (v)isible and (r)eadable flag 
         :rtype [Group] """
-        relationships = GroupMode.query.filter(GroupMode.board_id.like(self.id), \
-                                               GroupMode.v.like(1), \
-                                               GroupMode.r.like(1), \
-                                               GroupMode.w.like(0)).all()
+        relationships = GroupMode.query.filter(GroupMode.board_id == self.id, \
+                                               GroupMode.v == True, \
+                                               GroupMode.r == True, \
+                                               GroupMode.w == False).all()
         return map(groupmode_to_group, relationships)
 
     @property
@@ -336,10 +336,10 @@ class Board (db.Model):
         """ returns groups that relate to this 
         board with a (v)isible, (r)eadable and (w)ritable flag 
         :rtype [Group] """
-        relationships = GroupMode.query.filter(GroupMode.board_id.like(self.id), \
-                                               GroupMode.v.like(1), \
-                                               GroupMode.r.like(1), \
-                                               GroupMode.w.like(1)).all()
+        relationships = GroupMode.query.filter(GroupMode.board_id == self.id, \
+                                               GroupMode.v == True, \
+                                               GroupMode.r == True, \
+                                               GroupMode.w == True).all()
         return map(groupmode_to_group, relationships)
 
 class Group (db.Model):
@@ -366,7 +366,7 @@ class Group (db.Model):
         """ all members of this group
         :rtype [User] """
         members = []
-        relations = GroupMember.query.filter(GroupMember.group_id.like(self.id)).all()        
+        relations = GroupMember.query.filter(GroupMember.group_id == self.id).all()        
         for r in relations:
             member = User.query.get(r.user_id)
             members.append(member)
@@ -405,7 +405,8 @@ class GroupMode (db.Model):
 
     __tablename__ = "groupmode"
     group_id = db.Column(db.Integer, db.ForeignKey('groups.id'), primary_key=True)
-    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'), primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True) # no foreign key here, because
+                                                       # of 0-dummy value
     r = db.Column(db.Boolean) # read
     w = db.Column(db.Boolean) # write
     v = db.Column(db.Boolean) # visible
@@ -467,7 +468,7 @@ class Topic (db.Model):
     @property
     def posts (self):
         """ Returns all posts of this topic :rtype [Post] """    
-        return Post.query.filter(Post.topic_id.like(self.id)).all()
+        return Post.query.filter(Post.topic_id == self.id).all()
 
 class TopicFollow (db.Model):
 

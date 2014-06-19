@@ -106,7 +106,7 @@ def register():
     # make sure, that username doesn't exist
     # in the database (we allow multiple accounts
     # for one email)
-    user_exists = User.query.filter(User.username.like(username)).first()
+    user_exists = User.query.filter(User.username == username).first()
     if user_exists:
         return render_template('account/register.html', alert = 'userexists');
 
@@ -137,7 +137,7 @@ def login():
 
     username = request.form['username']
     password = request.form['password']
-    registered_user = User.query.filter(User.username.like(username)).first()
+    registered_user = User.query.filter(User.username == username).first()
 
     if not registered_user or not registered_user.has_password(password):
         return render_template('account/login.html', alert = 'loginfailed')
@@ -182,8 +182,8 @@ def board(board_str):
     if not int(board_id) in readable:
         return render_template('4xx/403-default.html'), 403
 
-    board  = Board.query.filter(Board.id.like(board_id)).first()
-    topics = Topic.query.filter(Topic.board_id.like(board_id)).all()
+    board  = Board.query.filter(Board.id == board_id).first()
+    topics = Topic.query.filter(Topic.board_id == board_id).all()
     topics = map(TopicWrapper, topics)
     return render_template('board.html', board = board, topics = topics)
 
@@ -198,6 +198,7 @@ def closethread ():
     for .closethread in main.js
     """
     # XXX: check for bans? should moderators be bannable?
+    print request.json
     topic_id = request.json['topicID']
     topic = Topic.query.get(topic_id)
     # FIXME (global) always check if ids were found
@@ -295,10 +296,10 @@ def newboard():
     poster_ids   = formlist_to_group_ids(request.form, "poster")
 
     # please note: GroupMode() != GroupModes()
-    ignorant_modes = GroupModes(board.id, ignorant_ids, 0, 0, 0)
-    knowonly_modes = GroupModes(board.id, knowonly_ids, 0, 0, 1)
-    readonly_modes = GroupModes(board.id, readonly_ids, 1, 0, 1)
-    poster_modes   = GroupModes(board.id, poster_ids, 1, 1, 1)
+    ignorant_modes = GroupModes(board.id, ignorant_ids, False, False, False)
+    knowonly_modes = GroupModes(board.id, knowonly_ids, False, False, True)
+    readonly_modes = GroupModes(board.id, readonly_ids, True, False, True)
+    poster_modes   = GroupModes(board.id, poster_ids, True, True, True)
 
     add_to_session(ignorant_modes)
     add_to_session(knowonly_modes)
@@ -313,8 +314,8 @@ def update_groupmodes (board_id, group_ids, r, w, v):
     """ updates a list of groupmodes identified by board id
     and group ids """
     for group_id in group_ids:
-        groupmode = GroupMode.query.filter(GroupMode.board_id.like(board_id),\
-                                           GroupMode.group_id.like(group_id)).first()
+        groupmode = GroupMode.query.filter(GroupMode.board_id == board_id,\
+                                           GroupMode.group_id == group_id).first()
         groupmode.r = r
         groupmode.w = w
         groupmode.v = v
@@ -396,8 +397,8 @@ def add_user_to_group():
     user_id = request.json["userID"]
     group_id = request.json["groupID"]
     # check if user is already in group
-    already_in_group = GroupMember.query.filter(GroupMember.user_id.like(user_id),
-                                                GroupMember.group_id.like(group_id)).first()
+    already_in_group = GroupMember.query.filter(GroupMember.user_id == user_id,
+                                                GroupMember.group_id == group_id).first()
     if already_in_group:
         return "alreadyingroup", 412
 
@@ -418,8 +419,8 @@ def remove_user_from_group():
     user_id = request.json["userID"]
     group_id = request.json["groupID"]
     # check if user is already in group
-    rel = GroupMember.query.filter(GroupMember.user_id.like(user_id),
-                                   GroupMember.group_id.like(group_id)).first()
+    rel = GroupMember.query.filter(GroupMember.user_id == user_id,
+                                   GroupMember.group_id == group_id).first()
     if not rel:
         return "notingroup", 404
 
@@ -483,7 +484,7 @@ def create_group ():
     name = request.json['name']
 
     #check if group already exists
-    already_exists = Group.query.filter(Group.name.like(name)).first()
+    already_exists = Group.query.filter(Group.name == name).first()
     if already_exists:
         return "groupexists", 412
 
@@ -515,11 +516,11 @@ def delete_group ():
     """
     group_id = request.json['groupID']
 
-    members = GroupMember.query.filter(GroupMember.group_id.like(group_id)).all()
+    members = GroupMember.query.filter(GroupMember.group_id == group_id).all()
     for m in members:
         db.session.delete(m)
 
-    modes = GroupMode.query.filter(GroupMode.group_id.like(group_id)).all()
+    modes = GroupMode.query.filter(GroupMode.group_id == group_id).all()
     for m in modes:
         db.session.delete(m)
 
@@ -543,7 +544,7 @@ def settings():
     """
     check_ban()
 
-    websites = UserWebsite.query.filter(UserWebsite.user_id.like(current_user.id)).all()
+    websites = UserWebsite.query.filter(UserWebsite.user_id == current_user.id).all()
     if not websites:
         websites = [""]
     else:
@@ -570,7 +571,7 @@ def updateinfo ():
     user = User.query.get(current_user.id)
     user.bio = info["bio"]
 
-    websites = UserWebsite.query.filter(UserWebsite.user_id.like(current_user.id)).all()
+    websites = UserWebsite.query.filter(UserWebsite.user_id == current_user.id).all()
     # it's easier to remove and redo them
     # than to check which has changed and
     # which is new
@@ -656,7 +657,7 @@ def post (topic_id):
     :param topic_id: topic to which the posts belongs
     :rtype: json 
     """
-    topic = Topic.query.filter(Topic.id.like(topic_id)).first()
+    topic = Topic.query.get(topic_id)
     check_ban(topic.board_id)
 
     visible, readable, writable = get_my_boards(get_only_ids = True)
@@ -692,7 +693,8 @@ def showtopic (topic_str):
     topic_id = int(topic_str.split("-")[0])
     # TODO: page numbers
     # TODO: order by timestamp
-    topic = Topic.query.filter(Topic.id.like(topic_id)).first()
+    # TODO: check if topic exists
+    topic = Topic.query.get(topic_id)
     check_ban(topic.board_id)
 
     topic = TopicWrapper(topic)
@@ -718,7 +720,7 @@ def read ():
     post_ids = request.json
     posts = []
     for post_id in post_ids:
-        post = Post.query.filter(Post.id.like(post_id)).first()
+        post = Post.query.get(post_id)
         posts.append(post)
     posts = map(PostWrapper, posts)
     for post in posts:
@@ -733,8 +735,8 @@ def follow ():
     follows a topic. this function is called via ajax
     by the click event handler for #followswitch in main.js
     """
-    topic_id = request.json
-    topic = Topic.query.filter(Topic.id.like(topic_id)).first()
+    topic_id = int(request.json)
+    topic = Topic.query.get(topic_id)
     topic = TopicWrapper(topic)
     topic.follow()
     return ""
@@ -747,8 +749,8 @@ def unfollow ():
     unfollows a topic. this function is called via ajax
     by the click event handler for #followswitch in main.js
     """
-    topic_id = request.json
-    topic = Topic.query.filter(Topic.id.like(topic_id)).first()
+    topic_id = int(request.json)
+    topic = Topic.query.get(topic_id)
     topic = TopicWrapper(topic)
     topic.unfollow()
     return ""

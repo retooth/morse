@@ -1,9 +1,9 @@
 #!/usr/bin/python
 # Pool configuration file
 
-DATABASE = 'morse.db'
+DATABASE = 'morse'
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE
+SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2:///' + DATABASE
 SQLALCHEY_ECHO = True
 
 DEBUG = True
