@@ -344,10 +344,10 @@ def updateboard(board_id):
     readonly_ids = formlist_to_group_ids(request.form, "readonly")
     poster_ids   = formlist_to_group_ids(request.form, "poster")
 
-    update_groupmodes(board.id, ignorant_ids, 0, 0, 0)
-    update_groupmodes(board.id, knowonly_ids, 0, 0, 1)
-    update_groupmodes(board.id, readonly_ids, 1, 0, 1)
-    update_groupmodes(board.id, poster_ids, 1, 1, 1)
+    update_groupmodes(board.id, ignorant_ids, False, False, False)
+    update_groupmodes(board.id, knowonly_ids, False, False, True)
+    update_groupmodes(board.id, readonly_ids, True, False, True)
+    update_groupmodes(board.id, poster_ids, True, True, True)
 
     db.session.commit()
 
