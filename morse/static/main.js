@@ -313,10 +313,10 @@ $(document).on("ready", function () {
 
 
   /* board info banners (TODO: replace with something good) */
-  $(".boardentry").on("mouseenter", function (){
+  $(".boarditem").on("mouseenter", function (){
   });
 
-  $(".boardentry").on("mouseleave", function (){
+  $(".boarditem").on("mouseleave", function (){
   });
 
 
@@ -916,7 +916,7 @@ $(document).on("ready", function () {
   /* moderation (group management) ------------ */
 
   $("button.closethread").click(function(){
-    var topicID = $(this).parents(".topicentry").attr("topic-id");
+    var topicID = $(this).parents(".topicitem").attr("topic-id");
     var data = new Object({ topicID: topicID });
     var json = $.toJSON(data);
 
@@ -926,16 +926,16 @@ $(document).on("ready", function () {
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(response){
         topicID = response.closedID;
-        var entry = $(".topicentry[topic-id=\"" + topicID + "\"]");
-        entry.addClass("topicclosed");
-        entry.find(".closethread").fadeOut(0);
-        entry.find(".openthread").fadeIn(200);
+        var item = $(".topicitem[topic-id=\"" + topicID + "\"]");
+        item.addClass("topicclosed");
+        item.find(".closethread").fadeOut(0);
+        item.find(".openthread").fadeIn(200);
       },
     });
   });
 
   $("button.openthread").click(function(){
-    var topicID = $(this).parents(".topicentry").attr("topic-id");
+    var topicID = $(this).parents(".topicitem").attr("topic-id");
     var data = new Object({ topicID: topicID });
     var json = $.toJSON(data);
 
@@ -945,10 +945,10 @@ $(document).on("ready", function () {
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(response){
         topicID = response.openedID;
-        var entry = $(".topicentry[topic-id=\"" + topicID + "\"]");
-        entry.removeClass("topicclosed");
-        entry.find(".openthread").fadeOut(0);
-        entry.find(".closethread").fadeIn(200);
+        var item = $(".topicitem[topic-id=\"" + topicID + "\"]");
+        item.removeClass("topicclosed");
+        item.find(".openthread").fadeOut(0);
+        item.find(".closethread").fadeIn(200);
       },
     });
   });
