@@ -105,18 +105,18 @@ $(document).on("ready", function () {
       return true;
     }
 
-    $("#typinginfo").slideUp(0);
-    $("#inputwrapper").slideDown(400);
 
     var activeID = $(document.activeElement).attr("id");
     var atNewPost = $("#newposttext").length > 0;
     var atNewTopic = $("#newtopictitle").length > 0;
-    var pressedReturn = (keyevent.which === KEY_RETURN);
 
     if (activeID !== "newtopictitle" &&
         activeID !== "newtopictext" &&
         activeID !== "newposttext" &&
         activeID !== "newhref"){
+
+      $("#typinginfo").slideUp(0);
+      $("#inputwrapper").slideDown(400);
 
       if (atNewPost){
         $("#newposttext").focus();
@@ -124,13 +124,18 @@ $(document).on("ready", function () {
         $("#newtopictitle").focus();
       }
 
-    }else if (activeID === "newtopictitle" && pressedReturn){
-      $("#newtopictext").focus();
-      keyevent.preventDefault();
-    }  
+    }else{
+      return true;
+    }
 
   });
 
+  $("#newtopictitle").keydown(function(keyevent){
+    if (keyevent.which === KEY_RETURN){
+      $("#newtopictext").focus();
+      keyevent.preventDefault();
+    }
+  });
 
   $("#docreate").on("click", function(){
     /* TODO: check blankpost
