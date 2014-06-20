@@ -15,10 +15,8 @@
   {% endfor %}
 
   <br id="anotherwebsitebr"/>
-  <br/>
   <button id="anotherwebsite">I have another website</button>
   <button id="updateinfo" class="updatesettings" >Update my info</button>
-
   <div id="infosettingsalert_ajax" class="infosettingsalert">Error connecting to the server</div>
   <div id="infosettingsalert_banned" class="infosettingsalert">You seem to be banned. Refresh for more info</div>
   <div class="clear"></div>
@@ -26,9 +24,9 @@
 
   <b>Account Details</b><br/>
   <br/>
-  <input id="newemail" class="accountdetail settings first" placeholder="Email" value="{{ email }}"/>
-  <input id="newpassword" type="password" class="accountdetail settings middle" placeholder="New password"/>
-  <input id="newpasswordagain" type="password" class="accountdetail settings last" placeholder="New password (again)"/>
+  <input id="newemail" class="accountdetail settings first" placeholder="Email" value="{{ email }}"/><br/>
+  <input id="newpassword" type="password" class="accountdetail settings middle" placeholder="New password"/><br/>
+  <input id="newpasswordagain" type="password" class="accountdetail settings last" placeholder="New password (again)"/><br/>
   <span id="chromebugmask" class="hidden">
   <input id="oldpassword" type="password" class="settings" placeholder="Old password (for security)"/>
   </span>

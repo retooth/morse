@@ -381,11 +381,25 @@ $(document).on("ready", function () {
 
   /* settings (info) ------------------------------ */
 
-  //FIXME: delay until remove
-  $(".deletewebsite").on("click", function(){
-    $(this).parent().slideUp(200).remove();
-    beautifyWebsiteList();
+  $("#bio").keypress(function(){
+    $("#updateinfo").fadeIn(400);
   });
+
+  function rebindWebsiteEvents(){
+
+    $(".deletewebsite").off("click");
+    //FIXME: delay until remove
+    $(".deletewebsite").on("click", function(){
+      $(this).parent().slideUp(200).remove();
+      beautifyWebsiteList();
+    });
+
+    $(".websitewrapper input").off("keypress");
+    $(".websitewrapper input").on("keypress", function(){
+      $("#updateinfo").fadeIn(400);
+    });
+
+  }
 
   $("#anotherwebsite").click(function(){
 
@@ -401,13 +415,7 @@ $(document).on("ready", function () {
     website.children("button").fadeIn(1200);
 
     /* rebind it (since new .deletewebsite elements were added) */
-    $(".deletewebsite").off("click");
-    //FIXME: see above
-    $(".deletewebsite").on("click", function(){
-      $(this).parent().slideUp(200).remove();
-      beautifyWebsiteList();
-    });
-
+    rebindWebsiteEvents();
   });
 
   function beautifyWebsiteList(){

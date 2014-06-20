@@ -767,7 +767,7 @@ blockquote{
     }
 
     .websitewrapper{
-      display: inline-block;
+      display: block;
       border: 1pt solid #ccc;
       width:400pt;
       border-radius:3pt;
@@ -777,6 +777,7 @@ blockquote{
     }
 
         .websitewrapper button{
+          display:none;
           border:none;
           background:none;
           padding:0;
@@ -806,6 +807,7 @@ blockquote{
     }
 
     #updateinfo{
+      display:none;
       margin-left:1pt;
     }
 
@@ -813,6 +815,7 @@ blockquote{
       float:left;
       background:#88C100;
       border:none;
+      display:none;
     }
 
     .settings{
