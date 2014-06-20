@@ -64,7 +64,8 @@
       <li user-id="0" class="newuser">
       <input placeholder="Add user"/>
       <div class="newusermenu">
-          <ul></ul>
+        <ul></ul>
+        <div class="emptylist">No match.</div>
       </div>  
       </li>
       {% endif %}
@@ -77,10 +78,6 @@
     <div class="clear"></div>
   </div>
 {% endfor %}
-  <div id="welcomegrouptip" class="groupmenu groupmenutip" style="display:block">
-    Hi! Welcome to group management. <br/>
-    Please select a group from the list above<br/>
-  </div>
   <div id="newgrouptip" class="groupmenu groupmenutip" group-id="0">
      Want to create a new group?<br/>
      Type the name and hit Enter

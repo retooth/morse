@@ -570,6 +570,8 @@ $(document).on("ready", function () {
 
   /* administration (group management) ------------ */
 
+  changeToGroupMenu(1);
+
   function changeToGroupMenu (groupID){
     $("#groupnav li").removeClass("selected");
     $("#groupnav li[group-id=\"" + groupID + "\"]").addClass("selected");
@@ -665,13 +667,19 @@ $(document).on("ready", function () {
         success: function(response){
           var users = response.users;
           menulist.html("");
-          for (var i = 0; i < users.length; i++){
-            var id = users[i][0];
-            var name = users[i][1];
-            console.log(users[i]);
-            var newli = $("<li user-id=\"" + id + "\">" + name + "</li>");
-            newli.appendTo(menulist);
-          }
+          if (users.length > 0){
+            menu.find(".emptylist").fadeOut(0);
+            for (var i = 0; i < users.length; i++){
+              var id = users[i][0];
+              var name = users[i][1];
+              console.log(users[i]);
+              var newli = $("<li user-id=\"" + id + "\">" + name + "</li>");
+              newli.appendTo(menulist);
+            }
+	  }else{
+            menu.find(".emptylist").fadeIn(200);
+            console.log(menu.find(".emptylist"));
+	  }
           menu.fadeIn(200);
         },
         error: handleAjaxErrorBy(alertGlobal),

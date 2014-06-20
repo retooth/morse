@@ -1272,6 +1272,13 @@ blockquote{
           color:#000;
         }
 
+	.newusermenu .emptylist {
+	  display:none;
+          text-align:center;
+          color:#666;
+	  margin-top:5pt;
+	}
+
     .groupdescription {
     }
 
