@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
+import re
 from . import app
 from enum import GROUP_ID_REGISTERED
 from mixins import GuestMixin
@@ -110,6 +111,11 @@ def register():
     if user_exists:
         return render_template('account/register.html', alert = 'userexists');
 
+    pattern = "^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$"
+    match = re.search(pattern, email)
+    if not match:
+        return render_template('account/register.html', alert = 'invalidemail');
+
     # all fine, create the new user
     user = User(username, password, email)
     db.session.add(user)
@@ -122,8 +128,7 @@ def register():
 
     login_user(user)
 
-    # FIXME: redirect instead of render (bad req bug) - howto pass alert?
-    return render_template('boards.html', alert = 'registered')
+    return render_template('account/redirect.html', alert = 'registered')
 
  
 @app.route('/account/login',methods=['GET','POST'])
