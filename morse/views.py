@@ -184,6 +184,10 @@ def board(board_str):
 
     # TODO: order topics by timestamp
     visible, readable, writable = get_my_boards( get_only_ids = True)
+
+    # i decided not to do a seperate check, if the board
+    # exists (and return a 404 if not) in order leak as
+    # few information as possible to an attacker.
     if not int(board_id) in readable:
         return render_template('4xx/403-default.html'), 403
 
@@ -203,10 +207,11 @@ def closethread ():
     for .closethread in main.js
     """
     # XXX: check for bans? should moderators be bannable?
-    print request.json
     topic_id = request.json['topicID']
     topic = Topic.query.get(topic_id)
-    # FIXME (global) always check if ids were found
+    if not topic:
+        return "notfound", 404
+
     topic.closed = True
     db.session.commit()
     #XXX see return of openthread
@@ -225,6 +230,9 @@ def openthread ():
     # XXX: check for bans? should moderators be bannable?
     topic_id = request.json['topicID']
     topic = Topic.query.get(topic_id)
+    if not topic:
+        return "notfound", 404
+
     topic.closed = False
     db.session.commit()
     # XXX: this seems to be the only solution
@@ -321,6 +329,9 @@ def update_groupmodes (board_id, group_ids, r, w, v):
     for group_id in group_ids:
         groupmode = GroupMode.query.filter(GroupMode.board_id == board_id,\
                                            GroupMode.group_id == group_id).first()
+        if not groupmode:
+            continue
+
         groupmode.r = r
         groupmode.w = w
         groupmode.v = v
@@ -427,7 +438,7 @@ def remove_user_from_group():
     rel = GroupMember.query.filter(GroupMember.user_id == user_id,
                                    GroupMember.group_id == group_id).first()
     if not rel:
-        return "notingroup", 404
+        return "notingroup", 400
 
     db.session.delete(rel)
     db.session.commit()
@@ -520,6 +531,9 @@ def delete_group ():
     event handler for .deletegroup in main.js.
     """
     group_id = request.json['groupID']
+    group = Group.query.get(group_id)
+    if not group:
+       return "nosuchgroup", 400
 
     members = GroupMember.query.filter(GroupMember.group_id == group_id).all()
     for m in members:
@@ -529,7 +543,6 @@ def delete_group ():
     for m in modes:
         db.session.delete(m)
 
-    group = Group.query.get(group_id)
     db.session.delete(group)
 
     db.session.commit()
@@ -663,6 +676,9 @@ def post (topic_id):
     :rtype: json 
     """
     topic = Topic.query.get(topic_id)
+    if not topic:
+       return "nosuchtopic", 400
+
     check_ban(topic.board_id)
 
     visible, readable, writable = get_my_boards(get_only_ids = True)
@@ -698,8 +714,10 @@ def showtopic (topic_str):
     topic_id = int(topic_str.split("-")[0])
     # TODO: page numbers
     # TODO: order by timestamp
-    # TODO: check if topic exists
     topic = Topic.query.get(topic_id)
+    if not topic:
+       return "nosuchtopic", 400
+
     check_ban(topic.board_id)
 
     topic = TopicWrapper(topic)
@@ -726,6 +744,8 @@ def read ():
     posts = []
     for post_id in post_ids:
         post = Post.query.get(post_id)
+        if not post:
+            continue
         posts.append(post)
     posts = map(PostWrapper, posts)
     for post in posts:
@@ -742,6 +762,9 @@ def follow ():
     """
     topic_id = int(request.json)
     topic = Topic.query.get(topic_id)
+    if not topic:
+        return "nosuchtopic", 400
+ 
     topic = TopicWrapper(topic)
     topic.follow()
     return ""
@@ -756,6 +779,9 @@ def unfollow ():
     """
     topic_id = int(request.json)
     topic = Topic.query.get(topic_id)
+    if not topic:
+        return "nosuchtopic", 400
+
     topic = TopicWrapper(topic)
     topic.unfollow()
     return ""

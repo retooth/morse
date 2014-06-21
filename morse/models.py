@@ -255,7 +255,7 @@ def get_my_boards (user = current_user, get_only_ids = False):
     writable_boards = []
     for board_id, mode in boardmodes.iteritems():
         if mode.v:
-            board = Board.query.filter(Board.id == board_id).first()
+            board = Board.query.get(board_id)
             if mode.w:
                 if get_only_ids: 
                     writable_boards.append(board.id)
