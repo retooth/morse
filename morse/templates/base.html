@@ -28,13 +28,16 @@
 {% endif %}
 <br />
 {% block content %}{% endblock %}
-<script src="{{ url_for('static', filename='jquery-1.9.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery.json-2.4.min.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery-autogrow.min.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery-visible.min.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery-spellfade.js') }}"></script>
-<script src="{{ url_for('static', filename='jquery-ui-1.10.4.custom.min.js') }}"></script>
-<script src="{{ url_for('static', filename='main.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery-1.9.1.min.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery.json-2.4.min.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery-autogrow.min.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery-visible.min.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery-spellfade.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery-ui-1.10.4.custom.min.js') }}"></script>
+<script src="{{ url_for('js', filename='main.js') }}"></script>
+<script src="{{ url_for('js', filename='exceptions.js') }}"></script>
+<script src="{{ url_for('js', filename='dialogs.js') }}"></script>
+{% block script %}{% endblock %}
 {% if alert is defined %}
   <script>
     alertGlobal("{{ alert }}");

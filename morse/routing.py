@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#    This package is part of Morse.
+#    This file is part of Morse.
 #
 #    Morse is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Flask
-app = Flask(__name__)
-app.config.from_object('config')
+from . import app
+from flask import send_from_directory
+import os
 
-from morse.models import db
-db.init_app(app)
-
-import morse.views
-import morse.routing
-from morse.views import login_manager
-login_manager.init_app(app)
+@app.route('/js/<path:filename>')
+def js (filename):
+    # FIXME: for some reason send_from_directory
+    # doesn't like relative paths, so this is a
+    # workaround
+    path = os.getcwd() + "/morse/js"
+    return send_from_directory(path, filename)

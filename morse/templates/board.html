@@ -16,3 +16,8 @@
  {% endfor %}
 </div> 
 {% endblock %}
+{% block script %}
+<script src="{{ url_for('js', filename='board.js') }}"></script>
+<script src="{{ url_for('js', filename='input/topic.js') }}"></script>
+<script src="{{ url_for('js', filename='input/tools.js') }}"></script>
+{% endblock %}
