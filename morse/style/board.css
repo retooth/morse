@@ -1,0 +1,137 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#board{
+}
+
+    #boardtitle {
+      font-weight:bold;
+      color:#000;
+      margin-top: -5pt;
+      padding:0;
+      font-size:30pt;
+      float:left;
+      text-shadow:1px 1px #ddd;
+    }
+
+    #goback{
+      font-size:12pt;
+      color:#DB3026;
+      text-decoration:none;
+    }
+
+    #gobacktooltip{
+      display:none;
+    }
+
+    #topictools{
+      float:left;
+      padding-left:10pt;
+    }
+
+    #boardtools {
+      float:left;
+      margin-left:10pt;
+    }
+
+    .topicitem {
+      border-radius: 3pt;
+      border: 1pt solid #ccc;
+      padding:5pt 5pt 5pt 5pt;
+      margin-bottom:5pt;
+      background:#fcfcfc;
+      box-shadow:1px 1px #ddd;
+    }
+
+    .topicitem:hover {
+      background:#fff;
+    }
+
+    .topicclosed{
+      background:#DB3026;
+      color:#fff;
+    }
+
+    .topicclosed:hover {
+      background:#DE3329;
+      color:#fff;
+    }
+
+        .topictitle{
+          color:#000;
+          font-weight:bold;
+          width:95%;
+          float:left;
+        }
+
+        .topictools{
+          float:right;
+        }
+
+        .closethread{
+          border:none;
+          display:block;
+          padding:0;
+          background:none;
+          outline:none;
+          border-radius:0;
+          height:16px;
+          width:13px;
+          background-image: url('/static/unlocked.png');
+          background-size:auto 16px;
+          background-repeat:no-repeat;
+          margin-top:2px;
+          box-shadow:none;
+        }
+
+        .openthread{
+          display:block;
+          border:none;
+          padding:0;
+          background:none;
+          outline:none;
+          border-radius:0;
+          height:16px;
+          width:13px;
+          background-image: url('/static/locked.png');
+          background-size:auto 16px;
+          background-repeat:no-repeat;
+          margin-top:2px;
+          box-shadow:none;
+        }
+
+        .lastpost {
+          display:none;
+          background: #BDF067;
+          border-radius-bottom-left: 3pt;
+          border-radius-bottom-right: 3pt;
+          padding:5pt;
+          margin:-5pt;
+          margin-top:2pt;
+          font-size:10pt;
+        }
+
+        .lasttopics {
+          display:none;
+          background: #DDEAD0;
+          border-radius-bottom-left: 3pt;
+          border-radius-bottom-right: 3pt;
+          padding:5pt;
+          margin:-5pt;
+          margin-top:2pt;
+          font-size:10pt;
+        }

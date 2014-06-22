@@ -1,0 +1,51 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#signupcontrols{
+  float:left;
+  text-align:center;
+}
+
+    #username{
+      font-size: 12pt;
+      width:170pt;
+    }
+
+    #password{
+      font-size: 12pt;
+      width:170pt;
+    }
+
+    #email{
+      font-size: 12pt;
+      width:170pt;
+    }
+
+    #dosignup{
+      background:#88C100;
+      border:1pt solid #88C100;
+      font-size: 12pt;
+      width:180pt;
+    }
+
+#rules{
+  float:left;
+  padding:5pt;
+  margin-left:5pt;
+  border-left:1pt solid #ccc;
+  min-height:120pt;
+}

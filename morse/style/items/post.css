@@ -1,0 +1,73 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.postitem {
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+  background:#fff;
+  box-shadow:1px 1px #ddd;
+}
+
+  .post{
+    font-size:11pt;
+    float:left;
+    width:88%;
+    padding:5pt;
+    min-height:120px;
+    border-left:1pt solid #ccc;
+  }
+
+  .postsidebar{
+    text-align:center;
+    float:left;
+    min-width:64px;
+    width:7%;
+    padding:5pt;
+    height:100%;
+    margin-right:5pt;
+  }
+
+      .postsidebar .profileimage{
+        background-size: 64px 64px;
+        border-radius: 50%;
+        display: inline-block;
+        height: 64px;
+        width: 64px;
+        border:2pt solid white;
+        cursor:pointer;
+      }
+
+      .postcreator{
+        padding:2pt;
+        font-weight:bold;
+        font-size:10pt;
+        text-align:center;
+        white-space: pre-wrap;      /* CSS3 */   
+        white-space: -moz-pre-wrap; /* Firefox */    
+        white-space: -pre-wrap;     /* Opera <7 */   
+        white-space: -o-pre-wrap;   /* Opera 7 */    
+        word-wrap: break-word;      /* IE */
+      }
+
+  .postfooter{
+    width:0;
+    height:0;
+    font-size:0;
+  }
+

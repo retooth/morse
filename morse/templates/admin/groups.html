@@ -1,5 +1,11 @@
 <!doctype html>
 {% extends "base.html" %}
+{% block head %}
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='dialogs.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='labels.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='admin/admin.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='admin/groups.css') }}">
+{% endblock %}
 {% block content %}
 {% include "dialogs/groups.html" %}
 <div id="adminwrapper">

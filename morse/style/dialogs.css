@@ -1,0 +1,61 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.dialogwrapper{
+  display:none;
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  z-index:999;
+  background:rgba(50, 50, 50, 0.5);
+}
+
+    .dialog{
+      position:absolute;
+      width:50%;
+      height:50%;
+      top:25%;
+      left:25%;
+      padding:5pt;
+      background: #F08D37;
+      border-radius:3pt;
+      font-size:11pt;
+      color:#000;
+      text-align:center;
+    }
+
+    .dialog .close{
+      float:right;
+      min-width:12pt;
+      padding:0;
+      border:none;
+      background:none;
+      box-shadow:none;
+    }
+
+    .dialog .controls{
+      margin-top:10pt;
+    }
+
+    .dialog .controls button{
+      border:none;
+      background:#333;
+      font-size:11pt;
+      box-shadow:1px 1px #E68A34;
+    }

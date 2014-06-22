@@ -1,0 +1,148 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#toolfooter{
+  border-bottom-right-radius:3pt;
+  border-bottom-left-radius:3pt;
+  padding:5pt;
+  background:#e8e8e8;
+}
+
+    #dopost{
+      cursor:pointer;
+      font-weight:bold;
+      background: #ADF057;
+      border:1pt solid #ccc;
+      border-radius: 2pt;
+      float:left;
+      color:#000;
+      padding:2pt;
+      font-size:10pt !important;
+      margin-right:2pt;
+    }
+
+    #docreate{
+      cursor:pointer;
+      font-weight:bold;
+      background: #ADF057;
+      border:1pt solid #ccc;
+      border-radius: 2pt;
+      float:left;
+      color:#000;
+      padding:2pt;
+      font-size:10pt !important;
+      margin-right:2pt;
+    }
+
+    .formattool{
+      border:1pt solid #ccc;
+      border-radius:2pt !important;
+      font-size:10pt !important;
+      padding:2pt;
+      margin-right:2pt;
+      min-width:15pt;
+      float:left;
+      cursor:pointer;
+      color:#000;
+      background:#fff;
+    }
+
+    #makebold{
+      font-weight:bold !important;
+    }
+
+    #makeitalic{
+      font-style:italic !important;
+    }
+
+    #makequote{
+    }
+
+    #makelink{
+      color:#7D7Af0;
+      background:#fff;
+      width:auto;
+      margin-right:0;
+    }
+
+    #newhref{
+      font-family:'Roboto';
+      border:none;
+      margin:0;
+      font-size:9pt;
+      padding:0;
+      outline:none;
+      width:190pt;
+    }
+
+    /* this is a (dirty) workaround for a chrome bug */
+    .openrightborder{
+      border-right: none !important;
+      border-top-right-radius:0 !important;
+      border-bottom-right-radius:0 !important;
+    }
+
+    #closenewhref{
+      display:none;
+      border-right:1pt solid #ccc;  
+      border-bottom:1pt solid #ccc;  
+      border-top:1pt solid #ccc;  
+      border-left:none;
+      border-radius:0 2pt 2pt 0 !important;
+      cursor:pointer;
+      min-width:15pt;
+      padding:2pt;
+      margin-right:2pt;
+      margin-left:0;
+      font-weight:bold;
+      font-size:10pt !important;
+      color:#444;
+      background:#fff;
+      float:left;
+    }
+
+    #closenewhref img {
+      border:none;
+      width:12px;
+      height:auto;
+    }
+
+    #newhrefwrapper{
+      display:none;
+    }
+
+    #newhref:focus{
+      border:none;
+      outline:none;
+    }
+
+    .inputalert{
+      display:none;
+      float:left;
+      padding:2pt;
+      font-size:10pt;
+      color: #F08D37;
+    }
+
+.disabledbox{
+  background:#DDEAD0;
+}
+
+#dummylink{
+  background:#9DAC99;
+  color:#fff;
+}

@@ -1,0 +1,70 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.clear{
+  clear:both;
+}
+
+.buttonspinner{
+  padding-left:25px !important;
+  background-repeat:no-repeat !important;
+  background-position:5px 8px !important;
+  background-image: url("loader-white.gif") !important;
+}
+
+.hidden{
+  display:none;
+}
+
+.floatleft{
+  float:left;
+}
+
+a.divwrapper{
+  text-decoration:none;
+}
+
+.submit{
+  font: 11pt 'Roboto';
+  background:#88C100;
+  border:1pt solid #88C100;
+  text-decoration:none;
+  color:#fff;
+}
+
+.first{
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
+  border-bottom:none;
+  margin-bottom:0;
+}
+
+.middle{
+  border-radius:0;
+  border-top:1pt solid #ccc;
+  border-bottom:none;
+  margin-top:0;
+  margin-bottom:0;
+}
+
+.last{
+  border-top-left-radius:0;
+  border-top-right-radius:0;
+  border-top:1pt solid #ccc;
+  border-bottom:1pt solid #ccc;
+  margin-top:0;
+}

@@ -1,5 +1,9 @@
 <!doctype html>
 {% extends "base.html" %}
+{% block head %}
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='index.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/board.css') }}">
+{% endblock %}
 {% block content %}
 {% if current_user.may_structure %}
   <div id="admintools">

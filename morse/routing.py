@@ -26,3 +26,11 @@ def js (filename):
     # workaround
     path = os.getcwd() + "/morse/js"
     return send_from_directory(path, filename)
+
+@app.route('/style/<path:filename>')
+def style (filename):
+    # FIXME: for some reason send_from_directory
+    # doesn't like relative paths, so this is a
+    # workaround
+    path = os.getcwd() + "/morse/style"
+    return send_from_directory(path, filename)

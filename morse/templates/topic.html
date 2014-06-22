@@ -1,5 +1,13 @@
 <!doctype html>
 {% extends "base.html" %}
+{% block head %}
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='topic.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='format.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/input.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/post.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/tools.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/post.css') }}">
+{% endblock %}
 {% block content %}
 <div id="topic" may-post="{{ current_user.may_post_in(topic.board) }}" topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}">
  <div id="topictitlewrapper">

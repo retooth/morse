@@ -1,0 +1,129 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#newboardtitle{
+  width:85%;
+}
+
+#newboarddescription{
+  width:85%;
+}
+
+.adminalert{
+  float:left;
+  display:none;
+  padding:7pt;
+  font-size:10pt;
+  color: #F08D37;
+}
+
+#showmodelist{
+  width:85%;
+  font-size:10pt;
+  background:#3D322E;
+  border:1pt solid #3D3D2E; 
+  border-radius: 3pt;
+  padding:5pt 5pt 5pt 5pt; 
+  color:#fff;
+  cursor:pointer;
+}
+
+    #showmodelist img{
+      margin-top:3pt;
+      float:right;
+      width:12px;
+      height:auto;
+    }
+
+#hidemodelist{
+  display:none;
+  width:85%;
+  font-size:10pt;
+  background:#3D322E;
+  border:1pt solid #3D3D2E; 
+  border-radius: 3pt 3pt 0 0;
+  padding:5pt 5pt 5pt 5pt; 
+  color:#fff;
+  cursor:pointer;
+}
+
+    #hidemodelist img{
+      margin-top:3pt;
+      float:right;
+      width:12px;
+      height:auto;
+    }
+
+#modelist{
+  display:none;
+  width:85%;
+  background:#f3f3f3;
+  border-radius: 0 0 3pt 3pt;
+  border:1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt; 
+}
+
+.grouplistwrapper{
+  width:23%;
+  float:left;
+  margin-right:10pt;
+  min-height:200pt;
+  text-align:center;
+}
+
+.grouplist{
+  list-style-type:none;
+  padding:0;
+  margin:0;
+  padding-bottom:40pt;
+}
+
+.grouplist li{
+  padding:2pt;
+  border-radius:1pt;
+  box-shadow:1px 1px #ddd;
+  font-size:11pt;
+  cursor:move;
+  margin-left:0;
+  display:block;
+  margin-bottom:2pt;
+}
+
+.ui-sortable-helper{
+  opacity:0.75;
+}
+
+.ddplaceholder{
+  background:none !important;
+  border:1pt dashed #aaa;
+  padding:5pt;
+  margin-left:0;
+  display:block;
+  margin-bottom:1pt;
+  min-height:14pt;
+}
+
+.grouplistwrapper header{
+  font-size:10pt;
+  /*border-radius:3pt 3pt 0pt 0pt;*/
+  margin:0;
+  margin-bottom:5pt;
+  padding:5pt;
+  min-height:30pt;
+  background:#fff;
+  color:#000 !important;
+}

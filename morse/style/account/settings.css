@@ -1,0 +1,130 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#settingswrapper{
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+  background:#fcfcfc;
+  box-shadow:1px 1px #ddd;
+}
+
+    textarea{
+      font:11pt 'Roboto';
+    }
+
+    #bio{
+      outline:none;
+      border:1pt solid #ccc;
+      border-radius:3pt;
+      resize:none;
+      width:400pt;
+      min-height:100pt;
+      padding:5pt;
+    }
+
+    .websitewrapper{
+      display: block;
+      border: 1pt solid #ccc;
+      width:400pt;
+      border-radius:3pt;
+      margin-top:5pt;
+      padding:5pt;
+      background:#fff;
+    }
+
+        .websitewrapper button{
+          display:none;
+          border:none;
+          background:none;
+          padding:0;
+          margin:0;
+          box-shadow:none;
+        }
+
+        .websitewrapper button img{
+          border:none;
+          width:12px;
+          height:auto;
+        }
+
+        .websitewrapper input{
+          font: 11pt 'Roboto';
+          border:none;
+          padding:0;
+          width:380pt;
+          outline:none;
+        }
+
+    #anotherwebsite{
+      border:none;
+      background:#FABE28;
+      margin-left:1pt;
+      float:left;
+    }
+
+    #updateinfo{
+      display:none;
+      margin-left:1pt;
+    }
+
+    .updatesettings{
+      float:left;
+      background:#88C100;
+      border:none;
+      display:none;
+    }
+
+    .settings{
+      font: 11pt 'Roboto';
+      width:400pt;
+      outline:none;
+      margin-top:5pt;
+      position:relative; 
+    }
+
+    .accountsettingsalert{
+      float:left;
+      display:none;
+      padding:5pt;
+      font-size:10pt;
+      color: #F08D37;
+    }
+
+    .infosettingsalert{
+      float:left;
+      display:none;
+      padding:5pt;
+      font-size:10pt;
+      color: #F08D37;
+    }
+    .accountsettingsalert{
+      float:left;
+      display:none;
+      padding:5pt;
+      font-size:10pt;
+      color: #F08D37;
+    }
+
+    .infosettingsalert{
+      float:left;
+      display:none;
+      padding:5pt;
+      font-size:10pt;
+      color: #F08D37;
+    }

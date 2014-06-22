@@ -1,0 +1,218 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#groupnav {
+}
+
+    #groupnav ul{
+      list-style-type:none;
+      padding:0;
+    }
+
+    #groupnav li{
+      cursor:pointer;
+      background:#efefef;
+      margin-bottom:1pt;
+      padding:5pt;
+      font-size:10pt;
+      float:left;
+      margin-right:1pt;
+      /* this is a really weird workaround to align #newgroup
+      with this element. why is it 13pt? shouldn't it be 
+      2*padding + font-size? 20pt is way bigger than this */
+      height:13pt; 
+      box-shadow:1px 1px #ddd;
+    }
+
+    #groupnav .selected{
+      margin-left:5pt;
+      margin-right:6pt;
+      margin-top:-2px;
+      height:16pt;
+      font-size:11pt;
+      box-shadow:3px 3px 1px #ddd;
+    }
+
+    #newgroup{
+      margin-left:1pt;
+    }
+
+    #newgroupname{
+      outline:none;
+      outline-offset:0;
+      font-size:10pt;
+      margin-top:-2pt;
+      padding:0;
+      border:none;
+      background:none;
+      border-radius:0;
+    }
+
+.groupmenu {
+  position:relative; /* this is set so dialog is bound to .groupmenu */
+  padding-left:15pt;
+  display:none;
+  font-size:10pt;
+  background-color:#eaeaea;
+  min-height:237pt;
+  border:1pt solid #ccc;
+  border-radius:3pt;
+  padding:5pt;
+}
+
+.groupmenutip {
+  text-align:center;
+  font-size:20pt;
+  color:#888;
+}
+
+#newgrouptip {
+  background-image: url("editbg.png");
+  background-repeat:no-repeat;
+  background-position:50% 75%;
+}
+
+    .groupmenu .header{
+    }
+
+        .colorpicker{
+          width:20px;
+          height:20px;
+          float:left;
+          margin-right:2pt;
+          cursor:pointer;
+          box-shadow:1px 1px #ddd;
+        }
+
+        .picked{
+          border-bottom:2px solid #000;
+          width:20px;
+          height:18px;
+        }
+
+        .groupflags{
+          float:left;
+        }
+
+        .groupflags input{
+          position:relative;
+          top:1px;
+        }
+
+    .grouptools{
+      float:right;
+      height:20pt;
+      padding:0;
+    }
+
+        .deletegroup{
+          border:none;
+          background:none;
+          border-radius:0;
+          padding:0;
+          box-shadow:none;
+        }
+
+        .deletegroup img{
+          height:20pt;
+          width:auto;
+        }
+
+    .groupmenu ul{
+      list-style-type:none;
+      padding:0;
+      padding-bottom:180pt;
+    }
+
+    .readonly{
+      background-image: url("lockedgroup.png") !important;
+      background-repeat:no-repeat;
+      background-position:50% 75%;
+    }
+
+    .groupmenu li{
+      display:block;
+      cursor:default;
+      background:#fff;
+      margin-right:5pt;
+      padding:5pt;
+      font-size:10pt;
+      float:left;
+      height:13pt;
+      box-shadow:1px 1px #ddd;
+    }
+
+            .deletefromgroup{
+              cursor:pointer;
+              margin-left:5pt;
+            }
+
+    .groupmenu .newuser{
+      background:#fff;
+     }
+
+    .groupmenu .newuser input{
+      outline:none;
+      outline-offset:0;
+      margin-top:-2pt;
+      padding:0;
+      border:none;
+      background:none;
+      border-radius:0;
+      background:#fff;
+      width:150pt;
+    }
+
+    .newusermenu{
+      width:160pt;
+      position:absolute;
+      display:none;
+      padding:0;
+      height:100pt;
+      overflow-y:scroll;
+      background:#fafafa;
+    }
+
+    .newusermenu ul{
+      padding:0;
+    }
+
+    .newusermenu li{
+      background:#fafafa;
+      float:none;
+      clear:both;
+      cursor:pointer;
+      color:#555;
+      border-bottom:1pt solid #ddd;
+      box-shadow:none;
+    }
+
+    .newusermenu .selected{
+      background:#ccc;
+    }
+
+    .newusermenu li:hover {
+      color:#000;
+    }
+
+.newusermenu .emptylist {
+  display:none;
+  text-align:center;
+  color:#666;
+  margin-top:5pt;
+}
+

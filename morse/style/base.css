@@ -1,0 +1,147 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+body {
+  font-family:'Roboto';
+  font-size:11pt;
+  background:#f3f3f3;
+}
+
+input {
+  font-family:'Roboto';
+  padding:5pt;
+  border:1pt solid #ccc;
+  border-radius:3pt;
+}
+
+button {
+  font: 12pt 'Roboto' !important;
+  color:#fff;
+  padding:5pt;
+  border-radius:3pt;
+  cursor:pointer;
+  box-shadow:1px 1px #ddd;
+}
+
+/* header -------------------------------------- */
+
+header {
+  background:#3D322E; 
+  border-radius: 3pt;
+  padding:5pt 5pt 5pt 5pt; 
+  color:#fff !important;
+  box-shadow:1px 1px #ddd;
+}
+
+    header a {
+      color:#fff;
+    }
+    
+    header a:visited {
+      color:#fff;
+    }
+
+    #headertitle{
+      float:left;
+      text-shadow:1px 1px #333;
+    }
+
+        #community {
+          font-size: 20pt;
+          font-weight: 900;
+        }
+
+
+        #slogan {
+          font-size: 12pt;
+        }
+
+
+    header .profileimage{
+      background-size: 64px 64px;
+      border-radius: 50%;
+      display: block;
+      height: 64px;
+      width: 64px;
+      border:2pt solid white;
+      float:right;
+      cursor:pointer;
+    }
+
+        .navmenu{
+          position:absolute;
+          display:none;
+          background:#fafafa; 
+          border-radius:3pt;
+          border:1pt solid #ccc;
+          padding:5pt;
+          font-size:11pt;
+          margin-top:5pt;
+          float:right;
+          width:200pt;
+          right:6pt;
+          box-shadow:1px 1px #ddd;
+        }
+
+            #gotologin{
+              background:#FABE28;
+              border:1pt solid #FABE28;
+              width:46%;
+              margin-left:5pt;
+            }
+
+            #gotoregister{
+              background:#FF8A00;
+              border:1pt solid #FF8A00;
+              width:46%;
+              margin-left:5pt;
+            }
+
+            #dologout{
+              background:#DB3026;
+              border:1pt solid #DB3026;
+              width:46%;
+              margin-left:5pt;
+            }
+
+
+            #showsettings{
+              background:#67DAD7;
+              border:1pt solid #67DAD7;
+              width:46%;
+              margin-left:5pt;
+            }
+
+/* --------------------------------------------- */
+
+
+
+
+/* styling ----------------------------------- */
+
+.fresh {
+  background: #BDF067;
+}
+
+.fresh:hover {
+  background: #ADE057;
+}
+
+.redoutline{
+  border-color:#F08D37 !important;
+}
+
