@@ -24,3 +24,8 @@ USER_ID_GUESTS = 0
 
 ALL_BOARDS = 0
 
+# group modes save the default state
+# with this dummy board id. default state
+# is shown when creating a new board
+DEFAULT_MODE_DUMMY_ID = 0
+

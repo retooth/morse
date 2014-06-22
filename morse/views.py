@@ -30,11 +30,6 @@ from flask.ext.login import current_user
 
 """ This module contains all views of morse """
 
-# group modes save the default state
-# with this dummy board id. default state
-# is shown when creating a new board
-DEFAULT_MODE_DUMMY_ID = 0
-
 # Integration into flask login extension
 login_manager = LoginManager()
 login_manager.login_view = 'login'

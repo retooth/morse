@@ -16,6 +16,7 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import app
+from enum import DEFAULT_MODE_DUMMY_ID
 from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
 from models import Post, Topic, get_my_boards
 from wrappers import PostWrapper, TopicWrapper
