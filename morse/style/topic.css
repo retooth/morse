@@ -57,3 +57,43 @@
           background:#FF8A00;
         }
 
+    #postcontainer{
+      min-height:100pt;
+    }
+
+    #postloader-top{
+      padding:0;
+    }
+
+      #info-init{
+        border-radius:3pt;
+        background:#333;
+        padding:5pt;
+        color:#fff;
+      }
+
+      #info-oldposts{
+        border-radius:3pt;
+        background:#333;
+        padding:5pt;
+        color:#fff;
+      }
+
+    #postloader-bottom{
+      padding:0;
+      height:20pt;
+    }
+
+      #info-newposts{
+        border-radius:3pt;
+        background:#333;
+        padding:5pt;
+        color:#fff;
+      }
+
+      #info-rockbottom{
+        border-radius:3pt;
+        background:#333;
+        padding:5pt;
+        color:#fff;
+      }

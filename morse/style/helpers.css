@@ -23,7 +23,13 @@
   padding-left:25px !important;
   background-repeat:no-repeat !important;
   background-position:5px 8px !important;
-  background-image: url("loader-white.gif") !important;
+  background-image: url("/static/loader-white.gif") !important;
+}
+
+.contentspinner{
+  background-image: url("/static/loader-big.gif") !important;
+  background-repeat:no-repeat;
+  background-position:50% 50%;
 }
 
 .hidden{

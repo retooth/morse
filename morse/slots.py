@@ -22,7 +22,7 @@ from models import Post, Topic, get_my_boards
 from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, certain_rights_required, check_ban, possibly_banned 
 from protocols import ajax_triggered
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from flask.ext.login import LoginManager
 from flask.ext.login import login_required 
 from flask.ext.login import current_user
@@ -37,7 +37,7 @@ def closethread ():
     """ 
     closes a thread defined by topicID in ajax request. 
     this function is called by the javascript event handler 
-    for .closethread in main.js
+    for .closethread in board.js
     """
     # XXX: check for bans? should moderators be bannable?
     topic_id = request.json['topicID']
@@ -57,7 +57,7 @@ def openthread ():
     """ 
     closes a thread defined by topicID in ajax request. 
     this function is called by the javascript event handler 
-    for .openthread in main.js
+    for .openthread in board.js
     """
     # XXX: check for bans? should moderators be bannable?
     topic_id = request.json['topicID']
@@ -162,7 +162,7 @@ def update_group_flags ():
     """ 
     updates the group flags defined by groupID. (label type and
     group flags) this function is called by the javascript 
-    event handler for #updategroups in main.js.
+    event handler for #updategroups in admin/groups.js.
     """
     group_id = request.json["groupID"]
     group = Group.query.get(group_id)
@@ -184,7 +184,7 @@ def create_group ():
     """ 
     creates a new group and returns its id as json
     this function is called by the javascript 
-    event handler for #newgroupname in main.js.
+    event handler for #newgroupname in admin/groups.js.
     """
     name = request.json['name']
 
@@ -217,7 +217,7 @@ def delete_group ():
     """ 
     deletes a group and all its dependencies
     this function is called by the javascript 
-    event handler for .deletegroup in main.js.
+    event handler for .deletegroup in admin/groups.js.
     """
     group_id = request.json['groupID']
     group = Group.query.get(group_id)
@@ -369,7 +369,7 @@ def post (topic_id):
 def read ():
     """ 
     marks posts as read. this function is called via ajax
-    by the javascript function readVisiblePosts in main.js
+    by the javascript function readVisiblePosts in topic.js
     """
     # just return success and do nothing
     # if user is guest
@@ -394,7 +394,7 @@ def read ():
 def follow ():
     """ 
     follows a topic. this function is called via ajax
-    by the click event handler for #followswitch in main.js
+    by the click event handler for #followswitch in topic.js
     """
     topic_id = int(request.json)
     topic = Topic.query.get(topic_id)
@@ -411,7 +411,7 @@ def follow ():
 def unfollow ():
     """ 
     unfollows a topic. this function is called via ajax
-    by the click event handler for #followswitch in main.js
+    by the click event handler for #followswitch in topic.js
     """
     topic_id = int(request.json)
     topic = Topic.query.get(topic_id)
@@ -421,3 +421,37 @@ def unfollow ():
     topic = TopicWrapper(topic)
     topic.unfollow()
     return ""
+
+
+@app.route('/posts', methods=['GET'])
+@ajax_triggered
+def posts ():
+    """ 
+    renders a number of posts defined by GET parameters topicID and offset. 
+    this function is called via ajax in topic.js
+    """
+    topic_id = request.args.get('topicID')
+    topic = Topic.query.get(topic_id)
+    if not topic:
+        return "topicnotfound", 404
+
+    visible, readable, writable = get_my_boards( get_only_ids = True )
+    if not topic.board_id in readable:
+        return "forbidden", 403
+
+    try:
+        offset = int(request.args.get('offset'))
+    except TypeError, ValueError:
+        return "badrequest", 400
+
+    try:
+        limit = int(request.args.get('limit'))
+    except TypeError, ValueError:
+        return "badrequest", 400
+
+    posts = Post.query.filter(Post.topic_id == topic_id).offset(offset).limit(limit).all()
+    if not posts:
+        return "nomoreposts", 404
+
+    posts = map(PostWrapper, posts)
+    return render_template("posts.html", posts = posts, offset = offset)

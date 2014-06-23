@@ -32,50 +32,6 @@ $(document).on("ready", function () {
     type: "POST"
   });
 
-  /* mark posts on screen as read */
-  readVisiblePosts();
-
-  $(document).scroll(function (){
-    readVisiblePosts();
-  });
-
-
-  function readVisiblePosts (){
-
-    /* 
-       readVisible() looks for posts in the current viewport and
-       marks them as read via ajax. this include removing the
-       css fresh class
-       */
-
-    var postfooters = $(".postfooter").filter(function(){ 
-      return $(this).visible(); 
-    });
-
-    /* collect ids of visible posts */
-    var ids = Array();
-    postfooters.each(function () {
-      if ($(this).parent().hasClass("fresh")){
-        ids.push($(this).html());
-      }
-    });
-
-    var posts = postfooters.parent();
-    var json = JSON.stringify(ids);
-
-    /* only send, if posts were found */
-    if (ids.length > 0){
-      $.ajax({
-        url: "/read",
-        data: json,
-        error: handleAjaxErrorBy( alertGlobal ),
-        success: function () { posts.removeClass("fresh", 5000); },
-      });
-    }
-
-  }
-
-
   $(document).keydown(function (keyevent){
 
     /* This is what happens, when you ''just start typing''

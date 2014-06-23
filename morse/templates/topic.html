@@ -28,9 +28,15 @@
    <div class="clear"></div>
  </div>
  {% include "input/post.html" %}
- {% for post in posts %}
-  {% include "items/post.html" %}
- {% endfor %}
+ <div id="postloader-top">
+   <div id="info-init" class="hidden">Loading Posts</div>
+   <div id="info-oldposts" class="hidden">Loading older Posts</div>
+ </div>
+ <div id="postcontainer" class="contentspinner" reloading="false">
+ </div>
+ <div id="postloader-bottom">
+   <div id="info-newposts" class="hidden">Loading newer Posts</div>
+   <div id="info-rockbottom" class="hidden">You hit rock bottom!</div>
 </div>
 {% endblock %}
 {% block script %}
