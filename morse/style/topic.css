@@ -66,6 +66,14 @@
       margin-bottom:5pt;
     }
 
+      #jump-to-unread{
+        border-radius:3pt;
+        background: #88C100;
+        padding:5pt;
+        color:#fff;
+        cursor:pointer;
+      }
+
       #info-init{
         border-radius:3pt;
         background:#333;

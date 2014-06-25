@@ -22,7 +22,7 @@ from flask.ext.login import current_user
 from sqlalchemy import func
 from hashlib import md5, sha512
 from urllib import urlencode
-from urllib2 import urlopen, HTTPError
+from urllib2 import urlopen, HTTPError, URLError
 from iptools import IpRange
 
 db = SQLAlchemy()
@@ -85,7 +85,7 @@ class User (db.Model):
             else:
                 url = gravatar_url
             connection.close()
-        except HTTPError:
+        except (HTTPError, URLError):
             url = default_url
         return url
 
