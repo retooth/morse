@@ -18,16 +18,19 @@
 from . import app
 from enum import DEFAULT_MODE_DUMMY_ID
 from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
-from models import Post, Topic, get_my_boards
+from models import Post, Topic, PostRead, get_my_boards
+from mappers import to_id, to_post_id
 from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, certain_rights_required, check_ban, possibly_banned 
 from protocols import ajax_triggered
-from flask import request, jsonify, render_template
-from flask.ext.login import LoginManager
+from flask import request, jsonify
 from flask.ext.login import login_required 
 from flask.ext.login import current_user
+from sqlalchemy import not_
 
-""" this module contains all the ajax slots """
+""" this module contains ajax slots for JSON communication 
+    for the ajax GET params -> ... <- HTML pipe, check out builders.py
+"""
 
 @app.route('/closethread', methods=['POST'])
 @login_required
@@ -375,7 +378,10 @@ def read ():
     # if user is guest
     if current_user.is_anonymous():
         return ""
-    
+
+    # please note: we don't check if the topic
+    # is flagged as "following". this way posts
+    # get flagged as "read" either way.    
     post_ids = request.json
     posts = []
     for post_id in post_ids:
@@ -422,36 +428,30 @@ def unfollow ():
     topic.unfollow()
     return ""
 
-
-@app.route('/posts', methods=['GET'])
+@app.route('/topic/<topic_str>/unread.json', methods=['GET'])
 @ajax_triggered
-def posts ():
+def unread_stats (topic_str):
     """ 
-    renders a number of posts defined by GET parameters topicID and offset. 
-    this function is called via ajax in topic.js
+    returns a JSON unread stats object for a topic defined by GET parameter topicID
+    (structure {unreadCount, firstUnreadID}) this function is called via ajax in topic.js
     """
-    topic_id = request.args.get('topicID')
+    topic_id = int(topic_str.split("-")[0])
     topic = Topic.query.get(topic_id)
     if not topic:
         return "topicnotfound", 404
 
-    visible, readable, writable = get_my_boards( get_only_ids = True )
-    if not topic.board_id in readable:
-        return "forbidden", 403
+    if current_user.is_anonymous():
+        return jsonify(unreadCount = 0, firstUnreadID = None)    
 
-    try:
-        offset = int(request.args.get('offset'))
-    except TypeError, ValueError:
-        return "badrequest", 400
+    post_ids = map(to_id, Post.query.filter(Post.topic_id == topic_id))
+    read_ids = map(to_post_id, PostRead.query.filter(PostRead.user_id == current_user.id, PostRead.post_id.in_(post_ids)))
+    unread_count = Post.query.filter(Post.topic_id == topic_id, not_(Post.id.in_(read_ids))).count()
+    first_unread = Post.query.filter(Post.topic_id == topic_id, not_(Post.id.in_(read_ids))).first()
 
-    try:
-        limit = int(request.args.get('limit'))
-    except TypeError, ValueError:
-        return "badrequest", 400
+    if not first_unread:
+	first_unread_id = None
+    else:
+	first_unread_id = first_unread.id
 
-    posts = Post.query.filter(Post.topic_id == topic_id).offset(offset).limit(limit).all()
-    if not posts:
-        return "nomoreposts", 404
+    return jsonify(unreadCount = unread_count, firstUnreadID = first_unread_id)    
 
-    posts = map(PostWrapper, posts)
-    return render_template("posts.html", posts = posts, offset = offset)

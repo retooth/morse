@@ -134,11 +134,11 @@ header {
 /* styling ----------------------------------- */
 
 .fresh {
-  background: #BDF067;
+  background: #BDF067 !important;
 }
 
 .fresh:hover {
-  background: #ADE057;
+  background: #ADE057 !important;
 }
 
 .redoutline{
