@@ -8,7 +8,6 @@
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/tools.css') }}">
 {% endblock %}
 {% block content %}
-<div id="board" may-post="{{ current_user.may_post_in (board) }}" board-id="{{ board.id }}">
  <div id="boardtitlewrapper">
   <h1 id="boardtitle"><a href="/" id="goback">..
    <span id="gobacktooltip">Back to board list</span>
@@ -17,11 +16,36 @@
   </div>
   <div class="clear"></div>
  </div>
+<div id="board" may-post="{{ current_user.may_post_in (board) }}" board-id="{{ board.id }}">
  {% include "input/topic.html" %}
+ <div class="clear"></div>
  {% for topic in topics %}
    {% include "items/topic.html" %}
  {% endfor %}
 </div> 
+<div id="board-menu">
+ <div id="order-dropdown" class="closed-dropdown">
+   Order by
+ </div>
+ <div id="order-menu">
+  <div>
+  </div>
+ </div>
+ <div id="filter-dropdown" class="closed-dropdown">
+   Filters
+ </div>
+ <div id="filter-menu">
+   <span id="filter-option-tooltip-favorited" class="filter-menu-tooltip">Favorited topics</span>
+   <span id="filter-option-tooltip-unread" class="filter-menu-tooltip">Topics with unread posts</span>
+   <span id="filter-option-tooltip-followed" class="filter-menu-tooltip">Followed topics</span><br/>
+   <button id="filter-option-favorited"></button>
+   <button id="filter-option-unread"></button>
+   <button id="filter-option-followed"></button>
+   <br/>
+   <br/>
+ </div>
+</div>
+<div class="clear"></div>
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('js', filename='board.js') }}"></script>

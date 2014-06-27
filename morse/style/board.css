@@ -16,6 +16,8 @@
 */
 
 #board{
+  width:70%;
+  float:left;
 }
 
     #boardtitle {
@@ -47,6 +49,7 @@
       float:left;
       margin-left:10pt;
     }
+
 
     .topicitem {
       border-radius: 3pt;
@@ -134,4 +137,118 @@
           margin:-5pt;
           margin-top:2pt;
           font-size:10pt;
+        }
+
+#board-menu{
+  float:right;
+  width:20%;
+}
+
+    #filter-dropdown{
+      margin-top:5pt;
+    }
+
+        #filter-menu{
+          display:none;
+          padding:5pt;
+          text-align:center;
+          background:#fff;
+          border-bottom:1pt solid #ccc;
+          border-left:1pt solid #ccc;
+          border-right:1pt solid #ccc;
+        }
+
+        #filter-menu h1{
+          font-size:11pt;
+        }
+
+        #filter-menu button{
+          margin-left:5pt;
+          margin-top:5pt;
+          height:45px;
+          width:45px;
+          padding:5pt;
+          background:#bbb;
+          border-top:none;
+          border-left:none;
+          border-right:none;
+          border-bottom: 4px solid #888;
+          border-radius: 3px;
+          text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+        }
+    /*
+        #filter-menu button:before,
+        #filter-menu button:after {
+            content: '';
+            position: absolute;
+            left: -1px;
+            height:45px;
+            width:45px;
+            border-radius: 3px;
+        }
+         
+        #filter-menu button:before {
+            border-radius: 3px;
+            height: 45px;
+            bottom: -4px;
+            border-top: 0;
+        }
+    */
+        #filter-menu button:active{
+          border: none;
+          position:relative;
+          bottom: -3px;
+          box-shadow:  2px 2px 0 #fff, inset 0 2px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        #filter-menu .latching {
+          background:#F2Ba24;
+        }
+
+        #filter-menu .unlatching {
+          background:#F2Ba24;
+        }
+
+        #filter-menu .latched {
+          position:relative;
+          background:#FABE28;
+          border: none;
+          bottom: -3px;
+          box-shadow:  1px 1px 0 #fff, inset 0 1px 1px rgba(0, 0, 0, 0.3);
+        }
+
+        .filter-menu-tooltip{
+          color:#888;
+          display:none;
+        }
+
+        #filter-option-favorited {
+          background-repeat:no-repeat !important;
+          background-position:10px 10px !important;
+          background-image: url("/static/star.png") !important;
+        }
+
+        #filter-option-unread {
+          background-repeat:no-repeat !important;
+          background-position:12px 12px !important;
+          background-image: url("/static/unread.png") !important;
+        }
+
+        #filter-option-followed {
+          margin-right:5pt;
+          background-repeat:no-repeat !important;
+          background-position:14px 10px !important;
+          background-image: url("/static/followed.png") !important;
+        }
+
+    #order-dropdown{
+    }
+
+        #order-menu{
+          display:none;
+          background:#fff;
+          margin:0;
+          border-bottom:1pt solid #ccc;
+          border-left:1pt solid #ccc;
+          border-right:1pt solid #ccc;
         }

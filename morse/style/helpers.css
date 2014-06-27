@@ -74,3 +74,27 @@ a.divwrapper{
   border-bottom:1pt solid #ccc;
   margin-top:0;
 }
+
+.open-dropdown {
+  background-repeat:no-repeat !important;
+  background-position:95% !important;
+  background-image: url("/static/chevron-up-white-small.png") !important;
+  background-color:#3D322E;
+  border:1pt solid #3D3D2E; 
+  border-radius: 3pt 3pt 0 0;
+  padding:5pt 5pt 5pt 5pt; 
+  color:#fff;
+  cursor:pointer;
+}
+
+.closed-dropdown {
+  background-repeat:no-repeat !important;
+  background-position:95% !important;
+  background-image: url("/static/chevron-down-white-small.png") !important;
+  background-color:#3D322E;
+  border:1pt solid #3D3D2E; 
+  border-radius: 3pt 3pt 3pt 3pt;
+  padding:5pt 5pt 5pt 5pt; 
+  color:#fff;
+  cursor:pointer;
+}

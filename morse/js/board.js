@@ -55,4 +55,61 @@ $(document).on("ready", function () {
     });
   });
 
+  $("#filter-menu button").mousedown(function(){
+    if ($(this).hasClass("latched")) {
+      $(this).removeClass("latched");
+      $(this).addClass("unlatching");
+    }else{
+      $(this).addClass("latching");
+    }
+  });
+
+  $("#filter-menu button").mouseup(function(){
+    if ($(this).hasClass("latching")) {
+      $(this).removeClass("latching");
+      $(this).addClass("latched");
+    }else if ($(this).hasClass("unlatching")){
+      $(this).removeClass("unlatching");
+    }
+  });
+
+  $("#filter-menu button").mouseleave(function(){
+    $(".filter-menu-tooltip").fadeOut(0);
+  });
+
+  $("#filter-option-favorited").mouseenter(function(){
+    $("#filter-option-tooltip-favorited").fadeIn(0);
+  });
+  
+  $("#filter-option-unread").mouseenter(function(){
+    $("#filter-option-tooltip-unread").fadeIn(0);
+  });
+
+  $("#filter-option-followed").mouseenter(function(){
+    $("#filter-option-tooltip-followed").fadeIn(0);
+  });
+
+  $("#filter-dropdown").click(function(){
+    if ($(this).hasClass("closed-dropdown")){
+      $(this).removeClass("closed-dropdown");
+      $(this).addClass("open-dropdown");
+      $("#filter-menu").slideDown(400);
+    }else{
+      $(this).removeClass("open-dropdown");
+      $(this).addClass("closed-dropdown");
+      $("#filter-menu").slideUp(400);
+    }
+  });
+
+  $("#order-dropdown").click(function(){
+    if ($(this).hasClass("closed-dropdown")){
+      $(this).removeClass("closed-dropdown");
+      $(this).addClass("open-dropdown");
+      $("#order-menu").slideDown(400);
+    }else{
+      $(this).removeClass("open-dropdown");
+      $(this).addClass("closed-dropdown");
+      $("#order-menu").slideUp(400);
+    }
+  });
 });
