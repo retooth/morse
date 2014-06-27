@@ -17,38 +17,21 @@
 
 $(document).on("ready", function () {
 
-  $("#filter-menu button").mousedown(function(){
-    if ($(this).hasClass("latched")) {
-      $(this).removeClass("latched");
-      $(this).addClass("unlatching");
-    }else{
-      $(this).addClass("latching");
-    }
-  });
-
-  $("#filter-menu button").mouseup(function(){
-    if ($(this).hasClass("latching")) {
-      $(this).removeClass("latching");
-      $(this).addClass("latched");
-    }else if ($(this).hasClass("unlatching")){
-      $(this).removeClass("unlatching");
-    }
-  });
-
-  $("#filter-menu button").mouseleave(function(){
-    $(".filter-menu-tooltip").fadeOut(0);
-  });
-
-  $("#filter-option-favorited").mouseenter(function(){
-    $("#filter-option-tooltip-favorited").fadeIn(0);
-  });
   
-  $("#filter-option-unread").mouseenter(function(){
-    $("#filter-option-tooltip-unread").fadeIn(0);
+  $("input[type=\"checkbox\"]").each(function(){
+    if ($(this).is(":checked")){
+      $(this).parents(".filter-option").addClass("filter-option-selected");
+    }else{
+      $(this).parents(".filter-option").removeClass("filter-option-selected");
+    }
   });
 
-  $("#filter-option-followed").mouseenter(function(){
-    $("#filter-option-tooltip-followed").fadeIn(0);
+  $("input[type=\"checkbox\"]").click(function(){
+    if ($(this).is(":checked")){
+      $(this).parents(".filter-option").addClass("filter-option-selected");
+    }else{
+      $(this).parents(".filter-option").removeClass("filter-option-selected");
+    }
   });
 
   $("#filter-dropdown").click(function(){
@@ -63,6 +46,6 @@ $(document).on("ready", function () {
     }
   });
 
-  console.log("included filter");
+
 
 });

@@ -39,16 +39,18 @@
    Filters
  </div>
  <div id="filter-menu">
-   <span id="filter-option-tooltip-favorited" class="filter-menu-tooltip">Favorited topics</span>
-   <span id="filter-option-tooltip-unread" class="filter-menu-tooltip">Topics with unread posts</span>
-   <span id="filter-option-tooltip-followed" class="filter-menu-tooltip">Followed topics</span><br/>
-   <div id="filter-menu-button-wrapper">
-     <button id="filter-option-favorited"></button>
-     <button id="filter-option-unread"></button>
-     <button id="filter-option-followed"></button>
-     <div class="clear"></div>
-   </div>
-   <br/>
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-favorited">
+       <label for="filter-option-favorited" class="checkbox-label"><span>Only topics I favorited</span></label>
+     </div>
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-unread">
+       <label for="filter-option-unread" class="checkbox-label"><span>Only topics with unread posts</span></label>
+     </div>
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-followed">
+       <label for="filter-option-followed" class="checkbox-label"><span>Only topics I follow</span></label>
+     </div>
  </div>
 </div>
 <div class="clear"></div>

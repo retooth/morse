@@ -93,3 +93,17 @@ header {
   border-color:#F08D37 !important;
 }
 
+input[type="checkbox"] {
+    display:none;
+}
+input[type="checkbox"] + label span {
+    font-size:10pt;
+    display:inline-block;
+    margin:-10px 10px 0 0;
+    padding-left:25px;
+    background:url(/static/checkbox.png) left top no-repeat;
+    cursor:pointer;
+}
+input[type="checkbox"]:checked + label span {
+    background:url(/static/checkbox.png) left -20px no-repeat;
+}
