@@ -74,62 +74,6 @@ header {
           font-size: 12pt;
         }
 
-
-    header .profileimage{
-      background-size: 64px 64px;
-      border-radius: 50%;
-      display: block;
-      height: 64px;
-      width: 64px;
-      border:2pt solid white;
-      float:right;
-      cursor:pointer;
-    }
-
-        .navmenu{
-          position:absolute;
-          display:none;
-          background:#fafafa; 
-          border-radius:3pt;
-          border:1pt solid #ccc;
-          padding:5pt;
-          font-size:11pt;
-          margin-top:5pt;
-          float:right;
-          width:200pt;
-          right:6pt;
-          box-shadow:1px 1px #ddd;
-        }
-
-            #gotologin{
-              background:#FABE28;
-              border:1pt solid #FABE28;
-              width:46%;
-              margin-left:5pt;
-            }
-
-            #gotoregister{
-              background:#FF8A00;
-              border:1pt solid #FF8A00;
-              width:46%;
-              margin-left:5pt;
-            }
-
-            #dologout{
-              background:#DB3026;
-              border:1pt solid #DB3026;
-              width:46%;
-              margin-left:5pt;
-            }
-
-
-            #showsettings{
-              background:#67DAD7;
-              border:1pt solid #67DAD7;
-              width:46%;
-              margin-left:5pt;
-            }
-
 /* --------------------------------------------- */
 
 

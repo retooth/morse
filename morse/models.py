@@ -73,7 +73,7 @@ class User (db.Model):
     def profileimage (self):
         """ Gravatar URL for submitted email address """
         email = self.email
-        size = 64
+        size = 128
         gravatar_url = "http://www.gravatar.com/avatar/" + \
                         md5(email).hexdigest() + "?" + \
                         urlencode({ 'd' : '404', 's' : str(size) })

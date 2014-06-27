@@ -16,6 +16,8 @@
 */
 
 #topic{
+  width:70%;
+  float:left;
 }
 
     #topictitle {
@@ -39,14 +41,12 @@
     }
 
     #topictools{
-      float:left;
-      padding-left:10pt;
     }
 
         .toolbutton{
-          float:left;
-          margin-left:5pt;
+          float:right;
           border:none;
+	  outline:none;
         }
 
         .follow{
