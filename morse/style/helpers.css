@@ -77,7 +77,7 @@ a.divwrapper{
 
 .open-dropdown {
   background-repeat:no-repeat !important;
-  background-position:95% !important;
+  background-position:98% !important;
   background-image: url("/static/chevron-up-white-small.png") !important;
   background-color:#3D322E;
   border:1pt solid #3D3D2E; 
@@ -89,7 +89,7 @@ a.divwrapper{
 
 .closed-dropdown {
   background-repeat:no-repeat !important;
-  background-position:95% !important;
+  background-position:98% !important;
   background-image: url("/static/chevron-down-white-small.png") !important;
   background-color:#3D322E;
   border:1pt solid #3D3D2E; 

@@ -149,6 +149,7 @@
     }
 
         #filter-menu{
+	  height:110px;
           display:none;
           padding:5pt;
           text-align:center;
@@ -162,12 +163,20 @@
           font-size:11pt;
         }
 
+	#filter-menu-button-wrapper {
+	  margin:auto;
+	  width:175px;
+	}
+
         #filter-menu button{
-          margin-left:5pt;
-          margin-top:5pt;
+          position:relative;
+          float:left;
+	  outline:none;
+          margin-left:10px;
+          margin-top:10px;
           height:45px;
           width:45px;
-          padding:5pt;
+          padding:10px;
           background:#bbb;
           border-top:none;
           border-left:none;
@@ -197,8 +206,9 @@
         #filter-menu button:active{
           border: none;
           position:relative;
-          bottom: -3px;
+          bottom: -2px;
           box-shadow:  2px 2px 0 #fff, inset 0 2px 2px rgba(0, 0, 0, 0.2);
+	  height: 43px;
         }
 
         #filter-menu .latching {
@@ -213,7 +223,8 @@
           position:relative;
           background:#FABE28;
           border: none;
-          bottom: -3px;
+          bottom: -2px;
+	  height: 43px;
           box-shadow:  1px 1px 0 #fff, inset 0 1px 1px rgba(0, 0, 0, 0.3);
         }
 
@@ -235,10 +246,10 @@
         }
 
         #filter-option-followed {
-          margin-right:5pt;
           background-repeat:no-repeat !important;
           background-position:14px 10px !important;
           background-image: url("/static/followed.png") !important;
+	  margin-right:10px;
         }
 
     #order-dropdown{
@@ -252,3 +263,15 @@
           border-left:1pt solid #ccc;
           border-right:1pt solid #ccc;
         }
+
+	.order-option{
+	  padding:5pt;
+	  background:#e3e3e3;
+	  margin-top:1pt;
+	  cursor:pointer;
+	}
+
+	
+	.order-option-selected{
+	  background:#ccc;
+	}

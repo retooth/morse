@@ -25,11 +25,13 @@
 </div> 
 <div id="board-menu">
  <div id="order-dropdown" class="closed-dropdown">
-   Order by
+   Sorted by <span id="active-order">most interesting</span>
  </div>
  <div id="order-menu">
-  <div>
-  </div>
+   <div switched="least interesting" class="order-option order-option-selected">most interesting</div>
+   <div switched="least recent post" class="order-option">most recent post</div>
+   <div switched="fewest posts" class="order-option">most posts</div>
+   <div switched="fewest contribution" class="order-option">most contributions</div>
  </div>
  <div id="filter-dropdown" class="closed-dropdown">
    Filters
@@ -38,10 +40,12 @@
    <span id="filter-option-tooltip-favorited" class="filter-menu-tooltip">Favorited topics</span>
    <span id="filter-option-tooltip-unread" class="filter-menu-tooltip">Topics with unread posts</span>
    <span id="filter-option-tooltip-followed" class="filter-menu-tooltip">Followed topics</span><br/>
-   <button id="filter-option-favorited"></button>
-   <button id="filter-option-unread"></button>
-   <button id="filter-option-followed"></button>
-   <br/>
+   <div id="filter-menu-button-wrapper">
+     <button id="filter-option-favorited"></button>
+     <button id="filter-option-unread"></button>
+     <button id="filter-option-followed"></button>
+     <div class="clear"></div>
+   </div>
    <br/>
  </div>
 </div>

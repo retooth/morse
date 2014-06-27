@@ -105,11 +105,27 @@ $(document).on("ready", function () {
     if ($(this).hasClass("closed-dropdown")){
       $(this).removeClass("closed-dropdown");
       $(this).addClass("open-dropdown");
+      $("#active-order").fadeOut(0);
       $("#order-menu").slideDown(400);
     }else{
       $(this).removeClass("open-dropdown");
       $(this).addClass("closed-dropdown");
+      $("#active-order").fadeIn(200);
       $("#order-menu").slideUp(400);
     }
   });
+
+  $(".order-option").click(function(){
+    if ($(this).hasClass("order-option-selected")){
+      var switched = $(this).attr("switched");
+      var html = $(this).html();
+      console.log(switched);
+      $(this).attr("switched", html );
+      $(this).html( switched );
+    }
+    $(".order-option").removeClass("order-option-selected");
+    $(this).addClass("order-option-selected");
+    $("#active-order").html( $(this).html() );
+  });
+
 });
