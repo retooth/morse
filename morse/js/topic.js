@@ -116,7 +116,7 @@ $(document).on("ready", function () {
       console.log("checking bottom");
       var last = $("#postcontainer").children(".postblock").last();
       var newOffset = parseInt(last.attr("offset")) + CONTAINER_LIMIT;
-      fetchPosts(newOffset, "bottom", removeSemaphore);
+      fetchPosts(newOffset, "bottom", [removeSemaphore, rebindToolTipEvents, rebindPostEvents]);
       if (!$("#postloader-bottom").children("#info-rockbottom").is(":visible")){
         $("#postloader-bottom").children("#info-newposts").fadeIn(400);
       }
@@ -131,7 +131,7 @@ $(document).on("ready", function () {
       var newOffset = parseInt(first.attr("offset")) - CONTAINER_LIMIT;
       console.log(newOffset);
       if (newOffset >= 0){
-        fetchPosts(newOffset, "top", removeSemaphore);
+        fetchPosts(newOffset, "top", [removeSemaphore, rebindToolTipEvents, rebindPostEvents]);
         $("#postloader-top").children("#info-oldposts").fadeIn(400);
       }else{
         $("#postloader-top").children("#info-oldposts").fadeOut(0);
@@ -151,7 +151,8 @@ $(document).on("ready", function () {
   }
 
   createInitSpinner();
-  fetchPosts(0, "bottom", [removeInitSpinner, removeSemaphore, checkTopLoader, checkForUnreadPosts]); 
+  fetchPosts(0, "bottom", [removeInitSpinner, removeSemaphore, checkTopLoader, 
+                           checkForUnreadPosts, rebindToolTipEvents, rebindPostEvents]); 
 
   function rebindPostJumpers (){
     console.log($(".post-jumper"));
@@ -161,7 +162,8 @@ $(document).on("ready", function () {
       var postID = $(this).attr("jump-to");
       $("#postcontainer").html("");
       createInitSpinner();
-      jumpToPost(postID, [removeInitSpinner, removeSemaphore, checkTopLoader, checkForUnreadPosts]); 
+      jumpToPost(postID, [removeInitSpinner, removeSemaphore, checkTopLoader, checkForUnreadPosts,
+                          rebindToolTipEvents, rebindPostEvents]); 
     });
   }
 
@@ -288,5 +290,27 @@ $(document).on("ready", function () {
   function removeSemaphore (){
     $("#postcontainer").attr("reloading", "false");
   }
+
+  rebindPostEvents();
+
+  function rebindPostEvents (){
+    $(".postitem").off("dblclick");
+    $(".postitem").on("dblclick", function(){
+      var inputWrapper = $("#inputwrapper");
+      inputWrapper.remove();
+      inputWrapper.insertAfter($(this));
+      rebindPostButtonEvents();
+      rebindPostToolEvents();
+      inputWrapper.slideDown(400);
+      $("#new-post-button").slideUp(0);
+      $("#newposttext").focus();
+    });
+  }
+
+  $("#new-post-button").click(function(){
+      $("#new-post-button").slideUp(0);
+      $("#inputwrapper").slideDown(400);
+      $("#newposttext").focus();
+  });
 
 });

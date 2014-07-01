@@ -29,39 +29,34 @@
 }
 
   .post{
+    margin-left:33pt;
     font-size:11pt;
-    float:left;
-    width:88%;
     padding:5pt;
     min-height:120px;
-    border-left:1pt solid #ccc;
   }
 
-  .postsidebar{
-    text-align:center;
-    float:left;
-    min-width:64px;
-    width:7%;
+  .postheader{
     padding:5pt;
-    height:100%;
-    margin-right:5pt;
   }
 
-      .postsidebar .profileimage{
-        background-size: 64px 64px;
+      .postheader .profileimage{
+        background-size: 32px 32px;
+	float:left;
         border-radius: 50%;
         display: inline-block;
-        height: 64px;
-        width: 64px;
+        height: 32px;
+        width: 32px;
         border:2pt solid white;
         cursor:pointer;
       }
 
       .postcreator{
+	position:relative;
+	top:5px;
+	left:8px;
         padding:2pt;
         font-weight:bold;
         font-size:10pt;
-        text-align:center;
         white-space: pre-wrap;      /* CSS3 */   
         white-space: -moz-pre-wrap; /* Firefox */    
         white-space: -pre-wrap;     /* Opera <7 */   

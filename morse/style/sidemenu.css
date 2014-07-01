@@ -16,8 +16,26 @@
 */
 
 #side-menu{
+  width:200pt;
   float:right;
-  width:20%;
+}
+
+.toolbutton{
+  border:none;
+  width:100%;
+}
+
+.follow{
+  background:#88C100;
+}
+
+.unfollow{
+  background:#FF8A00;
+}
+
+.side-menu-scrolling {
+  position:fixed !important;
+  top:10pt;
 }
 
     #account-menu{
@@ -40,18 +58,13 @@
 	}
 
 	    .navmenu{
-	      position:absolute;
 	      display:none;
-	      background:#fafafa; 
-	      border-radius:3pt;
-	      border:1pt solid #ccc;
-	      padding:5pt;
+              padding-left:0;
+              padding-right:0;
+	      padding-top:0;
+	      padding-bottom:5pt;
 	      font-size:11pt;
 	      margin-top:5pt;
-	      float:right;
-	      width:200pt;
-	      right:6pt;
-	      box-shadow:1px 1px #ddd;
 	    }
 
 		#gotologin{
@@ -69,9 +82,10 @@
 		}
 
 		#dologout{
+                  float:right;
 		  background:#DB3026;
 		  border:1pt solid #DB3026;
-		  width:46%;
+		  width:48%;
 		  margin-left:5pt;
 		}
 
@@ -79,8 +93,7 @@
 		#showsettings{
 		  background:#67DAD7;
 		  border:1pt solid #67DAD7;
-		  width:46%;
-		  margin-left:5pt;
+		  width:48%;
 		}
 
     #filter-dropdown{
@@ -145,3 +158,9 @@
 	  box-shadow:inset 0px 1px 1px #ABCD59;
 	  border-color:#9ABC48;
 	}
+
+   #tooltip{
+     padding:5pt;
+     color:#777;
+     font-size:12pt;
+   }

@@ -71,12 +71,13 @@ $(document).on("ready", function () {
         activeID !== "newposttext" &&
         activeID !== "newhref"){
 
-      $("#typinginfo").slideUp(0);
       $("#inputwrapper").slideDown(400);
 
       if (atNewPost){
+        $("#new-post-button").slideUp(0);
         $("#newposttext").focus();
       }else if (atNewTopic){
+        $("#new-topic-button").slideUp(0);
         $("#newtopictitle").focus();
       }
 

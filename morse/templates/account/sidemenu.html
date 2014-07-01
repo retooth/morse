@@ -6,3 +6,8 @@
   {% endif %}
   <div class="clear"></div>
 </div>
+  {% if current_user.is_anonymous() %}
+    {% include "menu/guests.html" %}
+  {% else %}
+    {% include "menu/user.html" %}
+  {% endif %}

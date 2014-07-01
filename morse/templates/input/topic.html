@@ -7,8 +7,11 @@
   </div>
 </div>
 {% if current_user.may_post_in( board ) %}
-  <div id="typinginfo">To create a new post just start typing</div>
+<div id="new-topic-button">
+  Click here to create a new discussion <small>(or just start typing)</small>
+</div>
 {% else %}
-  <div id="typinginfo">You may not post here</div>
+<div id="you-may-not-post-here">
+  You may not post here
+</div>
 {% endif %}
-<br/>

@@ -3,6 +3,7 @@
 {% block head %}
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='topic.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='format.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='infobanners.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='sidemenu.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/input.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/post.css') }}">
@@ -18,6 +19,7 @@
   </h1>
    <div class="clear"></div>
  </div>
+<br/>
 <div id="topic" may-post="{{ current_user.may_post_in(topic.board) }}" topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}">
  {% include "input/post.html" %}
  <div id="postloader-top">
@@ -36,31 +38,44 @@
   <div id="topictools">
    {% if not current_user.is_anonymous() %}
      {% if topic.followed %}
-       <button id="followswitch" class="toolbutton unfollow" switched="Follow Topic">Unfollow Topic</button> 
+       <button id="followswitch" class="toolbutton unfollow" switched="Alert me about new posts">Don't alert me about new posts</button> 
      {% else %}
-       <button id="followswitch" class="toolbutton follow" switched="Unfollow Topic">Follow Topic</button> 
+       <button id="followswitch" class="toolbutton follow" switched="Don't alert me about new posts">Alert me about new posts</button> 
      {% endif %}
    {% endif %}
   </div>
  <div class="clear"></div>
- <div id="filter-dropdown" class="closed-dropdown">
+ {% if not current_user.is_anonymous() %}
+ <div id="filter-dropdown" class="closed-dropdown" tooltip="filter">
    Filters
  </div>
- <div id="filter-menu">
-   <span id="filter-option-tooltip-favorited" class="filter-menu-tooltip">Favorited posts</span>
-   <span id="filter-option-tooltip-unread" class="filter-menu-tooltip">Unread posts</span><br/>
-   <div id="filter-menu-button-wrapper">
-     <button id="filter-option-favorited"></button>
-     <button id="filter-option-unread"></button>
-     <div class="clear"></div>
-   </div>
-   <br/>
+ <div id="filter-menu" tooltip="filter">
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-favorited">
+       <label for="filter-option-favorited" class="checkbox-label"><span>Only posts I favorited</span></label>
+     </div>
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-unread">
+       <label for="filter-option-unread" class="checkbox-label"><span>Only unread posts</span></label>
+     </div>
  </div>
+ {% endif %}
+<div id="tooltip">
+  <div id="tooltip-default">
+  </div>
+  <div id="tooltip-filter">
+     Toggle filters to narrow the list of
+     posts.
+  </div>
+  <div id="tooltip-post">
+     Double Click on a post to answer it
+  </div>
+</div>
 </div>
 <div class="clear"></div>
 {% endblock %}
 {% block script %}
-<script src="{{ url_for('js', filename='filters.js') }}"></script>
+<script src="{{ url_for('js', filename='sidemenu.js') }}"></script>
 <script src="{{ url_for('js', filename='topic.js') }}"></script>
 <script src="{{ url_for('js', filename='input/post.js') }}"></script>
 <script src="{{ url_for('js', filename='input/tools.js') }}"></script>

@@ -18,7 +18,7 @@
 body {
   font-family:'Roboto';
   font-size:11pt;
-  background:#f3f3f3;
+  background:#ccc;
 }
 
 input {
@@ -35,10 +35,21 @@ button {
   border-radius:3pt;
   cursor:pointer;
   box-shadow:1px 1px #ddd;
+  outline:none;
 }
 
 button::-moz-focus-inner {
   border: 0;
+}
+
+#body-wrapper{
+  border-radius:3pt;
+  padding:5pt;
+  min-height:100%;
+  position:absolute;
+  left:10%;
+  width:80%;
+  background:#f3f3f3;
 }
 
 /* header -------------------------------------- */

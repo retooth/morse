@@ -17,7 +17,6 @@
 
 $(document).on("ready", function () {
 
-  
   $("input[type=\"checkbox\"]").each(function(){
     if ($(this).is(":checked")){
       $(this).parents(".filter-option").addClass("filter-option-selected");
@@ -46,6 +45,24 @@ $(document).on("ready", function () {
     }
   });
 
-
+  $("#tooltip").children().hide();
+  $("#tooltip").children("#tooltip-default").fadeIn(200);
+  rebindToolTipEvents();
 
 });
+
+function rebindToolTipEvents (){
+  console.log("bound tooltips to " + $("[tooltip]").length + " elements");
+  $("[tooltip]").off("mouseenter");
+  $("[tooltip]").on("mouseenter", function(){
+    console.log("#tooltip-" + $(this).attr("tooltip"));
+    $("#tooltip").children().hide();
+    $("#tooltip").children("#tooltip-" + $(this).attr("tooltip")).fadeIn(200);
+  });
+
+  $("[tooltip]").off("mouseleave");
+  $("[tooltip]").on("mouseleave", function(){
+    $("#tooltip").children().hide();
+    $("#tooltip").children("#tooltip-default").fadeIn(200);
+  });
+}

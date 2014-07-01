@@ -22,11 +22,18 @@
   background:#fff;
   border: 1pt solid #ccc;
   box-shadow:1px 1px #ddd;
+  margin-bottom:10pt;
 }
 
-#typinginfo{
+#typing-info{
   font-size:10pt;
   font-weight:900;
+  height:12pt;
+}
+
+#typing-info-ghost{
+  display:none;
+  height:12pt;
 }
 
 .closedinfo{

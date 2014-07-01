@@ -8,6 +8,7 @@
 {% block head %}{% endblock %}
 </head>
 <body>
+<div id="body-wrapper">
 <header>
 <a href="/">
   <div id="headertitle">
@@ -18,11 +19,6 @@
 <div class="clear"></div>
 </header>
 {% include "alerts/global.html" %}
-{% if current_user.is_anonymous() %}
- {% include "menu/guests.html" %}
-{% else %}
- {% include "menu/user.html" %}
-{% endif %}
 <br />
 {% block content %}{% endblock %}
 <script src="{{ url_for('js', filename='jquery-1.9.1.min.js') }}"></script>
@@ -40,4 +36,5 @@
     alertGlobal("{{ alert }}");
   </script>
 {% endif %}
+</div>
 </body>

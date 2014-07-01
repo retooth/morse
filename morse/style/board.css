@@ -46,10 +46,8 @@
     }
 
     #boardtools {
-      float:left;
-      margin-left:10pt;
+      margin-bottom:5pt;
     }
-
 
     .topicitem {
       border-radius: 3pt;

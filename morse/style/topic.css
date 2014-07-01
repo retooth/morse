@@ -40,30 +40,12 @@
       display:none;
     }
 
-    #topictools{
-    }
-
-        .toolbutton{
-          float:right;
-          border:none;
-	  outline:none;
-        }
-
-        .follow{
-          background:#88C100;
-        }
-
-        .unfollow{
-          background:#FF8A00;
-        }
-
     #postcontainer{
       min-height:100pt;
     }
 
     #postloader-top{
       padding:0;
-      margin-bottom:5pt;
     }
 
       #jump-to-unread{
@@ -79,6 +61,7 @@
         background:#333;
         padding:5pt;
         color:#fff;
+        margin-bottom:5pt;
       }
 
       #info-oldposts{
@@ -86,10 +69,12 @@
         background:#333;
         padding:5pt;
         color:#fff;
+        margin-bottom:5pt;
       }
 
     #postloader-bottom{
       padding:0;
+      margin-bottom:5pt;
       height:20pt;
     }
 
