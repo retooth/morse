@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from enum import GROUP_ID_GUESTS, USER_ID_GUESTS
+from enum import GROUP_ID_GUESTS, USER_ID_GUESTS, MOST_INTERESTING
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import not_
 from flask.ext.login import current_user
@@ -24,6 +24,7 @@ from hashlib import md5, sha512
 from urllib import urlencode
 from urllib2 import urlopen, HTTPError, URLError
 from iptools import IpRange
+from mappers import to_filter_id
 
 db = SQLAlchemy()
 
@@ -73,7 +74,7 @@ class User (db.Model):
     def profileimage (self):
         """ Gravatar URL for submitted email address """
         email = self.email
-        size = 64
+        size = 128
         gravatar_url = "http://www.gravatar.com/avatar/" + \
                         md5(email).hexdigest() + "?" + \
                         urlencode({ 'd' : '404', 's' : str(size) })
@@ -145,6 +146,65 @@ class User (db.Model):
         in templates to decide, if the post dialog is shown"""
         readable, writable, visible = get_my_boards(user = self, get_only_ids = True)
         return board.id in writable
+
+    @property
+    def topic_sorting_preference (self):
+        rel = TopicSortingPreference.query.get(self.id)
+        return rel.preference_id
+
+    @property
+    def active_topic_filters(self):
+        rel = TopicFilter.query.filter(TopicFilter.user_id == self.id, TopicFilter.active == True).all()
+        filters = map(to_filter_id, rel)
+        return filters
+
+    @property
+    def active_post_filters(self):
+        rel = PostFilter.query.filter(PostFilter.user_id == self.id, PostFilter.active == True).all()
+        filters = map(to_filter_id, rel)
+        return filters
+
+class TopicSortingPreference (db.Model):
+    """ user preference for topic sorting """
+    __tablename__ = "topic_sorting_preferences"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    preference_id = db.Column(db.Integer)
+    def __init__ (self, user_id, preference_id = MOST_INTERESTING):
+        self.user_id = user_id
+        self.preference_id = preference_id
+
+class BoardFilter (db.Model):
+    """ board filter for registered users """
+    __tablename__ = "board_filters"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    filter_id = db.Column(db.Integer)
+    active = db.Column(db.Boolean)
+    def __init__ (self, user_id, filter_id, active = False):
+        self.user_id = user_id
+        self.filter_id = filter_id
+        self.active = active
+
+class TopicFilter (db.Model):
+    """ topic filter for registered users """
+    __tablename__ = "topic_filters"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    filter_id = db.Column(db.Integer, primary_key=True)
+    active = db.Column(db.Boolean)
+    def __init__ (self, user_id, filter_id, active = False):
+        self.user_id = user_id
+        self.filter_id = filter_id
+        self.active = active
+
+class PostFilter (db.Model):
+    """ post filter for registered users """
+    __tablename__ = "post_filters"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    filter_id = db.Column(db.Integer)
+    active = db.Column(db.Boolean)
+    def __init__ (self, user_id, filter_id, active = False):
+        self.user_id = user_id
+        self.filter_id = filter_id
+        self.active = active
 
 class UserWebsite (db.Model):
     __tablename__ = "userwebsites"
@@ -428,7 +488,7 @@ class Post (db.Model):
 
     __tablename__ = "posts"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    user_id = db.Column(db.Integer)
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'))
     content = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=func.now())
@@ -453,12 +513,21 @@ class Topic (db.Model):
     title = db.Column(db.String(100))
     closed = db.Column(db.Boolean)
     sticky = db.Column(db.Boolean)
+    # cache
+    interesting = db.Column(db.Integer)
+    view_count = db.Column(db.Integer)
+    post_count = db.Column(db.Integer)
+    poster_count = db.Column(db.Integer)
 
     def __init__ (self, board_id, title):
         self.board_id = board_id
         self.title = title
         self.sticky = False
         self.closed = False
+        self.interesting = 0 # TODO: gets set in slots:start_topic
+        self.view_count = 0
+        self.post_count = 1
+        self.poster_count = 1
 
     @property
     def seostring (self):

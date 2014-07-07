@@ -15,6 +15,11 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#index{
+  width:70%;
+  float:left;
+}
+
 #admintools{
   padding:5pt;
 }

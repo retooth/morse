@@ -26,5 +26,21 @@ import morse.views
 import morse.routing
 import morse.slots
 import morse.builders
+
 from morse.views import login_manager
 login_manager.init_app(app)
+
+# default filters
+
+from morse.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from morse.filters import UnreadTopicFilter, FollowedTopicFilter, UnreadPostFilter
+
+topic_filter_dispatcher = TopicFilterDispatcher()
+topic_filter_dispatcher.attach(UnreadTopicFilter)
+topic_filter_dispatcher.attach(FollowedTopicFilter)
+
+from morse.dispatchers import PostFilterDispatcher
+from morse.filters import UnreadPostFilter
+
+post_filter_dispatcher = PostFilterDispatcher()
+post_filter_dispatcher.attach(UnreadPostFilter)

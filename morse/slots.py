@@ -23,6 +23,8 @@ from mappers import to_id, to_post_id
 from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, certain_rights_required, check_ban, possibly_banned 
 from protocols import ajax_triggered
+from dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from lists import TopicList, PostList
 from flask import request, jsonify
 from flask.ext.login import login_required 
 from flask.ext.login import current_user
@@ -316,17 +318,21 @@ def starttopic (board_id):
     text = request.json["text"]
 
     topic = Topic(board_id, title)
+    # TODO: calculate .interesting
     db.session.add(topic)
     db.session.commit()
 
-    wrapper = TopicWrapper(topic)
-    wrapper.follow()
+    if not current_user.is_anonymous():
+        wrapper = TopicWrapper(topic)
+        wrapper.follow()
 
     post = Post(current_user.id, text, topic.id, request.remote_addr)
     db.session.add(post)
     db.session.commit()
-    post = PostWrapper(post)
-    post.read()
+    
+    if not current_user.is_anonymous():
+        post = PostWrapper(post)
+        post.read()
 
     return jsonify(topicId=topic.id)
 
@@ -360,8 +366,17 @@ def post (topic_id):
 
     text = request.json["text"]
     post = Post(current_user.id, text, topic_id, request.remote_addr)
+    
+    has_posted_at_least_once = Post.query.filter(Post.topic_id == topic_id, Post.user_id == current_user.id).first()
+    if not has_posted_at_least_once:
+        topic.poster_count += 1
+
+    topic.post_count += 1
+    #TODO: calculate interesting
+
     db.session.add(post)
     db.session.commit()
+
     post = PostWrapper(post)
     post.read()
 
@@ -455,3 +470,76 @@ def unread_stats (topic_str):
 
     return jsonify(unreadCount = unread_count, firstUnreadID = first_unread_id)    
 
+@app.route('/board/<board_str>/topics.json', methods=['GET'])
+@ajax_triggered
+def get_topics (board_str):
+    """ 
+    returns a JSON object with structure {topicIDs: [topic_id]}
+    this function is called via ajax in board.js
+    """
+    board_id = int(board_str.split("-")[0])
+    board = Board.query.get(board_id)
+    if not board:
+        return "boardnotfound", 404
+
+    visible, readable, writable = get_my_boards(get_only_ids = True)
+    if not board_id in readable:
+        return "forbidden", 403
+
+    topic_ids = map(to_id, TopicList(board_id))
+
+    return jsonify(IDs = topic_ids)
+
+@app.route('/topic/<topic_str>/posts.json', methods=['GET'])
+@ajax_triggered
+def get_posts (topic_str):
+    """ 
+    returns a JSON object with structure {postIDs: [post_id]}
+    this function is called via ajax in topic.js
+    """
+    topic_id = int(topic_str.split("-")[0])
+    topic = Topic.query.get(topic_id)
+    if not topic:
+        return "topicnotfound", 404
+
+    visible, readable, writable = get_my_boards(get_only_ids = True)
+    if not topic.board_id in readable:
+        return "forbidden", 403
+
+    post_ids = map(to_id, PostList(topic_id))
+
+    return jsonify(IDs = post_ids)
+
+@app.route('/filter/topics', methods=['POST'])
+@login_required
+@ajax_triggered
+def update_topic_filters ():
+    """ 
+    updates topic filters for current user
+    """
+    dispatcher = TopicFilterDispatcher()
+    for status in request.json["filterStatus"]:
+        string_identifier, active = status
+        for filter_blueprint in dispatcher:
+            if string_identifier == filter_blueprint.string_identifier:
+                filt = filter_blueprint()
+                filt.active = active
+                break
+    return ""          
+
+@app.route('/filter/posts', methods=['POST'])
+@login_required
+@ajax_triggered
+def update_post_filters ():
+    """ 
+    updates post filters for current user
+    """
+    dispatcher = PostFilterDispatcher()
+    for status in request.json["filterStatus"]:
+        string_identifier, active = status
+        for filter_blueprint in dispatcher:
+            if string_identifier == filter_blueprint.string_identifier:
+                filt = filter_blueprint()
+                filt.active = active
+                break
+    return ""          

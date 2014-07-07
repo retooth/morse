@@ -15,6 +15,10 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$(document).on("ready", function () {
+ rebindPostToolEvents();
+});
+
 function formatSelectedTextBy (tag){
   var activeID = $(document.activeElement).attr("id");
   if (activeID === "newtopictext" ||
@@ -30,24 +34,27 @@ function formatSelectedTextBy (tag){
     }
 }
 
-$(document).on("ready", function () {
+function rebindPostToolEvents (){
 
-
-  $("#makebold").mousedown(function (){
+  $("#makebold").off("mousedown");
+  $("#makebold").on("mousedown", function (){
     formatSelectedTextBy("strong");
   });
 
 
-  $("#makeitalic").mousedown(function (){
+  $("#makeitalic").off("mousedown");
+  $("#makeitalic").on("mousedown", function (){
     formatSelectedTextBy("em");
   });
 
 
-  $("#makequote").mousedown(function (){
+  $("#makequote").off("mousedown");
+  $("#makequote").on("mousedown", function (){
     formatSelectedTextBy("blockquote");
   });
 
 
+  $("#makelink").off("mousedown");
   $("#makelink").on("mousedown", function (){
     var activeID = $(document.activeElement).attr("id");
     if (activeID === "newtopictext" ||
@@ -72,12 +79,14 @@ $(document).on("ready", function () {
   });
 
 
+  $("#makelink").off("mouseup");
   $("#makelink").on("mouseup", function (){
     $("#newhref").focus();
   });
 
-
-  $("#newhref").keypress(function (keyevent){
+  
+  $("#newhref").off("keypress");
+  $("#newhref").on("keypress", function (keyevent){
     if(keyevent.which === KEY_RETURN){ 
       $("#newhrefwrapper").slideUp(200);
       $("#closenewhref").fadeOut(200);
@@ -98,7 +107,8 @@ $(document).on("ready", function () {
     }
   });
 
-  $("#closenewhref").click(function(){
+  $("#closenewhref").off("click");
+  $("#closenewhref").on("click", function(){
     $("#newhrefwrapper").slideUp(200);
     $(this).fadeOut(200);
     $("#makelink").removeClass("openrightborder");
@@ -120,4 +130,4 @@ $(document).on("ready", function () {
     $("#dummylink").replaceWith(old);
   });
 
-});
+}

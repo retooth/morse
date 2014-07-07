@@ -33,3 +33,13 @@
   overflow:hidden;
   padding:5pt;
 }
+
+#new-topic-button{
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+  background:#f8f8f8;
+  cursor:pointer;
+  box-shadow:1px 1px #ddd;
+}

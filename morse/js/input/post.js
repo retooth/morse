@@ -16,6 +16,10 @@
 */
 
 $(document).on("ready", function () {
+ rebindPostButtonEvents();
+});
+
+function rebindPostButtonEvents (){
 
   $("#dopost").on("click", function(){
     /* TODO: check blankpost
@@ -35,11 +39,10 @@ $(document).on("ready", function () {
       dataType: "json",
     });
   });
+}
 
-  function processNewPostResponse (){
-    window.location.reload();
-    // FIXME: how to scroll down AFTER reload??
-    // TODO: maybe do an ajax implementation
-  }
-
-});
+function processNewPostResponse (){
+  window.location.reload();
+  // FIXME: how to scroll down AFTER reload??
+  // TODO: maybe do an ajax implementation
+}

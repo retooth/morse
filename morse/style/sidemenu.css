@@ -1,0 +1,166 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#side-menu{
+  width:200pt;
+  float:right;
+}
+
+.toolbutton{
+  border:none;
+  width:100%;
+}
+
+.follow{
+  background:#88C100;
+}
+
+.unfollow{
+  background:#FF8A00;
+}
+
+.side-menu-scrolling {
+  position:fixed !important;
+  top:10pt;
+}
+
+    #account-menu{
+      margin-bottom:5pt;
+      background:#ddd;
+      border-radius:3pt;
+      padding: 5pt;
+    }
+
+	.profileimage{
+	  background-size: 128px 128px;
+	  background-repeat:no-repeat;
+	  border-radius: 50%;
+	  display: block;
+	  height: 128px;
+	  width: 128px;
+	  border:2pt solid white;
+	  float:right;
+	  cursor:pointer;
+	}
+
+	    .navmenu{
+	      display:none;
+              padding-left:0;
+              padding-right:0;
+	      padding-top:0;
+	      padding-bottom:5pt;
+	      font-size:11pt;
+	      margin-top:5pt;
+	    }
+
+		#gotologin{
+		  background:#FABE28;
+		  border:1pt solid #FABE28;
+		  width:46%;
+		  margin-left:5pt;
+		}
+
+		#gotoregister{
+		  background:#FF8A00;
+		  border:1pt solid #FF8A00;
+		  width:46%;
+		  margin-left:5pt;
+		}
+
+		#dologout{
+                  float:right;
+		  background:#DB3026;
+		  border:1pt solid #DB3026;
+		  width:48%;
+		  margin-left:5pt;
+		}
+
+
+		#showsettings{
+		  background:#67DAD7;
+		  border:1pt solid #67DAD7;
+		  width:48%;
+		}
+
+    #filter-dropdown{
+      margin-top:5pt;
+    }
+
+        #filter-menu{
+          display:none;
+          background:#fff;
+          border-bottom:1pt solid #ccc;
+          border-left:1pt solid #ccc;
+          border-right:1pt solid #ccc;
+        }
+
+
+	.filter-option {
+	  padding:5pt 5pt 5pt 5pt;
+	  background:#fff;
+	  padding:5pt;
+	  border-bottom:1pt solid #ccc;
+	  box-shadow:inset 0px 1px 1px #ddd;
+	}
+
+	    .filter-option-selected{
+	      background:#BCDE6A;
+	      box-shadow:inset 0px 1px 1px #ABCD59;
+	      border-color:#9ABC48;
+	    }
+
+	    #filter-option-favorited {
+	    }
+
+	    #filter-option-unread {
+	    }
+
+	    #filter-option-followed {
+	    }
+
+    #order-dropdown{
+    }
+
+        #order-menu{
+          display:none;
+          background:#fff;
+          margin:0;
+          border-bottom:1pt solid #ccc;
+          border-left:1pt solid #ccc;
+          border-right:1pt solid #ccc;
+        }
+
+	.order-option{
+	  padding:5pt 5pt 5pt 5pt;
+	  background:#fff;
+	  padding:5pt;
+	  border-bottom:1pt solid #ccc;
+	  box-shadow:inset 0px 1px 1px #ddd;
+	  cursor:pointer;
+	}
+
+	.order-option-selected{
+	  background:#BCDE6A;
+	  box-shadow:inset 0px 1px 1px #ABCD59;
+	  border-color:#9ABC48;
+	}
+
+   #tooltip{
+     padding:5pt;
+     color:#777;
+     font-size:12pt;
+   }

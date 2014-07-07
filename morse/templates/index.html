@@ -2,9 +2,11 @@
 {% extends "base.html" %}
 {% block head %}
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='index.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='sidemenu.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/board.css') }}">
 {% endblock %}
 {% block content %}
+<div id="index">
 {% if current_user.may_structure %}
   <div id="admintools">
     <div id="createnewboard">
@@ -16,4 +18,49 @@
 {% for board in boards %}
     {% include "items/board.html" %}
 {% endfor %}
+</div>
+<div id="side-menu">
+ {% include "account/sidemenu.html" %}
+ {% if not current_user.is_anonymous() %}
+ <div id="filter-dropdown" class="closed-dropdown" tooltip="filter">
+   Filters
+ </div>
+ <div id="filter-menu" tooltip="filter">
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-favorited">
+       <label for="filter-option-favorited" class="checkbox-label"><span>Only my favorite boards</span></label>
+     </div>
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-unread">
+       <label for="filter-option-unread" class="checkbox-label"><span>Only boards with unread posts</span></label>
+     </div>
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-new-topics">
+       <label for="filter-option-new-topics" class="checkbox-label"><span>Only boards with new topics</span></label>
+     </div>
+     <div class="filter-option">
+       <input type="checkbox" class="checkbox" id="filter-option-followed">
+       <label for="filter-option-followed" class="checkbox-label"><span>Only boards with topics I follow</span></label>
+     </div>
+ </div>
+ {% endif %}
+ <div id="tooltip">
+   <div id="tooltip-default">
+     Hi! Welcome. Choose a board, that matches your interests.
+   </div>
+   <div id="tooltip-sorting">
+     Select a sorting method from the list.
+     Click on a selected item to switch from
+     ascending to descending and vice versa.
+   </div>
+   <div id="tooltip-filter">
+     Toggle filters to narrow the list of
+     topics.
+   </div>
+ </div>
+</div>
+<div class="clear"></div>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('js', filename='sidemenu.js') }}"></script>
 {% endblock %}

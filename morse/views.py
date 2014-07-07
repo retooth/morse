@@ -18,9 +18,13 @@
 import re
 from . import app
 from enum import GROUP_ID_REGISTERED
+from enum import TOPIC_FILTER_FAVORITED
+from enum import TOPIC_FILTER_UNREAD
+from enum import TOPIC_FILTER_FOLLOWED
 from mixins import GuestMixin
 from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
-from models import Topic, get_my_boards
+from models import Topic, TopicSortingPreference, get_my_boards, TopicFilter, PostFilter
+from dispatchers import TopicFilterDispatcher, PostFilterDispatcher
 from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, check_ban, possibly_banned 
 from flask import render_template, url_for, request, redirect
@@ -78,6 +82,19 @@ def install ():
     db.session.add(mode3)
     db.session.add(mode4)
 
+    spreference = TopicSortingPreference(admin.id)
+    db.session.add(spreference)
+
+    topic_filter_dispatcher = TopicFilterDispatcher()
+    for filter_blueprint in topic_filter_dispatcher:
+        filter_entry = TopicFilter(admin.id, filter_blueprint.id)
+        db.session.add(filter_entry)
+
+    post_filter_dispatcher = PostFilterDispatcher()
+    for filter_blueprint in post_filter_dispatcher:
+        filter_entry = PostFilter(admin.id, filter_blueprint.id)
+        db.session.add(filter_entry)
+
     db.session.commit()
 
     return redirect(url_for('index'))
@@ -117,6 +134,22 @@ def register():
     # insert the user in the registered group
     relationship = GroupMember(user.id, GROUP_ID_REGISTERED)
     db.session.add(relationship)
+
+    # set default topic sorting preference
+    topic_sorting_preference = TopicSortingPreference(user.id)
+    db.session.add(topic_sorting_preference)
+
+    # set default filter preferences
+    topic_filter_dispatcher = TopicFilterDispatcher()
+    for filter_blueprint in topic_filter_dispatcher:
+        filter_entry = TopicFilter(user.id, filter_blueprint.id)
+        db.session.add(filter_entry)
+
+    post_filter_dispatcher = PostFilterDispatcher()
+    for filter_blueprint in post_filter_dispatcher:
+        filter_entry = PostFilter(user.id, filter_blueprint.id)
+        db.session.add(filter_entry)
+
     db.session.commit()
 
     login_user(user)
@@ -184,9 +217,7 @@ def board(board_str):
         return render_template('4xx/403-default.html'), 403
 
     board  = Board.query.filter(Board.id == board_id).first()
-    topics = Topic.query.filter(Topic.board_id == board_id).all()
-    topics = map(TopicWrapper, topics)
-    return render_template('board.html', board = board, topics = topics)
+    return render_template('board.html', board = board)
 
 @app.route('/admin')
 @login_required
@@ -370,11 +401,14 @@ def showtopic (topic_str):
 
     check_ban(topic.board_id)
 
-    topic = TopicWrapper(topic)
     visible, readable, writable = get_my_boards( get_only_ids = True)
     if not topic.board_id in readable:
         return render_template('4xx/403-default.html'), 403
 
+    topic.view_count += 1
+    db.session.commit()
+
+    topic = TopicWrapper(topic)
     posts = map(PostWrapper, topic.posts)
     return render_template("topic.html", topic = topic, posts = posts)
 

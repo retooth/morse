@@ -16,6 +16,8 @@
 */
 
 #board{
+  width:70%;
+  float:left;
 }
 
     #boardtitle {
@@ -44,9 +46,52 @@
     }
 
     #boardtools {
-      float:left;
-      margin-left:10pt;
+      margin-bottom:5pt;
     }
+
+    #itemcontainer{
+      min-height:100pt;
+    }
+
+    #itemloader-top{
+      padding:0;
+    }
+
+	#info-init{
+	  border-radius:3pt;
+	  background:#333;
+	  padding:5pt;
+	  color:#fff;
+	  margin-bottom:5pt;
+	}
+
+	#info-older-items{
+	  border-radius:3pt;
+	  background:#333;
+	  padding:5pt;
+	  color:#fff;
+	  margin-bottom:5pt;
+	}
+
+    #itemloader-bottom{
+      padding:0;
+      margin-bottom:5pt;
+      height:20pt;
+    }
+
+	#info-newer-items{
+	  border-radius:3pt;
+	  background:#333;
+	  padding:5pt;
+	  color:#fff;
+	}
+
+	#info-rockbottom{
+	  border-radius:3pt;
+	  background:#333;
+	  padding:5pt;
+	  color:#fff;
+	}
 
     .topicitem {
       border-radius: 3pt;
@@ -135,3 +180,4 @@
           margin-top:2pt;
           font-size:10pt;
         }
+

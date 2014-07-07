@@ -55,4 +55,108 @@ $(document).on("ready", function () {
     });
   });
 
+  /* follow switch */
+  $("#followswitch").click(function () {
+
+    var jsonTopicId = JSON.stringify($("#topic").attr("topic-id"));
+    var notFollowed = $(this).hasClass("follow");
+    if (notFollowed) {
+      unfollow();
+    }else{
+      follow();
+    }
+    /*$.ajax({
+      url: notFollowed ? "/follow" : "/unfollow",
+      data: jsonTopicId,
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: notFollowed ? unfollow : follow,
+    });*/
+
+  });
+
+  function unfollow (){
+    switchFollow();
+    $("#followswitch").addClass("unfollow", 500);
+    $("#followswitch").removeClass("follow", 500);
+  }
+
+  function follow (){
+    switchFollow();
+    $("#followswitch").addClass("follow", 500);
+    $("#followswitch").removeClass("unfollow", 500);
+  }
+
+  function switchFollow (){
+    var oldhtml = $("#followswitch").html(); 
+    var newhtml = $("#followswitch").attr("switched");
+    $("#followswitch").html(newhtml);
+    $("#followswitch").attr("switched", oldhtml);
+  }
+
+  $("#order-dropdown").click(function(){
+    if ($(this).hasClass("closed-dropdown")){
+      $(this).removeClass("closed-dropdown");
+      $(this).addClass("open-dropdown");
+      $("#active-order").fadeOut(0);
+      $("#order-menu").slideDown(400);
+    }else{
+      $(this).removeClass("open-dropdown");
+      $(this).addClass("closed-dropdown");
+      $("#active-order").fadeIn(200);
+      $("#order-menu").slideUp(400);
+    }
+  });
+
+  $(".order-option").click(function(){
+    if ($(this).hasClass("order-option-selected")){
+      var switched = $(this).attr("switched");
+      var html = $(this).html();
+      console.log(switched);
+      $(this).attr("switched", html );
+      $(this).html( switched );
+    }
+    $(".order-option").removeClass("order-option-selected");
+    $(this).addClass("order-option-selected");
+    $("#active-order").html( $(this).html() );
+  });
+
+  $("#new-topic-button").click(function(){
+      $("#new-topic-button").slideUp(0);
+      $("#inputwrapper").slideDown(400);
+      $("#newtopictitle").focus();
+  });
+
+  /* bidirectional infinite scrolling */
+  var slot = "/board/" + $("#board").attr("board-id") + "/topics.json";
+  var builder = "/board/" + $("#board").attr("board-id") + "/certaintopics";
+  var scrolling = new InfiniteScrolling();
+  scrolling.init(".topicitem", slot, builder, [rebindToolTipEvents, rebindTopicItemEvents]);
+  scrolling.showFromStart();
+ 
+  $(window).scroll(scrolling.scroll);
+
+  $(".filter-option .checkbox").change(function(){
+    var filterStatus = [];
+    $(".filter-option .checkbox").each(function(){
+      var id = $(this).attr("id");
+      var active = $(this).is(":checked");
+      filterStatus.push( [id, active] );
+    });
+    var data = new Object({filterStatus: filterStatus});
+    var json = $.toJSON(data);
+    $.ajax({
+      url: "/filter/topics",
+      data: json,
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(){
+	scrolling.showFromStart();
+      },
+    });
+  });
+ 
+  rebindTopicItemEvents();
+
+  function rebindTopicItemEvents (){
+    // for later use
+  }
 });

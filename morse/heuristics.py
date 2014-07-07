@@ -15,26 +15,22 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask.ext.login import AnonymousUserMixin
-from models import get_my_boards
+from math import log
+from datetime import datetime
+from mappers import to_user_id, to_creation_timestamp
 
-class GuestMixin (AnonymousUserMixin):
+def interesting (posts):
+    posters = map(to_user_id, posts)
+    posters_count = len(set(posters))
+    p = log(posters_count)
 
-    @property
-    def id (self):
-        return 0
+    timestamps = map(to_creation_timestamp, posts)
+    timestamps.append(datetime.now())
+    n = len(timestamps)
+    deltasum = 0
+    for i in xrange(1, n):
+        delta = timestamps[i] - timestamp[i-1]
+        fsum += delta.total_seconds()
+    f = len(posts) / deltasum
+    return p*f
 
-    @property
-    def active_topic_filters(self):
-        return []
-
-    @property
-    def active_post_filters(self):
-        return []
-
-    def may_post_in (self, board):
-        """ signifies if a user may post in a specific board. This is used in
-        in templates to decide, if the post dialog is shown"""
-        visible, readable, writable = get_my_boards(user = self, get_only_ids = True)
-        return board.id in writable
-    
