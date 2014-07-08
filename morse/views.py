@@ -18,12 +18,12 @@
 import re
 from . import app
 from enum import GROUP_ID_REGISTERED
-from enum import TOPIC_FILTER_FAVORITED
-from enum import TOPIC_FILTER_UNREAD
-from enum import TOPIC_FILTER_FOLLOWED
-from mixins import GuestMixin
-from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
-from models import Topic, TopicSortingPreference, get_my_boards, TopicFilter, PostFilter
+from models import db
+from models.core import User, Guest, Board, Group, GroupMember, GroupMode 
+from models.account import UserWebsite
+from models.discussion import Topic
+from models.filters import TopicFilter, PostFilter
+from models.sorting import TopicSortingPreference
 from dispatchers import TopicFilterDispatcher, PostFilterDispatcher
 from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, check_ban, possibly_banned 
@@ -37,7 +37,7 @@ from flask.ext.login import current_user
 # Integration into flask login extension
 login_manager = LoginManager()
 login_manager.login_view = 'login'
-login_manager.anonymous_user = GuestMixin
+login_manager.anonymous_user = Guest
 
 @login_manager.user_loader
 def load_user(id):
@@ -71,10 +71,10 @@ def install ():
     db.session.commit()
 
     rel = GroupMember(admin.id,gadmin.id)
-    mode1 = GroupMode(0, gadmin.id, True, True, True) 
-    mode2 = GroupMode(0, gmods.id, True, True, True) 
-    mode3 = GroupMode(0, gregistered.id, True, True, True) 
-    mode4 = GroupMode(0, gguests.id, True, False, True) 
+    mode1 = GroupMode(0, gadmin.id, True, True) 
+    mode2 = GroupMode(0, gmods.id, True, True) 
+    mode3 = GroupMode(0, gregistered.id, True, True) 
+    mode4 = GroupMode(0, gguests.id, True, False) 
 
     db.session.add(rel)
     db.session.add(mode1)
@@ -193,8 +193,9 @@ def index():
     :rtype: html
     """
     check_ban()
-    visible, readable, writable = get_my_boards()
-    return render_template('index.html', boards = visible)
+    boards = Board.query.all()
+    boards = filter(current_user.may_read, boards)
+    return render_template('index.html', boards = boards)
 
 @app.route('/board/<board_str>')
 @possibly_banned
@@ -204,16 +205,13 @@ def board(board_str):
     :rtype: html
     """
     board_id = int(board_str.split("-")[0])
-
     check_ban(board_id)
 
-    # TODO: order topics by timestamp
-    visible, readable, writable = get_my_boards( get_only_ids = True)
+    board  = Board.query.filter(Board.id == board_id).first()
+    if not board:
+        return render_template('4xx/404-default'), 404
 
-    # i decided not to do a seperate check, if the board
-    # exists (and return a 404 if not) in order leak as
-    # few information as possible to an attacker.
-    if not int(board_id) in readable:
+    if not current_user.may_read(board):
         return render_template('4xx/403-default.html'), 403
 
     board  = Board.query.filter(Board.id == board_id).first()
@@ -241,12 +239,12 @@ def formlist_to_group_ids (form, prefix):
             break
     return group_ids
 
-def GroupModes (board_id, group_ids, r, w, v):
+def GroupModes (board_id, group_ids, may_read, may_post):
     """ A GroupMode factory, that allows creating
     a list of GroupModes at once """
     groupmodes = []
     for group_id in group_ids:
-        groupmode = GroupMode(board_id, group_id, r, w, v)
+        groupmode = GroupMode(board_id, group_id, may_read, may_post)
         groupmodes.append(groupmode)
     return groupmodes
 
@@ -281,18 +279,15 @@ def newboard():
     db.session.commit()
 
     ignorant_ids = formlist_to_group_ids(request.form, "ignorant")
-    knowonly_ids = formlist_to_group_ids(request.form, "knowonly")
     readonly_ids = formlist_to_group_ids(request.form, "readonly")
     poster_ids   = formlist_to_group_ids(request.form, "poster")
 
     # please note: GroupMode() != GroupModes()
-    ignorant_modes = GroupModes(board.id, ignorant_ids, False, False, False)
-    knowonly_modes = GroupModes(board.id, knowonly_ids, False, False, True)
-    readonly_modes = GroupModes(board.id, readonly_ids, True, False, True)
-    poster_modes   = GroupModes(board.id, poster_ids, True, True, True)
+    ignorant_modes = GroupModes(board.id, ignorant_ids, False, False)
+    readonly_modes = GroupModes(board.id, readonly_ids, True, False)
+    poster_modes   = GroupModes(board.id, poster_ids, True, True)
 
     add_to_session(ignorant_modes)
-    add_to_session(knowonly_modes)
     add_to_session(readonly_modes)
     add_to_session(poster_modes)
 
@@ -300,7 +295,7 @@ def newboard():
 
     return redirect(url_for('index'))
 
-def update_groupmodes (board_id, group_ids, r, w, v):
+def update_groupmodes (board_id, group_ids, may_read, may_post):
     """ updates a list of groupmodes identified by board id
     and group ids """
     for group_id in group_ids:
@@ -309,9 +304,8 @@ def update_groupmodes (board_id, group_ids, r, w, v):
         if not groupmode:
             continue
 
-        groupmode.r = r
-        groupmode.w = w
-        groupmode.v = v
+        groupmode.may_read = may_read
+        groupmode.may_post = may_post
 
 @app.route('/admin/updateboard/<board_id>', methods=["GET", "POST"])
 @login_required
@@ -333,14 +327,12 @@ def updateboard(board_id):
     board.description = request.form['boardescription']
 
     ignorant_ids = formlist_to_group_ids(request.form, "ignorant")
-    knowonly_ids = formlist_to_group_ids(request.form, "knowonly")
     readonly_ids = formlist_to_group_ids(request.form, "readonly")
     poster_ids   = formlist_to_group_ids(request.form, "poster")
 
-    update_groupmodes(board.id, ignorant_ids, False, False, False)
-    update_groupmodes(board.id, knowonly_ids, False, False, True)
-    update_groupmodes(board.id, readonly_ids, True, False, True)
-    update_groupmodes(board.id, poster_ids, True, True, True)
+    update_groupmodes(board.id, ignorant_ids, False, False)
+    update_groupmodes(board.id, readonly_ids, True, False)
+    update_groupmodes(board.id, poster_ids, True, True)
 
     db.session.commit()
 
@@ -401,14 +393,14 @@ def showtopic (topic_str):
 
     check_ban(topic.board_id)
 
-    visible, readable, writable = get_my_boards( get_only_ids = True)
-    if not topic.board_id in readable:
+    topic = TopicWrapper(topic)
+
+    if not current_user.may_read(topic.board):
         return render_template('4xx/403-default.html'), 403
 
     topic.view_count += 1
     db.session.commit()
 
-    topic = TopicWrapper(topic)
     posts = map(PostWrapper, topic.posts)
     return render_template("topic.html", topic = topic, posts = posts)
 

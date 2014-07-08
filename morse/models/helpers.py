@@ -15,27 +15,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-GROUP_ID_ADMIN = 1
-GROUP_ID_MODERATORS = 2
-GROUP_ID_REGISTERED = 3
-GROUP_ID_GUESTS = 4
-
-USER_ID_GUESTS = 0
-
-ALL_BOARDS = 0
-
-# group modes save the default state
-# with this dummy board id. default state
-# is shown when creating a new board
-DEFAULT_MODE_DUMMY_ID = 0
-
-# sorting preferences
-MOST_INTERESTING = 0
-MOST_POSTS = 1
-MOST_VIEWS = 2
-MOST_USERS = 3
-MOST_RECENT = 4
-
-ASCENDING = 0
-DESCENDING = 1
-
+def make_url_compatible (string):
+    """removes all characters except alphanumeric ones and
+    whitespaces, which are substituted with underscores"""
+    allowed = []
+    for char in string:
+        if char.isalnum() or char == " ":
+            allowed.append(char)
+    allowed = ''.join(allowed)
+    return allowed.replace(" ", "_")

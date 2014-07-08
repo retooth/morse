@@ -15,16 +15,8 @@
      {% endfor %}
     </ul>
   </div>
-  <div id="modelistknowonly" class="grouplistwrapper">
-    <header>Can see this board</header>
-    <ul class="grouplist">
-     {% for group in board.knowonlygroups %}
-     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
-     {% endfor %}
-    </ul>
-  </div>
   <div id="modelistreadonly" class="grouplistwrapper">
-    <header>Can see and read this board</header>
+    <header>Can read this board</header>
     <ul class="grouplist">
      {% for group in board.readonlygroups %}
      <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
@@ -32,7 +24,7 @@
     </ul>
   </div>
   <div id="modelistposter" class="grouplistwrapper">
-    <header>Can see and read this board and create posts</header>
+    <header>Can read this board and create posts</header>
     <ul class="grouplist">
      {% for group in board.postergroups %}
      <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>

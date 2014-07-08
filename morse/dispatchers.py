@@ -23,8 +23,8 @@ class DataDispatcher (object):
     __monostate = None
 
     def __init__ (self):
-        if not Dispatcher.__monostate:
-            Dispatcher.__monostate = self.__dict__
+        if not DataDispatcher.__monostate:
+            DataDispatcher.__monostate = self.__dict__
             self._data = defaultdict(list)
         else:
             self.__dict__ = Dispatcher.__monostate

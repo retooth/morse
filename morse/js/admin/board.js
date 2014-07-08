@@ -38,7 +38,6 @@ $(document).on("ready", function () {
   function allLiToHiddenInput (){
     $("#lihiddeninput").html("");
     liToHiddenInput( $("#modelistignorant li"), "ignorant");
-    liToHiddenInput( $("#modelistknowonly li"), "knowonly");
     liToHiddenInput( $("#modelistreadonly li"), "readonly");
     liToHiddenInput( $("#modelistposter li"), "poster");
   }
@@ -68,6 +67,8 @@ $(document).on("ready", function () {
     $("#showmodelist").fadeIn(0);
     $("#modelist").slideUp(800);
   });
+
+  var ADMIN_GROUP_ID = "1";
 
   $("#modelistignorant").on("sortreceive", function (e, ui){
     if(ui.item.attr("group-id") === ADMIN_GROUP_ID){

@@ -6,9 +6,15 @@
   </div>
 </div>
 {% if current_user.may_post_in( topic.board ) %}
-<div id="new-post-button">
-  Click here to contribute <small>(or just start typing)</small>
-</div>
+  {% if topic.closed %}
+  <div id="this-topic-is-closed">
+    This topic is closed
+  </div>
+  {% else %}
+  <div id="new-post-button">
+    Click here to contribute <small>(or just start typing)</small>
+  </div>
+  {% endif %}
 {% else %}
 <div id="you-may-not-post-here">
   You may not post here

@@ -17,7 +17,10 @@
 
 $(document).on("ready", function () {
 
-  $("button.closethread").click(function(){
+  function rebindTopicItemEvents () {
+
+  $("button.closethread").off("click");
+  $("button.closethread").on("click", function(){
     var topicID = $(this).parents(".topicitem").attr("topic-id");
     var data = new Object({ topicID: topicID });
     var json = $.toJSON(data);
@@ -36,7 +39,8 @@ $(document).on("ready", function () {
     });
   });
 
-  $("button.openthread").click(function(){
+  $("button.openthread").off("click");
+  $("button.openthread").on("click", function(){
     var topicID = $(this).parents(".topicitem").attr("topic-id");
     var data = new Object({ topicID: topicID });
     var json = $.toJSON(data);
@@ -54,6 +58,8 @@ $(document).on("ready", function () {
       },
     });
   });
+
+  }
 
   /* follow switch */
   $("#followswitch").click(function () {
@@ -153,10 +159,5 @@ $(document).on("ready", function () {
       },
     });
   });
- 
-  rebindTopicItemEvents();
 
-  function rebindTopicItemEvents (){
-    // for later use
-  }
 });

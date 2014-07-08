@@ -15,26 +15,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask.ext.login import AnonymousUserMixin
-from models import get_my_boards
+GROUP_ID_GUESTS = 4
 
-class GuestMixin (AnonymousUserMixin):
+MOST_INTERESTING = 0
+MOST_POSTS = 1
+MOST_VIEWS = 2
+MOST_USERS = 3
+MOST_RECENT = 4
 
-    @property
-    def id (self):
-        return 0
-
-    @property
-    def active_topic_filters(self):
-        return []
-
-    @property
-    def active_post_filters(self):
-        return []
-
-    def may_post_in (self, board):
-        """ signifies if a user may post in a specific board. This is used in
-        in templates to decide, if the post dialog is shown"""
-        visible, readable, writable = get_my_boards(user = self, get_only_ids = True)
-        return board.id in writable
-    
+ASCENDING = 0
+DESCENDING = 1

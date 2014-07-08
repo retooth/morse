@@ -15,27 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-GROUP_ID_ADMIN = 1
-GROUP_ID_MODERATORS = 2
-GROUP_ID_REGISTERED = 3
-GROUP_ID_GUESTS = 4
+from . import db
+from enum import MOST_INTERESTING
 
-USER_ID_GUESTS = 0
-
-ALL_BOARDS = 0
-
-# group modes save the default state
-# with this dummy board id. default state
-# is shown when creating a new board
-DEFAULT_MODE_DUMMY_ID = 0
-
-# sorting preferences
-MOST_INTERESTING = 0
-MOST_POSTS = 1
-MOST_VIEWS = 2
-MOST_USERS = 3
-MOST_RECENT = 4
-
-ASCENDING = 0
-DESCENDING = 1
-
+class TopicSortingPreference (db.Model):
+    """ user preference for topic sorting """
+    __tablename__ = "topic_sorting_preferences"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    preference_id = db.Column(db.Integer)
+    def __init__ (self, user_id, preference_id = MOST_INTERESTING):
+        self.user_id = user_id
+        self.preference_id = preference_id

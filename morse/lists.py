@@ -24,7 +24,7 @@ from enum import MOST_RECENT
 from flask.ext.login import current_user
 from sqlalchemy import not_
 from dispatchers import TopicFilterDispatcher, PostFilterDispatcher
-from models import Post, Topic
+from models.discussion import Post, Topic
 
 def TopicList (board_id):
 

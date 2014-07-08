@@ -15,11 +15,20 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from models import TopicFollow, PostRead, Topic, Board, User, db
+from models import db
+from models.core import User, Board
+from models.discussion import Topic, TopicFollow, Post, PostRead
 from flask.ext.login import current_user, AnonymousUserMixin
 from collections import defaultdict
 
-class PostWrapper (object):
+class Wrapper (object):
+
+    def __getattr__ (self, attr_name):
+        if attr_name in self.__dict__:
+            return self.__dict__[attr_name]
+        return getattr(self._inner, attr_name)
+
+class PostWrapper (Wrapper):
 
     """ A wrapper for the Post model defined in model. It adds the current
     user as context in order to perform user specific alterations (such
@@ -28,40 +37,16 @@ class PostWrapper (object):
     so saving it to the db session will fail"""
 
     def __init__ (self, post):
-        self.post = post
-
-    @property
-    def user_id (self):
-        return self.post.user_id
+        self._inner = post
 
     @property
     def creator (self):
         return User.query.get(self.user_id) or AnonymousUserMixin()
 
     @property
-    def remote_addr (self):
-        return self.post.remote_addr
-
-    @property
-    def id (self):
-        return self.post.id
-    
-    @property
-    def topic_id (self):
-        return self.post.topic_id
-
-    @property
-    def content (self):
-        return self.post.content
-
-    @property
-    def created_at (self):
-        return self.post.created_at
-
-    @property
     def isfresh (self):
         postread = PostRead.query.filter(PostRead.user_id == current_user.id,\
-                                         PostRead.post_id == self.post.id).first()
+                                         PostRead.post_id == self.id).first()
 
         topic = Topic.query.get(self.topic_id)
         topic = TopicWrapper(topic)
@@ -75,7 +60,7 @@ class PostWrapper (object):
             db.session.add(postread)
             db.session.commit()
 
-class TopicWrapper (object):
+class TopicWrapper (Wrapper):
 
     """ A wrapper for the Topic model defined in model. It adds the current
     user as context in order to perform user specific alterations (such
@@ -84,15 +69,11 @@ class TopicWrapper (object):
     so saving it to the db session will fail"""
     
     def __init__ (self, topic):
-        self.topic = topic
+        self._inner = topic
 
     def _getfollowrelation(self):
         return TopicFollow.query.filter(TopicFollow.user_id == current_user.id, \
-                                        TopicFollow.topic_id == self.topic.id).first()
-
-    @property
-    def seostring (self):
-        return self.topic.seostring
+                                        TopicFollow.topic_id == self.id).first()
 
     @property
     def followed (self):
@@ -105,7 +86,7 @@ class TopicWrapper (object):
     def follow (self):
         """ sets the follow flag for this topic """
         if not self.followed:
-            topicfollow = TopicFollow(current_user.id, self.topic.id)
+            topicfollow = TopicFollow(current_user.id, self.id)
             db.session.add(topicfollow)
             db.session.commit()
 
@@ -130,28 +111,10 @@ class TopicWrapper (object):
     @property
     def posts (self):
         """ gets a list of posts wrapped by PostWrapper """
-        return map(PostWrapper, self.topic.posts)
-
-    @property
-    def title (self):
-        return self.topic.title
-
-    @property
-    def board_id (self):
-        return self.topic.board_id
+        posts = Post.query.filter(Post.topic_id == self.id).all()
+        return map(PostWrapper, posts)
 
     @property
     def board (self):
         return Board.query.get(self.board_id)
 
-    @property
-    def id (self):
-        return self.topic.id
-
-    @property
-    def closed(self):
-        return self.topic.closed
-
-    @property
-    def sticky(self):
-        return self.topic.sticky

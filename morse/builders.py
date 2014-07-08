@@ -22,14 +22,14 @@ from . import app
     for the ajax JSON -> ... <- JSON pipe, check out slots.py
 """
 
-from models import Post, Topic, PostRead, get_my_boards
+from models.discussion import Post, Topic, PostRead
+from models.core import Board
 from mappers import to_id, to_post_id
 from wrappers import PostWrapper, TopicWrapper
 from flask import request, render_template
 from protocols import ajax_triggered
 from sqlalchemy import not_
-
-POST_CONTAINER_LIMIT = 5
+from flask.ext.login import current_user
 
 @app.route('/topic/<topic_str>/certainposts', methods=['POST'])
 @ajax_triggered
@@ -43,8 +43,8 @@ def certain_posts (topic_str):
     if not topic:
         return "topicnotfound", 404
 
-    visible, readable, writable = get_my_boards( get_only_ids = True )
-    if not topic.board_id in readable:
+    topic = TopicWrapper(topic)
+    if not current_user.may_read(topic.board):
         return "forbidden", 403
 
     posts = []
@@ -66,12 +66,11 @@ def certain_topics (board_str):
     this function is called via ajax in board.js
     """
     board_id = int(board_str.split("-")[0])
-    board = Topic.query.get(board_id)
+    board = Board.query.get(board_id)
     if not board:
         return "boardnotfound", 404
 
-    visible, readable, writable = get_my_boards( get_only_ids = True )
-    if not board_id in readable:
+    if not current_user.may_read(board):
         return "forbidden", 403
 
     topics = []
@@ -85,52 +84,3 @@ def certain_topics (board_str):
 
     return render_template("partial/topics.html", topics = topics)
 
-@app.route('/topic/<topic_str>/jump', methods=['GET'])
-@ajax_triggered
-def jump_to_post (topic_str):
-    """ 
-    renders a number of posts, that include the post defined in the 
-    GET parameter postID. postID can also be set to "first" and "last"
-    """
-    topic_id = int(topic_str.split("-")[0])
-    topic = Topic.query.get(topic_id)
-    if not topic:
-        return "topicnotfound", 404
-
-    visible, readable, writable = get_my_boards( get_only_ids = True )
-    if not topic.board_id in readable:
-        return "forbidden", 403
-
-    post_id = request.args.get('postID')
-
-    try:
-        post_id = int(post_id)
-    except (TypeError, ValueError):
-        if post_id.lower() == "first":
-            post_id == Post.query.filter(Post.topic_id == topic_id).order_by(Post.id.asc()).first()
-        elif post_id.lower() == "last":
-            post_id == Post.query.filter(Post.topic_id == topic_id).order_by(Post.id.desc()).first()
-        else:
-            return "badrequest", 400
-
-    post = Post.query.get(post_id)
-    if not post:
-        return "postnotfound", 404
-
-    index = Post.query.filter(Post.topic_id == topic_id, Post.id < post.id).count()
-    prev_offset = (index // POST_CONTAINER_LIMIT) * POST_CONTAINER_LIMIT
-
-    posts = Post.query.filter(Post.topic_id == topic_id).offset(prev_offset).limit(POST_CONTAINER_LIMIT).all()
-
-    posts = map(PostWrapper, posts)
-    return render_template("partial/posts.html", posts = posts, offset = prev_offset, jumpmark = post_id)
-
-@app.route('/buttonbuilder/unread', methods=['GET'])
-@ajax_triggered
-def build_jump_to_unread_button ():
-    try:
-        unread_count = int(request.args.get("unreadCount"))
-        first_unread_id = int(request.args.get("firstUnreadID"))
-    except (TypeError, ValueError):
-        return "badrequest", 400
-    return render_template("partial/jumptounread.html", unread_count = unread_count, first_unread_id = first_unread_id)

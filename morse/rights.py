@@ -17,7 +17,7 @@
 
 from flask import request, render_template
 from flask.ext.login import current_user
-from models import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
+from models.bans import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
 from protocols import ajax_triggered
 
 ALL_BOARDS = 0
@@ -180,5 +180,5 @@ class _certain_rights_required (object):
     def __call__ (self, *args, **kwargs):
         for prop, prop_required in self.required.items():
             if prop_required and not getattr(current_user, prop):
-                return self._accessdenied()
+                return self._access_denied()
         return self.f(*args, **kwargs)

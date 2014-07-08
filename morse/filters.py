@@ -15,7 +15,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from models import db, Topic, Post, PostRead, TopicFollow, TopicFilter, PostFilter
+from models import db
+from models.discussion import Topic, Post, PostRead, TopicFollow 
+from models.filters import TopicFilter, PostFilter
 from mappers import to_topic_id, to_post_id
 from flask.ext.login import current_user
 from sqlalchemy import not_

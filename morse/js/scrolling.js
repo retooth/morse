@@ -166,7 +166,7 @@ function InfiniteScrolling (type){
 
   this.fetchItems = function(cache_start, cache_stop, target, callbacks = []){
 
-    if (cache_start == this.cache.IDs.length){
+    if (cache_start == this.cache.IDs.length && this.cache.IDs.length > this.fillingPower){
       if (!$("#info-rockbottom").is(":visible")){
 	$("#itemloader-bottom").children().fadeOut(0);
 	$("#info-rockbottom").fadeIn(200);

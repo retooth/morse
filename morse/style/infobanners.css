@@ -23,3 +23,12 @@
   background:#f8f8f8;
   box-shadow:1px 1px #ddd;
 }
+
+#this-topic-is-closed{
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+  background:#f8f8f8;
+  box-shadow:1px 1px #ddd;
+}

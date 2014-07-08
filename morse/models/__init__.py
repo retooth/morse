@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#    This file is part of Morse.
+#    This package is part of Morse.
 #
 #    Morse is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,27 +15,5 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-GROUP_ID_ADMIN = 1
-GROUP_ID_MODERATORS = 2
-GROUP_ID_REGISTERED = 3
-GROUP_ID_GUESTS = 4
-
-USER_ID_GUESTS = 0
-
-ALL_BOARDS = 0
-
-# group modes save the default state
-# with this dummy board id. default state
-# is shown when creating a new board
-DEFAULT_MODE_DUMMY_ID = 0
-
-# sorting preferences
-MOST_INTERESTING = 0
-MOST_POSTS = 1
-MOST_VIEWS = 2
-MOST_USERS = 3
-MOST_RECENT = 4
-
-ASCENDING = 0
-DESCENDING = 1
-
+from flask.ext.sqlalchemy import SQLAlchemy
+db = SQLAlchemy()

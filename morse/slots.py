@@ -17,8 +17,10 @@
 
 from . import app
 from enum import DEFAULT_MODE_DUMMY_ID
-from models import db, User, UserWebsite, Board, Group, GroupMember, GroupMode 
-from models import Post, Topic, PostRead, get_my_boards
+from models import db
+from models.core import User, Board, Group, GroupMember, GroupMode 
+from models.account import UserWebsite
+from models.discussion import Post, Topic, PostRead
 from mappers import to_id, to_post_id
 from wrappers import PostWrapper, TopicWrapper
 from rights import admin_rights_required, certain_rights_required, check_ban, possibly_banned 
@@ -297,10 +299,10 @@ def updateaccount ():
     db.session.commit()
     return ""
 
-@app.route('/board/<int:board_id>/starttopic', methods=['POST'])
+@app.route('/board/<board_str>/starttopic', methods=['POST'])
 @possibly_banned
 @ajax_triggered
-def starttopic (board_id):
+def starttopic (board_str):
     """ 
     Creates a new topic. Is called by the javascript event
     callback for #docreate
@@ -308,10 +310,14 @@ def starttopic (board_id):
                      should be started
     :rtype: json 
     """
+    board_id = int(board_str.split("-")[0])
     check_ban(board_id)
 
-    visible, readable, writable = get_my_boards( get_only_ids = True )
-    if not board_id in writable:
+    board = Board.query.get(board_id)
+    if not board:
+        return "boardnotfound", 404
+
+    if not current_user.may_post_in(board):
         return "forbidden", 403 
 
     title = request.json["title"]
@@ -353,8 +359,8 @@ def post (topic_id):
 
     check_ban(topic.board_id)
 
-    visible, readable, writable = get_my_boards(get_only_ids = True)
-    if not topic.board_id in writable:
+    topic = TopicWrapper(topic)
+    if not current_user.may_post_in(topic.board):    
         return "forbidden", 403
 
     if topic.closed:
@@ -482,8 +488,7 @@ def get_topics (board_str):
     if not board:
         return "boardnotfound", 404
 
-    visible, readable, writable = get_my_boards(get_only_ids = True)
-    if not board_id in readable:
+    if not current_user.may_read(board):
         return "forbidden", 403
 
     topic_ids = map(to_id, TopicList(board_id))
@@ -502,8 +507,9 @@ def get_posts (topic_str):
     if not topic:
         return "topicnotfound", 404
 
-    visible, readable, writable = get_my_boards(get_only_ids = True)
-    if not topic.board_id in readable:
+    topic = TopicWrapper(topic)
+
+    if not current_user.may_read(topic.board):
         return "forbidden", 403
 
     post_ids = map(to_id, PostList(topic_id))
