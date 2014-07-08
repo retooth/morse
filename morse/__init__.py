@@ -25,7 +25,6 @@ db.init_app(app)
 import morse.views
 import morse.routing
 import morse.slots
-
 from morse.views import login_manager
 login_manager.init_app(app)
 
