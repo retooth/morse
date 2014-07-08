@@ -109,7 +109,7 @@ $(document).on("ready", function () {
       menu.css("left", position.left);
 
       $.ajax({
-        url: "/userlist.json?pattern=" + pattern,
+        url: "/search/users.json?pattern=" + pattern,
         type: "GET",
         success: function(response){
           var users = response.users;

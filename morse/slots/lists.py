@@ -15,16 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from enum import ASCENDING, DESCENDING
-from enum import MOST_INTERESTING
-from enum import MOST_POSTS
-from enum import MOST_VIEWS
-from enum import MOST_USERS
-from enum import MOST_RECENT
 from flask.ext.login import current_user
 from sqlalchemy import not_
-from dispatchers import TopicFilterDispatcher, PostFilterDispatcher
-from models.discussion import Post, Topic
+from ..dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from ..models.discussion import Post, Topic
 
 def TopicList (board_id):
 

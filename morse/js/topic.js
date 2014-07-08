@@ -46,7 +46,7 @@ $(document).on("ready", function () {
     /* only send, if posts were found */
     if (ids.length > 0){
       $.ajax({
-        url: "/read",
+        url: "/posts/read",
         data: json,
         error: handleAjaxErrorBy( alertGlobal ),
         success: function () { posts.removeClass("fresh"); },
@@ -56,13 +56,14 @@ $(document).on("ready", function () {
   }
 
   /* follow switch */
-  $("#followswitch").click(function () {
+  $("#follow-topic-switch").click(function () {
 
-    var jsonTopicId = JSON.stringify($("#topic").attr("topic-id"));
+    var topicID = $("#topic").attr("topic-id");
     var notFollowed = $(this).hasClass("follow");
+    var command = notFollowed ? "/follow" : "/unfollow";
+
     $.ajax({
-      url: notFollowed ? "/follow" : "/unfollow",
-      data: jsonTopicId,
+      url: "/topic/" + topicID + command,
       error: handleAjaxErrorBy( alertGlobal ),
       success: notFollowed ? unfollow : follow,
     });
@@ -71,21 +72,21 @@ $(document).on("ready", function () {
 
   function unfollow (){
     switchFollow();
-    $("#followswitch").addClass("unfollow", 500);
-    $("#followswitch").removeClass("follow", 500);
+    $("#follow-topic-switch").addClass("unfollow", 500);
+    $("#follow-topic-switch").removeClass("follow", 500);
   }
 
   function follow (){
     switchFollow();
-    $("#followswitch").addClass("follow", 500);
-    $("#followswitch").removeClass("unfollow", 500);
+    $("#follow-topic-switch").addClass("follow", 500);
+    $("#follow-topic-switch").removeClass("unfollow", 500);
   }
 
   function switchFollow (){
-    var oldhtml = $("#followswitch").html(); 
-    var newhtml = $("#followswitch").attr("switched");
-    $("#followswitch").html(newhtml);
-    $("#followswitch").attr("switched", oldhtml);
+    var oldhtml = $("#follow-topic-switch").html(); 
+    var newhtml = $("#follow-topic-switch").attr("switched");
+    $("#follow-topic-switch").html(newhtml);
+    $("#follow-topic-switch").attr("switched", oldhtml);
   }
 
 

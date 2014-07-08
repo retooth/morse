@@ -36,7 +36,7 @@ $(document).on("ready", function () {
     var json = $.toJSON(data);
 
     $.ajax({
-      url: boardID + "/starttopic",
+      url: boardID + "/start-topic",
       data: json,
       error: handleAjaxErrorBy( alertInput ),
       success: processNewTopicResponse,

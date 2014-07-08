@@ -19,42 +19,37 @@ $(document).on("ready", function () {
 
   function rebindTopicItemEvents () {
 
-  $("button.closethread").off("click");
-  $("button.closethread").on("click", function(){
+  $(".close-topic").off("click");
+  $(".close-topic").on("click", function(){
     var topicID = $(this).parents(".topicitem").attr("topic-id");
-    var data = new Object({ topicID: topicID });
-    var json = $.toJSON(data);
 
     $.ajax({
-      url: "/closethread",
-      data: json,
+      url: "/topic/" + topicID + "/close",
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(response){
         topicID = response.closedID;
         var item = $(".topicitem[topic-id=\"" + topicID + "\"]");
         item.addClass("topicclosed");
-        item.find(".closethread").fadeOut(0);
-        item.find(".openthread").fadeIn(200);
+        item.find(".close-topic").fadeOut(0);
+        item.find(".reopen-topic").fadeIn(200);
       },
     });
   });
 
-  $("button.openthread").off("click");
-  $("button.openthread").on("click", function(){
+  $(".reopen-topic").off("click");
+  $(".reopen-topic").on("click", function(){
     var topicID = $(this).parents(".topicitem").attr("topic-id");
-    var data = new Object({ topicID: topicID });
-    var json = $.toJSON(data);
 
     $.ajax({
-      url: "/openthread",
+      url: "/topic/" + topicID + "/reopen",
       data: json,
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(response){
         topicID = response.openedID;
         var item = $(".topicitem[topic-id=\"" + topicID + "\"]");
         item.removeClass("topicclosed");
-        item.find(".openthread").fadeOut(0);
-        item.find(".closethread").fadeIn(200);
+        item.find(".reopen-topic").fadeOut(0);
+        item.find(".close-topic").fadeIn(200);
       },
     });
   });

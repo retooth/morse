@@ -97,7 +97,7 @@ $(document).on("ready", function () {
     $(this).addClass("buttonspinner");
 
     $.ajax({
-      url: "/account/updateinfo",
+      url: "/account/update-info",
       data: $.toJSON(info),
       error: handleAjaxErrorBy( alertInfoSettings ),
       complete: function(){ $("#updateinfo").removeClass("buttonspinner"); },

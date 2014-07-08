@@ -38,9 +38,9 @@
   <div id="topictools">
    {% if not current_user.is_anonymous() %}
      {% if topic.followed %}
-       <button id="followswitch" class="toolbutton unfollow" switched="Alert me about new posts">Don't alert me about new posts</button> 
+       <button id="follow-topic-switch" class="toolbutton unfollow" switched="Alert me about new posts">Don't alert me about new posts</button> 
      {% else %}
-       <button id="followswitch" class="toolbutton follow" switched="Don't alert me about new posts">Alert me about new posts</button> 
+       <button id="follow-topic-switch" class="toolbutton follow" switched="Don't alert me about new posts">Alert me about new posts</button> 
      {% endif %}
    {% endif %}
   </div>
