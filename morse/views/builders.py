@@ -22,12 +22,12 @@ from . import app
     for the ajax JSON -> ... <- JSON pipe, check out slots.py
 """
 
-from models.discussion import Post, Topic, PostRead
-from models.core import Board
-from mappers import to_id, to_post_id
-from wrappers import PostWrapper, TopicWrapper
+from ..models.discussion import Post, Topic, PostRead
+from ..models.core import Board
+from ..mappers import to_id, to_post_id
+from ..wrappers import PostWrapper, TopicWrapper
 from flask import request, render_template
-from protocols import ajax_triggered
+from ..protocols import ajax_triggered
 from sqlalchemy import not_
 from flask.ext.login import current_user
 

@@ -81,7 +81,7 @@
 }
 
 #newgrouptip {
-  background-image: url("editbg.png");
+  background-image: url("/static/editbg.png");
   background-repeat:no-repeat;
   background-position:50% 75%;
 }
@@ -139,7 +139,7 @@
     }
 
     .readonly{
-      background-image: url("lockedgroup.png") !important;
+      background-image: url("/static/lockedgroup.png") !important;
       background-repeat:no-repeat;
       background-position:50% 75%;
     }
