@@ -136,6 +136,11 @@ $(document).on("ready", function () {
  
   $(window).scroll(scrolling.scroll);
 
+
+  $("#itemcontainer").on("emptycontainer", function(){
+    $("#no-topics-yet").fadeIn(200);
+  });
+
   $(".filter-option .checkbox").change(function(){
     var filterStatus = [];
     $(".filter-option .checkbox").each(function(){
@@ -150,6 +155,7 @@ $(document).on("ready", function () {
       data: json,
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(){
+        $("#no-topics-yet").fadeOut(0);
 	scrolling.showFromStart();
       },
     });

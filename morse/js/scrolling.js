@@ -82,7 +82,12 @@ function InfiniteScrolling (type){
   this.initView = function(freshCache){
     that.cache = freshCache;
     that.resetContainer();
-    that.fetchItems(0, that.fillingPower, TARGET_INIT, [that.removeInitSpinner]);
+    if (that.cache.IDs.length > 0){
+      that.fetchItems(0, that.fillingPower, TARGET_INIT, [that.removeInitSpinner]);
+    }else{
+      $("#itemcontainer").trigger("emptycontainer");
+      that.removeInitSpinner();
+    }
     setTimeout(function(){
       that.refreshCache(that.triggerCacheChangeEvent);
     }, 

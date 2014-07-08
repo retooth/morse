@@ -73,6 +73,14 @@
 	  margin-bottom:5pt;
 	}
 
+	#no-topics-yet{
+	  border-radius:3pt;
+	  background:#333;
+	  padding:5pt;
+	  color:#fff;
+	  margin-bottom:5pt;
+	}
+
     #itemloader-bottom{
       padding:0;
       margin-bottom:5pt;
