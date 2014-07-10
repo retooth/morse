@@ -16,8 +16,6 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import db
-# FIXME (global: replace mappers)
-from ..mappers import to_filter_id
 from enum import GROUP_ID_GUESTS
 from sorting import TopicSortingPreference
 from filters import TopicFilter, PostFilter
@@ -171,14 +169,16 @@ class User (db.Model):
 
     @property
     def active_topic_filters(self):
-        rel = TopicFilter.query.filter(TopicFilter.user_id == self.id, TopicFilter.active == True).all()
-        filters = map(to_filter_id, rel)
+        topic_filter_id_generator = TopicFilter.query.filter(TopicFilter.user_id == self.id, 
+                                                             TopicFilter.active == True).values(TopicFilter.filter_id)
+        filters = [oneple[0] for oneple in topic_filter_id_generator]
         return filters
 
     @property
     def active_post_filters(self):
-        rel = PostFilter.query.filter(PostFilter.user_id == self.id, PostFilter.active == True).all()
-        filters = map(to_filter_id, rel)
+        post_filter_id_generator = PostFilter.query.filter(PostFilter.user_id == self.id, 
+                                                           PostFilter.active == True).values(PostFilter.filter_id)
+        filters = [oneple[0] for oneple in post_filter_id_generator]
         return filters
 
 class Guest (AnonymousUserMixin):

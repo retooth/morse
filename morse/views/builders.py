@@ -24,7 +24,6 @@ from . import app
 
 from ..models.discussion import Post, Topic, PostRead
 from ..models.core import Board
-from ..mappers import to_id, to_post_id
 from ..wrappers import PostWrapper, TopicWrapper
 from flask import request, render_template
 from ..protocols import ajax_triggered

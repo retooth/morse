@@ -23,8 +23,7 @@ from ..protocols import ajax_triggered
 from ..models import db
 from ..models.core import Board
 from ..models.discussion import Topic, Post
-from ..mappers import to_id
-from ..lists import TopicList
+from generators import TopicListGenerator
 from ..wrappers import TopicWrapper, PostWrapper
 
 @app.route('/board/<board_str>/topics.json', methods=['GET'])
@@ -43,7 +42,9 @@ def get_topics (board_str):
     if not current_user.may_read(board):
         return "forbidden", 403
 
-    topic_ids = map(to_id, TopicList(board_id))
+    topic_ids = []
+    for topic_id in TopicListGenerator(board_id):
+        topic_ids.append(topic_id)
 
     return jsonify(IDs = topic_ids)
 

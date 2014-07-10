@@ -24,8 +24,7 @@ from ..models import db
 from ..models.core import Board
 from ..models.discussion import Topic, Post, PostRead
 from ..wrappers import TopicWrapper, PostWrapper
-from ..mappers import to_id, to_post_id
-from lists import PostList
+from generators import PostListGenerator
 from sqlalchemy import not_
 
 @app.route('/topic/<topic_str>/post', methods=['POST'])
@@ -172,7 +171,9 @@ def get_posts (topic_str):
     if not current_user.may_read(topic.board):
         return "forbidden", 403
 
-    post_ids = map(to_id, PostList(topic_id))
+    post_ids = []
+    for post_id in PostListGenerator(topic_id):
+        post_ids.append(post_id)
 
     return jsonify(IDs = post_ids)
 
@@ -192,8 +193,12 @@ def unread_stats (topic_str):
     if current_user.is_anonymous():
         return jsonify(unreadCount = 0, firstUnreadID = None)    
 
-    post_ids = map(to_id, Post.query.filter(Post.topic_id == topic_id))
-    read_ids = map(to_post_id, PostRead.query.filter(PostRead.user_id == current_user.id, PostRead.post_id.in_(post_ids)))
+    post_id_generator = Post.query.filter(Post.topic_id == topic_id).values(Post.id)
+    post_ids = [oneple[0] for oneple in post_id_generator] 
+
+    read_ids_generator = PostRead.query.filter(PostRead.user_id == current_user.id, PostRead.post_id.in_(post_ids)).values(PostRead.post_id)
+    read_ids = [oneple[0] for oneple in read_ids_generator] 
+    
     unread_count = Post.query.filter(Post.topic_id == topic_id, not_(Post.id.in_(read_ids))).count()
     first_unread = Post.query.filter(Post.topic_id == topic_id, not_(Post.id.in_(read_ids))).first()
 
