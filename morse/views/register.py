@@ -23,7 +23,7 @@ from ..models import db
 from ..models.core import User, GroupMember
 from ..models.sorting import TopicSortingPreference
 from ..models.filters import TopicFilter, PostFilter
-from ..dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
 from ..enum import GROUP_ID_REGISTERED
 
 @app.route('/account/register' , methods=['GET','POST'])

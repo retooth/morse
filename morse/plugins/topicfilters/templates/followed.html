@@ -1,0 +1,5 @@
+<div class="filter-option {% if topic_filter.active %} filter-option-selected {% endif %}">
+  <input type="checkbox" class="checkbox" id="filter-option-followed"
+  {% if topic_filter.active %} checked {% endif %}>
+  <label for="filter-option-followed" class="checkbox-label"><span>Only topics I follow</span></label>
+</div>

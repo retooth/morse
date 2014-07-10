@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#    This package is part of Morse.
+#    This file is part of Morse.
 #
 #    Morse is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,26 +15,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Flask
-from jinja2 import ChoiceLoader, FileSystemLoader
-import os
+from morse.models.discussion import Post, PostRead
+from morse.api.filters import PostItemFilter
+from flask.ext.login import current_user
+from sqlalchemy import not_
 
-app = Flask(__name__)
-app.config.from_object('config')
+class UnreadPostFilter (PostItemFilter):
 
-# FIXME: for some reason FileSystemLoader
-# doesn't like relative paths, so this is a
-# workaround
-path = os.getcwd() + "/morse/plugins"
-app.jinja_loader = ChoiceLoader([ app.jinja_loader, FileSystemLoader(path)])
+    id = 1
+    string_identifier = "filter-option-unread"
+    template = "postfilters/templates/unread.html"
 
-from morse.models import db
-db.init_app(app)
-
-import morse.views
-import morse.routing
-import morse.slots
-from morse.views import login_manager
-login_manager.init_app(app)
-
-from plugins import *
+    def filter (self, query):
+        read_post_ids_generator = PostRead.query.filter(PostRead.user_id == current_user.id).values(PostRead.post_id)
+        read_post_ids = [oneple[0] for oneple in read_post_ids_generator]
+        query = query.filter(not_(Post.id.in_(read_post_ids)))
+        return query

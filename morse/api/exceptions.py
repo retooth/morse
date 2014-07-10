@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-#    This package is part of Morse.
+#    This file is part of Morse.
 #
 #    Morse is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,26 +15,5 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from flask import Flask
-from jinja2 import ChoiceLoader, FileSystemLoader
-import os
-
-app = Flask(__name__)
-app.config.from_object('config')
-
-# FIXME: for some reason FileSystemLoader
-# doesn't like relative paths, so this is a
-# workaround
-path = os.getcwd() + "/morse/plugins"
-app.jinja_loader = ChoiceLoader([ app.jinja_loader, FileSystemLoader(path)])
-
-from morse.models import db
-db.init_app(app)
-
-import morse.views
-import morse.routing
-import morse.slots
-from morse.views import login_manager
-login_manager.init_app(app)
-
-from plugins import *
+class PluginError (StandardError):
+    pass

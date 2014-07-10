@@ -26,9 +26,8 @@ def TopicListGenerator (board_id):
     dispatcher = TopicFilterDispatcher()
 
     for topic_filter in current_user.active_topic_filters:
-        for blueprint in dispatcher:
-            if topic_filter == blueprint.id:
-                filt = blueprint()
+        for filt in dispatcher:
+            if topic_filter == filt.id:
                 query = filt.filter(query)
 
     # TODO: sorting preferences
@@ -41,9 +40,8 @@ def PostListGenerator (topic_id):
     dispatcher = PostFilterDispatcher()
 
     for post_filter in current_user.active_post_filters:
-        for blueprint in dispatcher:
-            if post_filter == blueprint.id:
-                filt = blueprint()
+        for filt in dispatcher:
+            if post_filter == filt.id:
                 query = filt.filter(query)
 
     return query.values(Post.id)

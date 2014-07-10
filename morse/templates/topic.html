@@ -45,19 +45,14 @@
    {% endif %}
   </div>
  <div class="clear"></div>
- {% if not current_user.is_anonymous() %}
+ {% if not current_user.is_anonymous() and not post_filter_dispatcher.is_empty %}
  <div id="filter-dropdown" class="closed-dropdown" tooltip="filter">
    Filters
  </div>
  <div id="filter-menu" tooltip="filter">
-     <div class="filter-option">
-       <input type="checkbox" class="checkbox" id="filter-option-favorited">
-       <label for="filter-option-favorited" class="checkbox-label"><span>Only posts I favorited</span></label>
-     </div>
-     <div class="filter-option">
-       <input type="checkbox" class="checkbox" id="filter-option-unread">
-       <label for="filter-option-unread" class="checkbox-label"><span>Only unread posts</span></label>
-     </div>
+     {% for post_filter in post_filter_dispatcher %}
+       {% include post_filter.template %}
+     {% endfor %}
  </div>
  {% endif %}
 <div id="tooltip">

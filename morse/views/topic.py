@@ -22,6 +22,7 @@ from ..rights import possibly_banned, check_ban
 from ..models import db
 from ..models.discussion import Topic
 from ..wrappers import TopicWrapper
+from ..api.dispatchers import PostFilterDispatcher
 
 @app.route('/topic/<topic_str>', methods=['GET'])
 @possibly_banned
@@ -46,4 +47,5 @@ def topic (topic_str):
     topic.view_count += 1
     db.session.commit()
 
-    return render_template("topic.html", topic = topic, posts = topic.posts)
+    post_filter_dispatcher = PostFilterDispatcher()
+    return render_template("topic.html", topic = topic, post_filter_dispatcher = post_filter_dispatcher)

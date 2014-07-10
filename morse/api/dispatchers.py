@@ -50,8 +50,13 @@ class TopicFilterDispatcher (object):
         # TODO: check for database inconsistency
         self._filters.append(filt)
 
+    @property
+    def is_empty(self):
+        return self._filters == []
+
     def __iter__ (self):
-        for filt in self._filters:
+        for filter_blueprint in self._filters:
+            filt = filter_blueprint()
             yield filt
 
 class PostFilterDispatcher (object):
@@ -69,6 +74,11 @@ class PostFilterDispatcher (object):
         # TODO: check for database inconsistency
         self._filters.append(filt)
 
+    @property
+    def is_empty(self):
+        return self._filters == []
+
     def __iter__ (self):
-        for filt in self._filters:
+        for filter_blueprint in self._filters:
+            filt = filter_blueprint()
             yield filt

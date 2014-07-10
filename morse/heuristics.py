@@ -17,20 +17,25 @@
 
 from math import log
 from datetime import datetime
-from mappers import to_user_id, to_creation_timestamp
+from wrappers import TopicWrapper
 
-def interesting (posts):
-    posters = map(to_user_id, posts)
-    posters_count = len(set(posters))
-    p = log(posters_count)
+def interesting (topic):
+    topic = TopicWrapper(topic)
+    p = log(topic.posters_count)
+    post_range = min(topic.post_count, 10)
+    last_posts = topic[-post_range:]
+    
+    timestamps = [post.creation_timestamp for post in last_ten_posts]
 
-    timestamps = map(to_creation_timestamp, posts)
-    timestamps.append(datetime.now())
     n = len(timestamps)
     deltasum = 0
     for i in xrange(1, n):
         delta = timestamps[i] - timestamp[i-1]
-        fsum += delta.total_seconds()
-    f = len(posts) / deltasum
-    return p*f
+        deltasum += delta.total_seconds()
+    try:
+        f = len(last_posts) / deltasum
+    except ArithmeticError:
+        f = 1
+    l = last_posts[-1].create_timestamp
+    return p*f*l
 

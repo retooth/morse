@@ -50,19 +50,14 @@
    <div switched="fewest views" class="order-option">most views</div>
    <div switched="fewest contributors" class="order-option">most contributors</div>
  </div>
- {% if not current_user.is_anonymous() %}
+ {% if not current_user.is_anonymous() and not topic_filter_dispatcher.is_empty %}
  <div id="filter-dropdown" class="closed-dropdown" tooltip="filter">
    Filters
  </div>
  <div id="filter-menu" tooltip="filter">
-     <div class="filter-option">
-       <input type="checkbox" class="checkbox" id="filter-option-unread">
-       <label for="filter-option-unread" class="checkbox-label"><span>Only topics with unread posts</span></label>
-     </div>
-     <div class="filter-option">
-       <input type="checkbox" class="checkbox" id="filter-option-followed">
-       <label for="filter-option-followed" class="checkbox-label"><span>Only topics I follow</span></label>
-     </div>
+     {% for topic_filter in topic_filter_dispatcher %}
+       {% include topic_filter.template %}
+     {% endfor %}
  </div>
  {% endif %}
  <div id="tooltip">

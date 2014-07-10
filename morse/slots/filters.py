@@ -19,7 +19,7 @@ from . import app
 from flask import request
 from flask.ext.login import login_required
 from ..protocols import ajax_triggered
-from ..dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
 
 @app.route('/filter/topics', methods=['POST'])
 @login_required
@@ -31,9 +31,8 @@ def update_topic_filters ():
     dispatcher = TopicFilterDispatcher()
     for status in request.json["filterStatus"]:
         string_identifier, active = status
-        for filter_blueprint in dispatcher:
-            if string_identifier == filter_blueprint.string_identifier:
-                filt = filter_blueprint()
+        for filt in dispatcher:
+            if string_identifier == filt.string_identifier:
                 filt.active = active
                 break
     return ""          
@@ -48,9 +47,8 @@ def update_post_filters ():
     dispatcher = PostFilterDispatcher()
     for status in request.json["filterStatus"]:
         string_identifier, active = status
-        for filter_blueprint in dispatcher:
-            if string_identifier == filter_blueprint.string_identifier:
-                filt = filter_blueprint()
+        for filt in dispatcher:
+            if string_identifier == filt.string_identifier:
                 filt.active = active
                 break
     return ""

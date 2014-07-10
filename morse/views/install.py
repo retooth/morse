@@ -5,7 +5,7 @@ from ..models import db
 from ..models.core import User, Group, GroupMember, GroupMode 
 from ..models.filters import TopicFilter, PostFilter
 from ..models.sorting import TopicSortingPreference
-from ..dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
 
 @app.route('/install')
 def install ():

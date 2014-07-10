@@ -20,6 +20,7 @@ from flask.ext.login import current_user
 from flask import render_template
 from ..rights import check_ban, possibly_banned 
 from ..models.core import Board
+from ..api.dispatchers import TopicFilterDispatcher
 
 @app.route('/board/<board_str>')
 @possibly_banned
@@ -39,4 +40,5 @@ def board(board_str):
         return render_template('4xx/403-default.html'), 403
 
     board  = Board.query.filter(Board.id == board_id).first()
-    return render_template('board.html', board = board)
+    topic_filter_dispatcher = TopicFilterDispatcher()
+    return render_template('board.html', board = board, topic_filter_dispatcher = topic_filter_dispatcher)

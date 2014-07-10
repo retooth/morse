@@ -118,3 +118,17 @@ class TopicWrapper (Wrapper):
     def board (self):
         return Board.query.get(self.board_id)
 
+    def __getitem__ (self, val):
+        """ gets a single post or a slice of posts """
+        if type(val) is slice:
+            if slice.step:
+                raise ValueError("Slice steps are not supported")
+            start = slice.start
+            if start < 0:
+                start = self.post_count + start
+            if slice.stop:
+                limit = slice.stop - slice.start
+            else:
+                limit = 0
+            posts = Post.query.filter(Post.topic_id == self.id).offset(start).limit(limit).all()
+            return map(PostWrapper, posts)
