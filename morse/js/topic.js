@@ -94,7 +94,7 @@ $(document).on("ready", function () {
   var slot = "/topic/" + $("#topic").attr("topic-id") + "/posts.json";
   var builder = "/topic/" + $("#topic").attr("topic-id") + "/certainposts";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".postitem", slot, builder, [rebindToolTipEvents, rebindPostItemEvents]);
+  scrolling.init(".postitem", slot, builder, [rebindToolTipEvents, rebindPostItemEvents], 3000, 20, 5);
 
   hash = window.location.hash;
   if (hash){

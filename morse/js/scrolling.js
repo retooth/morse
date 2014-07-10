@@ -27,8 +27,8 @@ function InfiniteScrolling (type){
   this.type = type;
   this.cache = new Object({ IDs: [] });
 
-  this.init = function (itemSelector, slot, builder, reloadingCallbacks = [], refreshRate = 3000, 
-			fillingPower = 20, itemsPerReload = 5){
+  this.init = function (itemSelector, slot, builder, reloadingCallbacks, refreshRate, 
+			fillingPower, itemsPerReload){
 
     this.itemSelector = itemSelector;
     this.slot = slot;
@@ -150,7 +150,7 @@ function InfiniteScrolling (type){
       var last = $(this.itemSelector).last();
       var start = parseInt(last.attr("cache-index")) + 1;
       var stop = start + that.itemsPerReload;
-      that.fetchItems(start, stop, TARGET_BOTTOM);
+      that.fetchItems(start, stop, TARGET_BOTTOM, []);
     };
   }
 
@@ -160,7 +160,7 @@ function InfiniteScrolling (type){
       var firstCacheIndex = parseInt(first.attr("cache-index"));
       var start = firstCacheIndex - that.itemsPerReload;
       var stop = firstCacheIndex;
-      that.fetchItems(start, stop, TARGET_TOP);
+      that.fetchItems(start, stop, TARGET_TOP, []);
     };
   }
 
@@ -169,7 +169,7 @@ function InfiniteScrolling (type){
     $("#info-newer-items").fadeOut(0);
   }
 
-  this.fetchItems = function(cache_start, cache_stop, target, callbacks = []){
+  this.fetchItems = function(cache_start, cache_stop, target, callbacks){
 
     if (cache_start == this.cache.IDs.length && this.cache.IDs.length > this.fillingPower){
       if (!$("#info-rockbottom").is(":visible")){

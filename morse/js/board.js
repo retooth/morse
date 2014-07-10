@@ -131,7 +131,7 @@ $(document).on("ready", function () {
   var slot = "/board/" + $("#board").attr("board-id") + "/topics.json";
   var builder = "/board/" + $("#board").attr("board-id") + "/certaintopics";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".topicitem", slot, builder, [rebindToolTipEvents, rebindTopicItemEvents]);
+  scrolling.init(".topicitem", slot, builder, [rebindToolTipEvents, rebindTopicItemEvents], 3000, 20, 5);
   scrolling.showFromStart();
  
   $(window).scroll(scrolling.scroll);
