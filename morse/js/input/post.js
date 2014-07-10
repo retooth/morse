@@ -22,10 +22,13 @@ $(document).on("ready", function () {
 function rebindPostButtonEvents (){
 
   $("#dopost").on("click", function(){
-    /* TODO: check blankpost
-       alertInput("blankpost");
-       */
+
     var text = $("#newposttext").html();
+    if (text.length < 20){
+      alertInput("text-too-short");
+      return false;
+    }
+
     var topic_id = $("#topic").attr("topic-id");
 
     var data = new Object({ text: text });

@@ -22,14 +22,40 @@ $(document).on("ready", function () {
       $("#newtopictext").focus();
       keyevent.preventDefault();
     }
+    sanitizeTopicTitle();
   });
 
+  $("#newtopictitle").keyup(sanitizeTopicTitle);
+  $("#newtopictitle").blur(sanitizeTopicTitle);
+
+  function sanitizeTopicTitle (){
+    var title = $("#newtopictitle");
+    unwrapChildren(title);
+    title.find("br").remove();
+  }
+
+  function unwrapChildren (parentNode){
+    var children = parentNode.children()
+    children.each(function(){
+      unwrapChildren($(this));
+      $(this).replaceWith( $(this).html() );
+    });
+  }
+
   $("#docreate").on("click", function(){
-    /* TODO: check blankpost
-       alertInput("blankpost");
-       */
     var title = $("#newtopictitle").html();
+    
+    if (title.length < 3){
+      alertInput("title-too-short");
+      return false;
+    }
+
     var text = $("#newtopictext").html();
+    if (text.length < 20){
+      alertInput("text-too-short");
+      return false;
+    }
+
     var boardID = $("#board").attr("board-id");
 
     var data = new Object({ title: title, text: text });
