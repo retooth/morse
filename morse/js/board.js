@@ -42,7 +42,6 @@ $(document).on("ready", function () {
 
     $.ajax({
       url: "/topic/" + topicID + "/reopen",
-      data: json,
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(response){
         topicID = response.openedID;
