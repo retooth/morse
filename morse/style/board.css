@@ -16,36 +16,27 @@
 */
 
 #board{
-  width:70%;
-  float:left;
 }
 
-    #boardtitle {
+    #board-title {
       font-weight:bold;
       color:#000;
       margin-top: -5pt;
       padding:0;
       font-size:30pt;
-      float:left;
       text-shadow:1px 1px #ddd;
     }
 
-    #goback{
-      font-size:12pt;
-      color:#DB3026;
-      text-decoration:none;
+    #board-description{
+      font-weight:bold;
+      color:#000;
+      margin-top: -20pt;
+      padding:0;
+      font-size:10pt;
+      text-shadow:1px 1px #ddd;
     }
 
-    #gobacktooltip{
-      display:none;
-    }
-
-    #topictools{
-      float:left;
-      padding-left:10pt;
-    }
-
-    #boardtools {
+    #board-tools{
       margin-bottom:5pt;
     }
 
@@ -57,29 +48,29 @@
       padding:0;
     }
 
-	#info-init{
-	  border-radius:3pt;
-	  background:#333;
-	  padding:5pt;
-	  color:#fff;
-	  margin-bottom:5pt;
-	}
+        #info-init{
+          border-radius:3pt;
+          background:#333;
+          padding:5pt;
+          color:#fff;
+          margin-bottom:5pt;
+        }
 
-	#info-older-items{
-	  border-radius:3pt;
-	  background:#333;
-	  padding:5pt;
-	  color:#fff;
-	  margin-bottom:5pt;
-	}
+        #info-older-items{
+          border-radius:3pt;
+          background:#333;
+          padding:5pt;
+          color:#fff;
+          margin-bottom:5pt;
+        }
 
-	#no-topics-yet{
-	  border-radius:3pt;
-	  background:#333;
-	  padding:5pt;
-	  color:#fff;
-	  margin-bottom:5pt;
-	}
+        #no-topics-yet{
+          border-radius:3pt;
+          background:#333;
+          padding:5pt;
+          color:#fff;
+          margin-bottom:5pt;
+        }
 
     #itemloader-bottom{
       padding:0;
@@ -87,105 +78,17 @@
       height:20pt;
     }
 
-	#info-newer-items{
-	  border-radius:3pt;
-	  background:#333;
-	  padding:5pt;
-	  color:#fff;
-	}
-
-	#info-rockbottom{
-	  border-radius:3pt;
-	  background:#333;
-	  padding:5pt;
-	  color:#fff;
-	}
-
-    .topicitem {
-      border-radius: 3pt;
-      border: 1pt solid #ccc;
-      padding:5pt 5pt 5pt 5pt;
-      margin-bottom:5pt;
-      background:#fcfcfc;
-      box-shadow:1px 1px #ddd;
-    }
-
-    .topicitem:hover {
-      background:#fff;
-    }
-
-    .topicclosed{
-      background:#DB3026;
-      color:#fff;
-    }
-
-    .topicclosed:hover {
-      background:#DE3329;
-      color:#fff;
-    }
-
-        .topictitle{
-          color:#000;
-          font-weight:bold;
-          width:95%;
-          float:left;
-        }
-
-        .topictools{
-          float:right;
-        }
-
-        .close-topic{
-          border:none;
-          display:block;
-          padding:0;
-          background:none;
-          outline:none;
-          border-radius:0;
-          height:16px;
-          width:13px;
-          background-image: url('/static/unlocked.png');
-          background-size:auto 16px;
-          background-repeat:no-repeat;
-          margin-top:2px;
-          box-shadow:none;
-        }
-
-        .reopen-topic{
-          display:block;
-          border:none;
-          padding:0;
-          background:none;
-          outline:none;
-          border-radius:0;
-          height:16px;
-          width:13px;
-          background-image: url('/static/locked.png');
-          background-size:auto 16px;
-          background-repeat:no-repeat;
-          margin-top:2px;
-          box-shadow:none;
-        }
-
-        .lastpost {
-          display:none;
-          background: #BDF067;
-          border-radius-bottom-left: 3pt;
-          border-radius-bottom-right: 3pt;
+        #info-newer-items{
+          border-radius:3pt;
+          background:#333;
           padding:5pt;
-          margin:-5pt;
-          margin-top:2pt;
-          font-size:10pt;
+          color:#fff;
         }
 
-        .lasttopics {
-          display:none;
-          background: #DDEAD0;
-          border-radius-bottom-left: 3pt;
-          border-radius-bottom-right: 3pt;
+        #info-rockbottom{
+          border-radius:3pt;
+          background:#333;
           padding:5pt;
-          margin:-5pt;
-          margin-top:2pt;
-          font-size:10pt;
+          color:#fff;
         }
 

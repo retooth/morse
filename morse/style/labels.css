@@ -15,25 +15,63 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* label palette made by ycc2106 (CC-BY-NC-SA) */ 
+/* label palette is a mixture of
+- TY<3COLOURlovers by ycc2106 (CC-BY-NC-SA) 
+- My Rainbow by mmelcg (CC-BY-NC-SA)
+*/ 
 
-.label0{
+.label-0{
+  color:#8B8B8B !important;
+}
+
+.label-1{
+  color:#41BFBD !important;
+}
+
+.label-2{
+  color:#98EB2D !important;
+}
+
+.label-3{
+  color:#F7DB1A !important;
+}
+
+.label-4{
+  color:#FF937C !important;
+}
+
+.label-5{
+  color:#F0778F !important;
+}
+
+.label-6{
+  color:#BD91D6 !important;
+}
+
+.background-label-0{
   background:#8B8B8B !important;
 }
 
-.label1{
+.background-label-1{
   background:#41BFBD !important;
 }
 
-.label2{
+.background-label-2{
   background:#98EB2D !important;
 }
 
-.label3{
+.background-label-3{
   background:#F7DB1A !important;
 }
 
-.label4{
+.background-label-4{
   background:#FF937C !important;
 }
 
+.background-label-5{
+  background:#F0778F !important;
+}
+
+.background-label-6{
+  background:#BD91D6 !important;
+}

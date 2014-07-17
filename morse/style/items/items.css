@@ -15,32 +15,24 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#loginwrapper{
-  margin:auto;
+.item-side-counter{
+  border-radius:0pt 3pt 3pt 0pt;
+  float:right;
   padding:5pt;
-  text-align: center;
+  height:100%;
+  font-weight:bold;
+  display:none;
+  -webkit-transition: all 5s ease;
+  -moz-transition: all 5s ease;
+  -o-transition: all 5s ease;
+  transition: all 5s ease;
 }
 
-    #username{
-      font-size: 12pt;
-      width:170pt;
-    }
+.item-side-counter-unread{
+  background: #BDF067;
+  color:#000;
+}
 
-    #password{
-      font-size: 12pt;
-      width:170pt;
-    }
-
-    #dologin{
-      background:#88C100;
-      border:1pt solid #88C100;
-      font-size: 12pt;
-      margin-top:5pt;
-      margin-bottom:5pt;
-      width:180pt;
-    }
-
-    #signupinfo{
-      font-size:10pt;
-      padding-left:5pt;
-    }
+.items-side-counter-flash{
+ color:#fff
+}

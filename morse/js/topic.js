@@ -17,13 +17,10 @@
 
 $(document).on("ready", function () {
 
-  /* mark posts on screen as read */
-  readVisiblePosts();
-
   function readVisiblePosts (){
 
     /* 
-       readVisible() looks for posts in the current viewport and
+       readVisiblePosts() looks for posts in the current viewport and
        marks them as read via ajax. this include removing the
        css fresh class
        */
@@ -33,18 +30,21 @@ $(document).on("ready", function () {
     });
 
     /* collect ids of visible posts */
-    var ids = Array();
-    postfooters.each(function () {
-      if ($(this).parent().hasClass("fresh")){
-        ids.push($(this).html());
+    var postIDs = Array();
+    postfooters.each(function (){
+      var postItem = $(this).parent();
+      if (postItem.hasClass("fresh")){
+        var postID = postItem.attr("post-id");
+        postIDs.push(postID);
       }
     });
 
     var posts = postfooters.parent();
-    var json = JSON.stringify(ids);
+    var data = new Object({postIDs: postIDs});
+    var json = $.toJSON(data);
 
     /* only send, if posts were found */
-    if (ids.length > 0){
+    if (postIDs.length > 0){
       $.ajax({
         url: "/posts/read",
         data: json,
@@ -56,45 +56,38 @@ $(document).on("ready", function () {
   }
 
   /* follow switch */
-  $("#follow-topic-switch").click(function () {
-
+  $("#follow-topic").click(function(){
     var topicID = $("#topic").attr("topic-id");
-    var notFollowed = $(this).hasClass("follow");
-    var command = notFollowed ? "/follow" : "/unfollow";
+    var that = $(this);
 
     $.ajax({
-      url: "/topic/" + topicID + command,
+      url: "/topic/" + topicID + "/follow",
       error: handleAjaxErrorBy( alertGlobal ),
-      success: notFollowed ? unfollow : follow,
+      success: function(response){
+        switchButton(that);
+      },
     });
-
   });
 
-  function unfollow (){
-    switchFollow();
-    $("#follow-topic-switch").addClass("unfollow", 500);
-    $("#follow-topic-switch").removeClass("follow", 500);
-  }
+  $("#unfollow-topic").click(function(){
+    var topicID = $("#topic").attr("topic-id");
+    var that = $(this);
 
-  function follow (){
-    switchFollow();
-    $("#follow-topic-switch").addClass("follow", 500);
-    $("#follow-topic-switch").removeClass("unfollow", 500);
-  }
-
-  function switchFollow (){
-    var oldhtml = $("#follow-topic-switch").html(); 
-    var newhtml = $("#follow-topic-switch").attr("switched");
-    $("#follow-topic-switch").html(newhtml);
-    $("#follow-topic-switch").attr("switched", oldhtml);
-  }
+    $.ajax({
+      url: "/topic/" + topicID + "/unfollow",
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        switchButton(that);
+      },
+    });
+  });
 
 
   /* bidirectional infinite scrolling */
   var slot = "/topic/" + $("#topic").attr("topic-id") + "/posts.json";
   var builder = "/topic/" + $("#topic").attr("topic-id") + "/certainposts";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".postitem", slot, builder, [rebindToolTipEvents, rebindPostItemEvents], 3000, 20, 5);
+  scrolling.init(".postitem", slot, builder, [rebindToolTipEvents, rebindPostItemEvents, readVisiblePosts], 3000, 20, 5);
 
   hash = window.location.hash;
   if (hash){
@@ -138,6 +131,9 @@ $(document).on("ready", function () {
   function rebindPostItemEvents (){
     $(".postitem").off("dblclick");
     $(".postitem").on("dblclick", function(){
+      if ($("#topic").attr("topic-closed") === "True"){
+        return true;
+      }
       var inputWrapper = $("#inputwrapper");
       inputWrapper.remove();
       inputWrapper.insertAfter($(this));
@@ -153,6 +149,39 @@ $(document).on("ready", function () {
       $("#new-post-button").slideUp(0);
       $("#inputwrapper").slideDown(400);
       $("#newposttext").focus();
+  });
+
+  $("#close-topic").click(function(){
+    var topicID = $("#topic").attr("topic-id");
+    var that = $(this);
+
+    $.ajax({
+      url: "/topic/" + topicID + "/close",
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        switchButton(that);
+        $("#inputwrapper").fadeOut(0);
+        $("#topic").attr("topic-closed", "True");
+        $("#this-topic-is-closed").fadeIn(0);
+        $("#new-post-button").fadeOut(0);
+      },
+    });
+  });
+
+  $("#reopen-topic").click(function(){
+    var topicID = $("#topic").attr("topic-id");
+    var that = $(this);
+
+    $.ajax({
+      url: "/topic/" + topicID + "/reopen",
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        switchButton(that);
+        $("#topic").attr("topic-closed", "False");
+        $("#new-post-button").fadeIn(0);
+        $("#this-topic-is-closed").fadeOut(0);
+      },
+    });
   });
 
 });

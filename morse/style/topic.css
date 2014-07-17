@@ -16,28 +16,19 @@
 */
 
 #topic{
-  width:70%;
-  float:left;
 }
 
-    #topictitle {
+    #topic-title {
       font-weight:bold;
       color:#000;
       margin-top: -5pt;
       padding:0;
       font-size:30pt;
-      float:left;
       text-shadow:1px 1px #ddd;
     }
 
-    #goback{
-      font-size:12pt;
-      color:#DB3026;
-      text-decoration:none;
-    }
-
-    #gobacktooltip{
-      display:none;
+    #topic-tools{
+      margin-bottom:5pt;
     }
 
     #itemcontainer{
@@ -47,14 +38,6 @@
     #itemloader-top{
       padding:0;
     }
-
-      #jump-to-unread{
-        border-radius:3pt;
-        background: #88C100;
-        padding:5pt;
-        color:#fff;
-        cursor:pointer;
-      }
 
       #info-init{
         border-radius:3pt;

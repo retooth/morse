@@ -1,7 +1,4 @@
-<div tooltip="post" class="postitem 
-{% if post.isfresh %} fresh {% endif %}"
-{% if jumpmark == post.id %} jumphere {% endif %}
->
+<div tooltip="post" post-id="{{ post.id }}" class="postitem {% if post.isfresh %} fresh {% endif %}">
 <!--a id="post{{ post.id }}" class="postheader"></a-->
   <div class="postheader">
     {% if post.creator.is_anonymous() %}
@@ -17,5 +14,5 @@
    {{ post.content | safe }}
  </article>
  <div class="clear"></div>
-<div class="postfooter">{{ post.id }}</div>
+<div class="postfooter"></div>
 </div>

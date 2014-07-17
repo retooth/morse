@@ -22,7 +22,7 @@ from . import app
     for the ajax JSON -> ... <- JSON pipe, check out slots.py
 """
 
-from ..models.discussion import Post, Topic, PostRead
+from ..models.discussion import Post, Topic
 from ..models.core import Board
 from ..wrappers import PostWrapper, TopicWrapper
 from flask import request, render_template

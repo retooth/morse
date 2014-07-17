@@ -1,33 +1,28 @@
-<div id="showmodelist">
-  Show group rights
-  <img src="{{ url_for('static', filename='chevron-down-white.png') }}">
+<div id="mode-list-dropdown" class="closed-dropdown" dropdown-menu-id="mode-list">
+  Group rights <div class="icon icon-dropdown"></div>
 </div>
-<div id="hidemodelist">
-  Hide group rights
-  <img src="{{ url_for('static', filename='chevron-up-white.png') }}">
-</div>
-<div id="modelist">
-  <div id="modelistignorant" class="grouplistwrapper">
+<div id="mode-list">
+  <div id="ignorant-mode" class="mode">
     <header>No Rights</header>
-    <ul class="grouplist">
+    <ul>
      {% for group in board.ignorantgroups %}
-     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
+     <li group-id="{{ group.id }}" class="background-label-{{ group.label }}">{{ group.name }}</li>
      {% endfor %}
     </ul>
   </div>
-  <div id="modelistreadonly" class="grouplistwrapper">
-    <header>Can read this board</header>
-    <ul class="grouplist">
+  <div id="readonly-mode" class="mode">
+    <header>May read this board</header>
+    <ul>
      {% for group in board.readonlygroups %}
-     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
+     <li group-id="{{ group.id }}" class="background-label-{{ group.label }}">{{ group.name }}</li>
      {% endfor %}
     </ul>
   </div>
-  <div id="modelistposter" class="grouplistwrapper">
-    <header>Can read this board and create posts</header>
-    <ul class="grouplist">
+  <div id="poster-mode" class="mode">
+    <header>May read and post</header>
+    <ul>
      {% for group in board.postergroups %}
-     <li group-id="{{ group.id }}" class="label{{ group.label }}">{{ group.name }}</li>
+     <li group-id="{{ group.id }}" class="background-label-{{ group.label }}">{{ group.name }}</li>
      {% endfor %}
     </ul>
   </div>

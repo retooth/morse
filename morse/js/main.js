@@ -22,6 +22,9 @@ KEY_RETURN = 13;
 
 $(document).on("ready", function () {
 
+  reinitCheckboxes();
+  rebindCheckboxEvents();
+
   /* make multiline text inputs autogrow */
   $("#newtopictext").autogrow();
   $("#newposttext").autogrow();
@@ -118,22 +121,79 @@ $(document).on("ready", function () {
 
 
   /* user navbar */
-  $("#useravatar").click(function (){
-    $("#usernav").slideToggle();
+  $("#show-user-menu").click(function (){
+    $("#user-menu").slideToggle(600);
+    $("#menu-active-background").slideToggle(0);
   });
 
-  $("#guestavatar").click(function (){
-    $("#guestnav").slideToggle();
+  $("#show-moderator-menu").click(function (){
+    $("#moderator-menu").slideToggle(600);
+    $("#menu-active-background").slideToggle(0);
   });
 
-  /* goback tooltip */
-  $("#goback").mouseenter(function(){
-    $("#gobacktooltip").spellFadeIn(800,10);
+  $("#show-admin-menu").click(function (){
+    $("#admin-menu").slideToggle(600);
+    $("#menu-active-background").slideToggle(0);
   });
 
-  $("#goback").mouseleave(function(){
-    $("#gobacktooltip").spellFadeOut(800,100);
+  $("#menu-active-background").click(function (){
+    $("#user-menu").slideUp(600);
+    $("#moderator-menu").slideUp(600);
+    $("#admin-menu").slideUp(600);
+    $("#menu-active-background").slideUp(0);
   });
+
+  rebindDropDownMenuEvents();
 
 });
 
+function rebindDropDownMenuEvents(){
+
+  $(".closed-dropdown").off("click");
+  $(".closed-dropdown").on("click", function(){
+    var menuID = $(this).attr("dropdown-menu-id");
+    var that = $(this);
+    $("#" + menuID).slideDown(500, function(){
+      that.removeClass("closed-dropdown");
+      that.addClass("open-dropdown");
+      rebindDropDownMenuEvents();
+    });
+  });
+
+  $(".open-dropdown").off("click");
+  $(".open-dropdown").on("click", function(){
+    var menuID = $(this).attr("dropdown-menu-id");
+    var that = $(this);
+    $("#" + menuID).slideUp(500, function(){
+      that.removeClass("open-dropdown");
+      that.addClass("closed-dropdown");
+      rebindDropDownMenuEvents();
+    });
+  });
+}
+function switchButton (button){
+  button.fadeOut(0);
+  var switchID = button.attr("switched-button");
+  $("#" + switchID).fadeIn(0);
+}
+
+function reinitCheckboxes (){
+  $("input[type=\"checkbox\"]").each(function(){
+    if ($(this).is(":checked")){
+      $(this).parents(".option").addClass("option-selected");
+    }else{
+      $(this).parents(".option").removeClass("option-selected");
+    }
+  });
+}
+
+function rebindCheckboxEvents (){
+  $("input[type=\"checkbox\"]").off("click");
+  $("input[type=\"checkbox\"]").on("click", function(){
+    if ($(this).is(":checked")){
+      $(this).parents(".option").addClass("option-selected");
+    }else{
+      $(this).parents(".option").removeClass("option-selected");
+    }
+  });
+}

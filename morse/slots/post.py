@@ -24,7 +24,7 @@ from ..wrappers import PostWrapper
 
 @app.route('/posts/read', methods=['POST'])
 @ajax_triggered
-def read ():
+def read_posts ():
     """ 
     marks posts as read. this function is called via ajax
     by the javascript function readVisiblePosts in topic.js
@@ -35,18 +35,15 @@ def read ():
         return ""
 
     # please note: we don't check if the topic
-    # is flagged as "following". this way posts
+    # is flagged as "followed". this way posts
     # get flagged as "read" either way.    
-    post_ids = request.json
+    post_ids = request.json["postIDs"]
     posts = []
     for post_id in post_ids:
         post = Post.query.get(post_id)
         if not post:
             continue
-        posts.append(post)
-
-    posts = map(PostWrapper, posts)
-    for post in posts:
+        post = PostWrapper(post)
         post.read()
 
     return ""

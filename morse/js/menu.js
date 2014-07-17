@@ -17,34 +17,6 @@
 
 $(document).on("ready", function () {
 
-  $("input[type=\"checkbox\"]").each(function(){
-    if ($(this).is(":checked")){
-      $(this).parents(".filter-option").addClass("filter-option-selected");
-    }else{
-      $(this).parents(".filter-option").removeClass("filter-option-selected");
-    }
-  });
-
-  $("input[type=\"checkbox\"]").click(function(){
-    if ($(this).is(":checked")){
-      $(this).parents(".filter-option").addClass("filter-option-selected");
-    }else{
-      $(this).parents(".filter-option").removeClass("filter-option-selected");
-    }
-  });
-
-  $("#filter-dropdown").click(function(){
-    if ($(this).hasClass("closed-dropdown")){
-      $(this).removeClass("closed-dropdown");
-      $(this).addClass("open-dropdown");
-      $("#filter-menu").slideDown(400);
-    }else{
-      $(this).removeClass("open-dropdown");
-      $(this).addClass("closed-dropdown");
-      $("#filter-menu").slideUp(400);
-    }
-  });
-
   $("#tooltip").children().hide();
   $("#tooltip").children("#tooltip-default").fadeIn(200);
   rebindToolTipEvents();
@@ -52,10 +24,8 @@ $(document).on("ready", function () {
 });
 
 function rebindToolTipEvents (){
-  console.log("bound tooltips to " + $("[tooltip]").length + " elements");
   $("[tooltip]").off("mouseenter");
   $("[tooltip]").on("mouseenter", function(){
-    console.log("#tooltip-" + $(this).attr("tooltip"));
     $("#tooltip").children().hide();
     $("#tooltip").children("#tooltip-" + $(this).attr("tooltip")).fadeIn(200);
   });

@@ -15,10 +15,103 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#side-menu{
-  width:200pt;
-  float:right;
+#user-menu{
+  position:absolute;
+  top:110pt;
+  right:12pt;
+  width:220pt;
+  background:#fff;
+  padding:5pt;
+  background-color:#fafafa; 
+  border:1pt solid #ccc;
+  border-radius:3pt;
+  display:none;
+  z-index:1000;
 }
+
+    .user-action{
+      text-align:left;
+      display:block;
+      width:100%;
+      margin-bottom:5pt;
+    }
+
+.menu-item {
+  padding:5pt;
+}
+
+.menu-item:hover {
+}
+
+.menu-item a {
+  text-decoration:none;
+  color:#333;
+}
+
+.menu-icon{
+  display:inline-block;
+  min-width:20pt;
+}
+
+  #do-logout{
+    padding:5pt;
+    float:right;
+    font-weight:bold;
+    color:#aaa;
+  }
+
+  #do-logout:hover {
+    color:#DB3026;
+  }
+
+  #do-login{
+    padding:5pt;
+    float:right;
+    font-weight:bold;
+    color:#aaa;
+  }
+
+  #do-login:hover {
+    color:#88C100;
+  }
+
+#moderator-menu{
+  position:absolute;
+  top:110pt;
+  right:12pt;
+  width:200pt;
+  background:#fff;
+  padding:5pt;
+  background-color:#fafafa; 
+  border:1pt solid #ccc;
+  border-radius:3pt;
+  display:none;
+  z-index:1000;
+}
+
+    .moderator-action{
+      text-align:left;
+      display:block;
+      width:100%;
+      margin-bottom:5pt;
+    }
+
+#admin-menu{
+  position:absolute;
+  top:110pt;
+  right:12pt;
+  width:200pt;
+  background:#fff;
+  padding:5pt;
+  background-color:#fafafa; 
+  border:1pt solid #ccc;
+  border-radius:3pt;
+  display:none;
+  z-index:1000;
+}
+
+
+
 
 .toolbutton{
   border:none;
@@ -45,15 +138,31 @@
       padding: 5pt;
     }
 
+        #account-label{
+          font-weight:bold;
+          padding:5pt;
+          float:left;
+        }
+
+        #account-label a{
+          margin-left:20pt;
+          color:#41BFBD;
+          text-decoration:none;
+        }
+
+        #account-label a:visited{
+          color:#41BFBD;
+        }
+
 	.profileimage{
-	  background-size: 128px 128px;
+	  background-size: 32px 32px;
 	  background-repeat:no-repeat;
-	  border-radius: 50%;
+	  border-radius: 5pt;
 	  display: block;
-	  height: 128px;
-	  width: 128px;
+	  height: 32px;
+	  width: 32px;
 	  border:2pt solid white;
-	  float:right;
+	  float:left;
 	  cursor:pointer;
 	}
 
@@ -82,13 +191,7 @@
 		}
 
 		#dologout{
-                  float:right;
-		  background:#DB3026;
-		  border:1pt solid #DB3026;
-		  width:48%;
-		  margin-left:5pt;
 		}
-
 
 		#showsettings{
 		  background:#67DAD7;
@@ -103,25 +206,13 @@
         #filter-menu{
           display:none;
           background:#fff;
-          border-bottom:1pt solid #ccc;
           border-left:1pt solid #ccc;
           border-right:1pt solid #ccc;
         }
 
 
 	.filter-option {
-	  padding:5pt 5pt 5pt 5pt;
-	  background:#fff;
-	  padding:5pt;
-	  border-bottom:1pt solid #ccc;
-	  box-shadow:inset 0px 1px 1px #ddd;
 	}
-
-	    .filter-option-selected{
-	      background:#BCDE6A;
-	      box-shadow:inset 0px 1px 1px #ABCD59;
-	      border-color:#9ABC48;
-	    }
 
 	    #filter-option-favorited {
 	    }
@@ -145,18 +236,6 @@
         }
 
 	.order-option{
-	  padding:5pt 5pt 5pt 5pt;
-	  background:#fff;
-	  padding:5pt;
-	  border-bottom:1pt solid #ccc;
-	  box-shadow:inset 0px 1px 1px #ddd;
-	  cursor:pointer;
-	}
-
-	.order-option-selected{
-	  background:#BCDE6A;
-	  box-shadow:inset 0px 1px 1px #ABCD59;
-	  border-color:#9ABC48;
 	}
 
    #tooltip{

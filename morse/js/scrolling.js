@@ -99,7 +99,7 @@ function InfiniteScrolling (type){
     if( JSON.stringify(that.cache) !== JSON.stringify(freshCache) ){
       $("#itemcontainer").trigger("cachechanged", freshCache)
       setTimeout(function(){
-	that.refreshCache(triggerCacheChangeEvent);
+	   that.refreshCache(that.triggerCacheChangeEvent);
       }, 
       that.refreshRate);
     }

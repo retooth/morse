@@ -20,17 +20,17 @@ $(document).on("ready", function () {
   changeToGroupMenu(1);
 
   function changeToGroupMenu (groupID){
-    $("#groupnav li").removeClass("selected");
-    $("#groupnav li[group-id=\"" + groupID + "\"]").addClass("selected");
-    $(".groupmenu").fadeOut(0);
-    $(".groupmenu[group-id=" + groupID + "]").fadeIn(400);
+    $("#group-navigation li").removeClass("selected");
+    $("#group-navigation li[group-id=\"" + groupID + "\"]").addClass("selected");
+    $(".group-properties-menu").fadeOut(0);
+    $(".group-properties-menu[group-id=" + groupID + "]").fadeIn(400);
   }
 
   rebindGroupNavEvents();
 
   function rebindGroupNavEvents (){
-    $("#groupnav li").off("click");
-    $("#groupnav li").on("click", function(){
+    $("#group-navigation li").off("click");
+    $("#group-navigation li").on("click", function(){
       /* tab control */
       var groupID = $(this).attr("group-id");
       changeToGroupMenu(groupID);
@@ -40,11 +40,11 @@ $(document).on("ready", function () {
   rebindUserMenuEvents();
 
   function rebindUserMenuEvents (){
-    $(".groupmenu .newuser input").off("keyup");
-    $(".groupmenu .newuser input").on("keyup", function(keyevent){
+    $(".group-properties-menu .new-member input").off("keyup");
+    $(".group-properties-menu .new-member input").on("keyup", function(keyevent){
 
-      var li = $(this).parents(".newuser");
-      var menu = li.find(".newusermenu");
+      var li = $(this).parents(".new-member");
+      var menu = li.find(".new-member-menu");
       var menulist = menu.find("ul");
 
       /* drop down behavior */
@@ -54,9 +54,8 @@ $(document).on("ready", function () {
           return true;
         }
         var userID = selected.attr("user-id");
-        var group = $(this).parents(".groupmenu");
+        var group = $(this).parents(".group-properties-menu");
         var groupID = group.attr("group-id");
-        console.log(groupID);
         addUserToGroup(userID, groupID);
         return true;
       }
@@ -115,7 +114,7 @@ $(document).on("ready", function () {
           var users = response.users;
           menulist.html("");
           if (users.length > 0){
-            menu.find(".emptylist").fadeOut(0);
+            menu.find(".empty-list").fadeOut(0);
             for (var i = 0; i < users.length; i++){
               var id = users[i][0];
               var name = users[i][1];
@@ -123,27 +122,27 @@ $(document).on("ready", function () {
               var newli = $("<li user-id=\"" + id + "\">" + name + "</li>");
               newli.appendTo(menulist);
             }
-	  }else{
-            menu.find(".emptylist").fadeIn(200);
+          }else{
+            menu.find(".empty-list").fadeIn(200);
             console.log(menu.find(".emptylist"));
-	  }
+          }
           menu.fadeIn(200);
         },
         error: handleAjaxErrorBy(alertGlobal),
       });
 
     });
-    $(".newusermenu ul").off("click");
-    $(".newusermenu ul").on("click", "li", function(){
+    $(".new-member-menu ul").off("click");
+    $(".new-member-menu ul").on("click", "li", function(){
       var userID = $(this).attr("user-id");
-      var groupID = $(this).parents(".groupmenu").attr("group-id");
+      var groupID = $(this).parents(".group-properties-menu").attr("group-id");
       addUserToGroup(userID, groupID);
     });
   }
 
   function addUserToGroup (userID, groupID){
-    var ul = $(".groupmenu[group-id=\"" + groupID + "\"] ul");
-    var username = ul.find(".newusermenu li[user-id=\"" + userID + "\"]").html();
+    var ul = $(".group-properties-menu[group-id=\"" + groupID + "\"] .group-property-members ul");
+    var username = ul.find(".new-member-menu li[user-id=\"" + userID + "\"]").html();
     var data = new Object({ userID : userID, groupID : groupID });
     $.ajax({
       url: "/groups/adduser",
@@ -157,32 +156,32 @@ $(document).on("ready", function () {
         // we can be sure, that there is always at least one
         // .deletefromgroup. By cloning we can change the close
         // button in the template without the need to change it here
-        var closebutton = $(".deletefromgroup").first().clone();
+        var closebutton = $(".delete-from-group").first().clone();
         closebutton.appendTo(newli);
 
-        $(".newuser input").val("");
-        $(".newusermenu").fadeOut(200);
+        $(".new-member input").val("");
+        $(".new-member-menu").fadeOut(200);
 
-        newUserLi = ul.find(".newuser");
+        newUserLi = ul.find(".new-member");
         newli.insertBefore(newUserLi);
 
         // rebind click events
-        $(".deletefromgroup").off("click");
-        $(".deletefromgroup").on("click", deleteFromGroup);
+        $(".delete-from-group").off("click");
+        $(".delete-from-group").on("click", deleteFromGroup);
 
       },
       error: handleAjaxErrorBy(alertGlobal),
     });
   }
 
-  $(".deletefromgroup").on("click", deleteFromGroup);
+  $(".delete-from-group").on("click", deleteFromGroup);
 
   ADMIN_GROUP_ID = "1";
 
   function deleteFromGroup(){
 
     var listItem = $(this).parents("li");
-    var groupMenu = $(this).parents(".groupmenu");
+    var groupMenu = $(this).parents(".group-properties-menu");
     var userID = listItem.attr("user-id");
     var groupID = groupMenu.attr("group-id");
 
@@ -196,8 +195,8 @@ $(document).on("ready", function () {
         data: $.toJSON(data),
         success: function(response){
           listItem.remove();
-          $(".newuser input").val("");
-          $(".newusermenu").fadeOut(200);
+          $(".new-member input").val("");
+          $(".new-member-menu").fadeOut(200);
         },
         error: handleAjaxErrorBy(alertGlobal),
       });
@@ -211,7 +210,7 @@ $(document).on("ready", function () {
     $(".colorpicker").off("click");
     $(".colorpicker").on("click", function(){
 
-      var groupMenu = $(this).parents(".groupmenu");
+      var groupMenu = $(this).parents(".group-properties-menu");
       var groupID = groupMenu.attr("group-id");
 
       var oldLabel = groupMenu.find(".picked");
@@ -219,7 +218,7 @@ $(document).on("ready", function () {
       var newLabel = $(this);
       var newLabelID = newLabel.attr("label-id");
 
-      var groupTab = $("#groupnav li[group-id=\"" + groupID + "\"]");
+      var groupPennon = $("#group-navigation li[group-id=\"" + groupID + "\"] .group-pennon");
 
       var data = new Object({ groupID: groupID, labelID: newLabelID })
 
@@ -228,8 +227,8 @@ $(document).on("ready", function () {
         data: $.toJSON(data),
         error: handleAjaxErrorBy( alertGlobal ),
         success: function(){
-          groupTab.removeClass("label" + oldLabelID);
-          groupTab.addClass("label" + newLabelID);
+          groupPennon.removeClass("label-" + oldLabelID);
+          groupPennon.addClass("label-" + newLabelID);
           newLabel.addClass("picked");
           oldLabel.removeClass("picked");
         },
@@ -241,21 +240,23 @@ $(document).on("ready", function () {
   rebindGroupFlagEvents();
 
   function rebindGroupFlagEvents (){
-    $(".groupflag").off("change");
-    $(".groupflag").on("change", function(){
-      var flagMenu = $(this).parents(".groupflags");
-      var groupMenu = $(this).parents(".groupmenu");
+    $(".group-right").off("change");
+    $(".group-right").on("change", function(){
+      var flagMenu = $(this).parents(".group-property-rights");
+      var groupMenu = $(this).parents(".group-properties-menu").first();
+      console.log(groupMenu);
       var groupID = groupMenu.attr("group-id");
       var changed = $(this);
-
-      var mayEdit  = flagMenu.find(".mayedit").is(":checked");
-      var mayClose = flagMenu.find(".mayclose").is(":checked");
-      var mayStick = flagMenu.find(".maystick").is(":checked");
+      console.log(changed.attr("alt"));
+      var mayEdit  = flagMenu.find(".may-edit").is(":checked");
+      var mayClose = flagMenu.find(".may-close").is(":checked");
+      var mayStick = flagMenu.find(".may-stick").is(":checked");
 
       var data = new Object({ groupID: groupID, mayEdit : mayEdit, mayClose : mayClose, mayStick : mayStick });
-      console.log("changed");
+      console.log(data);
+
       $.ajax({
-        url: "/groups/updateflags",
+        url: "/groups/updaterights",
         data: $.toJSON(data),
         error: [handleAjaxErrorBy(alertGlobal), function(){
           /* reset the flag */
@@ -265,12 +266,12 @@ $(document).on("ready", function () {
     });
   }
 
-  $("#newgroup").click(function(){
+  $("#new-group").click(function(){
     /* in case the user doesn't click on input directly*/
-    $("#newgroupname").focus();
+    $("#new-group-name").focus();
   });
 
-  $("#newgroupname").keypress(function(keyevent){
+  $("#new-group-name").keypress(function(keyevent){
     if (keyevent.which === KEY_RETURN){
      
       var name = $(this).val()
@@ -296,11 +297,10 @@ $(document).on("ready", function () {
     newLi.attr("group-id", groupID);
     newLi.addClass("label0"); 
     newLi.html(name);
-    newLi.insertBefore("#newgroup");
-    console.log("das neue li hat die group-id " + newLi.attr("group-id"));
+    newLi.insertBefore("#new-group");
     rebindGroupNavEvents();
 
-    var newGroup = $(".groupmenu[group-id=1]").clone();
+    var newGroup = $(".group-properties-menu[group-id=1]").clone();
     newGroup.attr("group-id", groupID);
 
     /* make clean */
@@ -312,44 +312,44 @@ $(document).on("ready", function () {
     newGroup.find(".groupuserlist").html("");
 
     // we can be sure, that there is always at least one
-    // .newuser li. By cloning we can change the close
+    // .new-member li. By cloning we can change the close
     // button in the template without the need to change it here
-    var newUserLi = $(".newuser").first().clone();
-    newGroup.find(".groupuserlist").append(newUserLi);
+    var newUserLi = $(".new-member").first().clone();
+    newGroup.find(".group-property-members ul").append(newUserLi);
 
     /* insert delete button*/
     var deleteButton = $("<button/>");
-    deleteButton.addClass("deletegroup");
+    deleteButton.addClass("delete-group");
     var deleteImage = $("<img/>");
     deleteImage.attr("src", "/static/trash.png");
     deleteImage.appendTo(deleteButton);
-    var toolDiv = newGroup.find(".grouptools");
+    var toolDiv = newGroup.find(".group-tools");
     deleteButton.appendTo(toolDiv);
 
-    newGroup.insertBefore(".groupmenu[group-id=\"1\"]");
+    newGroup.insertBefore(".group-properties-menu[group-id=\"1\"]");
     rebindColorPickerEvents();
     rebindGroupFlagEvents();
     rebindDeleteGroupEvents();
     rebindUserMenuEvents();
 
     changeToGroupMenu(groupID);
-    $("#newgroupname").val("");
-    $(".newuser input:visible").focus();
+    $("#new-group-name").val("");
+    $(".new-member input:visible").focus();
 
   }
 
   rebindDeleteGroupEvents();
 
   function rebindDeleteGroupEvents (){
-    $(".deletegroup").off("click");
-    $(".deletegroup").on("click", function(){
-      var groupMenu = $(this).parents(".groupmenu");
+    $(".delete-group").off("click");
+    $(".delete-group").on("click", function(){
+      var groupMenu = $(this).parents(".group-properties-menu");
       showDialog("deletegroup", groupMenu);
 
       groupMenu.on("click", "[dialog-control=\"1\"]", function(){
         hideDialogs();
 
-        var groupID = $(this).parents(".groupmenu").attr("group-id");
+        var groupID = $(this).parents(".group-properties-menu").attr("group-id");
         var data = new Object({ groupID: groupID });
         var json = $.toJSON(data);
 
@@ -358,10 +358,10 @@ $(document).on("ready", function () {
           data: json,
           error: handleAjaxErrorBy( alertGlobal ),
           success: function(){
-            $("#groupnav li[group-id=\"" + groupID + "\"]").fadeOut(800);
-            $(".groupmenu").fadeOut(0);
-            $("#welcomegrouptip").fadeIn(400);
-            $(".groupmenu[group-id=\"" + groupID + "\"]").remove();
+            $("#group-navigation li[group-id=\"" + groupID + "\"]").fadeOut(800);
+            $(".group-properties-menu").fadeOut(0);
+            $(".group-properties-menu[group-id=\"1\"]").fadeIn(400);
+            $(".group-properties-menu[group-id=\"" + groupID + "\"]").remove();
           },
         });
       });

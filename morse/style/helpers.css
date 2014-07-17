@@ -36,6 +36,17 @@
   display:none;
 }
 
+.background-downtoner{
+  display:none;
+  position:absolute;
+  top:0;
+  left:0;
+  height:100%;
+  width:100%;
+  z-index:999;
+  background:rgba(50, 50, 50, 0.2);
+}
+
 .floatleft{
   float:left;
 }
@@ -75,27 +86,43 @@ a.divwrapper{
   margin-top:0 !important;
 }
 
+.icon-dropdown {
+  padding-top:2pt;
+  float:right;
+}
+
 .open-dropdown {
-  background-repeat:no-repeat !important;
-  background-position:98% !important;
-  background-image: url("/static/chevron-up-white-small.png") !important;
-  background-color:#3D322E;
-  border:1pt solid #3D3D2E; 
+  background:#3D322E; 
+  border:1pt solid #3D322E; 
   border-radius: 3pt 3pt 0 0;
   padding:5pt 5pt 5pt 5pt; 
-  color:#fff;
   cursor:pointer;
+  color:#fff;
 }
+
+    .open-dropdown .icon-dropdown:before {
+      content: "\f0d8";
+    }
 
 .closed-dropdown {
-  background-repeat:no-repeat !important;
-  background-position:98% !important;
-  background-image: url("/static/chevron-down-white-small.png") !important;
-  background-color:#3D322E;
-  border:1pt solid #3D3D2E; 
+  background:#3D322E; 
+  border:1pt solid #3D322E; 
   border-radius: 3pt 3pt 3pt 3pt;
   padding:5pt 5pt 5pt 5pt; 
-  color:#fff;
   cursor:pointer;
+  color:#fff;
 }
 
+    .closed-dropdown .icon-dropdown:before {
+      content: "\f0d7";
+    }
+
+.switch-button-activate {
+  background:#88C100;
+  border:none;
+}
+
+.switch-button-deactivate {
+  background:#FF8A00;
+  border:none;
+}

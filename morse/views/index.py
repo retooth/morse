@@ -20,7 +20,7 @@ from flask.ext.login import current_user
 from flask import render_template
 from ..rights import check_ban, possibly_banned 
 from ..models.core import Board
-
+from ..wrappers import BoardWrapper
 
 @app.route('/')
 @possibly_banned
@@ -32,4 +32,5 @@ def index():
     check_ban()
     boards = Board.query.all()
     boards = filter(current_user.may_read, boards)
+    boards = map(BoardWrapper, boards);
     return render_template('index.html', boards = boards)

@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from morse.models.discussion import Post, PostRead
+from morse.models.discussion import Post, ReadPost
 from morse.api.filters import PostItemFilter
 from flask.ext.login import current_user
 from sqlalchemy import not_
@@ -27,7 +27,7 @@ class UnreadPostFilter (PostItemFilter):
     template = "postfilters/templates/unread.html"
 
     def filter (self, query):
-        read_post_ids_generator = PostRead.query.filter(PostRead.user_id == current_user.id).values(PostRead.post_id)
+        read_post_ids_generator = ReadPost.query.filter(ReadPost.user_id == current_user.id).values(ReadPost.post_id)
         read_post_ids = [oneple[0] for oneple in read_post_ids_generator]
         query = query.filter(not_(Post.id.in_(read_post_ids)))
         return query

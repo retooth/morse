@@ -5,21 +5,39 @@
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='admin/admin.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='admin/board.css') }}">
 {% endblock %}
+{% block navigation %}
+<nav id="header-nav">
+  <button id="show-user-menu" class="icon menu-button">&#xf0c9;</button>
+  <button id="show-moderator-menu" class="icon menu-button">&#xf1de;</button>
+  <button id="show-admin-menu" class="icon menu-button">&#xf1b3;</button>
+</nav>
+{% endblock %}
 {% block content %}
+<div id="user-menu">
+ {% include "menu/account.html" %}
+</div>
+<div id="admin-menu">
+ {% include "menu/admin.html" %}
+</div>
+<div id="moderator-menu">
+  {% include "menu/moderation.html" %}
+</div>
 <div id="adminwrapper">
 <b>Create new board</b><br/><br/>
-<form id="boardsettings" action="/admin/newboard" method="POST">
-  <input type="text" name="boardtitle" id="newboardtitle" 
-         class="first" placeholder="Name of the board"/>
-  <input type="text" name="boardescription" id="newboarddescription" 
-         class="last" placeholder="A little description"/>
-  <br/>
-  <br/>
-  {% include "admin/groupmode.html" %}
-  <br/>
-  <input type="submit" class="submit floatleft" value="Create new"/>
-  {% include "alerts/boardsettings.html" %}
-  <div class="clear"></div>
+<form id="board-settings" action="/admin/newboard" method="POST">
+  <div id="width-fixer">
+    <input type="text" name="boardtitle" id="new-board-title" 
+           class="first" placeholder="Name of the board"/>
+    <input type="text" name="boardescription" id="new-board-description" 
+           class="last" placeholder="A little description"/>
+    <br/>
+    <br/>
+    {% include "admin/groupmode.html" %}
+    <br/>
+    <input type="submit" class="submit floatleft" value="Create"/>
+    {% include "alerts/boardsettings.html" %}
+    <div class="clear"></div>
+  </div>
 </form>
 </div>
 {% endblock %}

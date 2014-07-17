@@ -17,6 +17,39 @@
 
 $(document).on("ready", function () {
 
+  function discoverVisibleTopics (){
+
+    /* 
+       discoverVisibleTopics() looks for topic items in the current 
+       viewport and marks them as discovered via ajax. this include 
+       removing the css fresh class
+       */
+
+    var topicItems = $(".topic-item").filter(function(){ 
+      return $(this).visible(); 
+    });
+
+    /* collect ids of visible posts */
+    var topicIDs = Array();
+    topicItems.each(function () {
+      topicID = $(this).attr("topic-id");
+      topicIDs.push(topicID);
+    });
+
+    var data = new Object({topicIDs: topicIDs});
+    var json = $.toJSON(data);
+
+    /* only send, if topics were found */
+    if (topicIDs.length > 0){
+      $.ajax({
+        url: "/topics/discover",
+        data: json,
+        error: handleAjaxErrorBy( alertGlobal ),
+        success: function () { topicItems.removeClass("fresh"); },
+      });
+    }
+
+  }
   function rebindTopicItemEvents () {
 
   $(".close-topic").off("click");
@@ -56,67 +89,42 @@ $(document).on("ready", function () {
   }
 
   /* follow switch */
-  $("#followswitch").click(function () {
+  $("#follow-board").click(function(){
+    var boardID = $("#board").attr("board-id");
+    var that = $(this);
 
-    var jsonTopicId = JSON.stringify($("#topic").attr("topic-id"));
-    var notFollowed = $(this).hasClass("follow");
-    if (notFollowed) {
-      unfollow();
-    }else{
-      follow();
-    }
-    /*$.ajax({
-      url: notFollowed ? "/follow" : "/unfollow",
-      data: jsonTopicId,
+    $.ajax({
+      url: "/board/" + boardID + "/follow",
       error: handleAjaxErrorBy( alertGlobal ),
-      success: notFollowed ? unfollow : follow,
-    });*/
-
+      success: function(response){
+        switchButton(that);
+      },
+    });
   });
 
-  function unfollow (){
-    switchFollow();
-    $("#followswitch").addClass("unfollow", 500);
-    $("#followswitch").removeClass("follow", 500);
-  }
+  $("#unfollow-board").click(function(){
+    var boardID = $("#board").attr("board-id");
+    var that = $(this);
 
-  function follow (){
-    switchFollow();
-    $("#followswitch").addClass("follow", 500);
-    $("#followswitch").removeClass("unfollow", 500);
-  }
-
-  function switchFollow (){
-    var oldhtml = $("#followswitch").html(); 
-    var newhtml = $("#followswitch").attr("switched");
-    $("#followswitch").html(newhtml);
-    $("#followswitch").attr("switched", oldhtml);
-  }
-
-  $("#order-dropdown").click(function(){
-    if ($(this).hasClass("closed-dropdown")){
-      $(this).removeClass("closed-dropdown");
-      $(this).addClass("open-dropdown");
-      $("#active-order").fadeOut(0);
-      $("#order-menu").slideDown(400);
-    }else{
-      $(this).removeClass("open-dropdown");
-      $(this).addClass("closed-dropdown");
-      $("#active-order").fadeIn(200);
-      $("#order-menu").slideUp(400);
-    }
+    $.ajax({
+      url: "/board/" + boardID + "/unfollow",
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        switchButton(that);
+      },
+    });
   });
 
   $(".order-option").click(function(){
-    if ($(this).hasClass("order-option-selected")){
+    if ($(this).hasClass("option-selected")){
       var switched = $(this).attr("switched");
       var html = $(this).html();
       console.log(switched);
       $(this).attr("switched", html );
       $(this).html( switched );
     }
-    $(".order-option").removeClass("order-option-selected");
-    $(this).addClass("order-option-selected");
+    $(".order-option").removeClass("option-selected");
+    $(this).addClass("option-selected");
     $("#active-order").html( $(this).html() );
   });
 
@@ -130,10 +138,11 @@ $(document).on("ready", function () {
   var slot = "/board/" + $("#board").attr("board-id") + "/topics.json";
   var builder = "/board/" + $("#board").attr("board-id") + "/certaintopics";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".topicitem", slot, builder, [rebindToolTipEvents, rebindTopicItemEvents], 3000, 20, 5);
+  scrolling.init(".topicitem", slot, builder, [rebindToolTipEvents, rebindTopicItemEvents, 
+                                               checkForUnreadPosts, discoverVisibleTopics], 3000, 20, 5);
   scrolling.showFromStart();
  
-  $(window).scroll(scrolling.scroll);
+  $(window).scroll(scrolling.scroll, discoverVisibleTopics);
 
 
   $("#itemcontainer").on("emptycontainer", function(){
@@ -155,9 +164,37 @@ $(document).on("ready", function () {
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(){
         $("#no-topics-yet").fadeOut(0);
-	scrolling.showFromStart();
+	    scrolling.showFromStart();
       },
     });
   });
+
+  function checkForUnreadPosts (){ 
+    $(".topic-item").each(function(){
+      var topicItem = $(this);
+      if (topicItem.attr("topic-followed") === "True"){
+        var topicID = topicItem.attr("topic-id");
+        $.ajax({
+          url: "/topic/" + topicID + "/unread.json",
+          error: handleAjaxErrorBy( alertGlobal ),
+          type: "GET", 
+          success: function(response){
+            updateSideCounter(topicItem, response.unreadCount); 
+          },
+        });
+      }
+    });   
+ 
+    setTimeout(checkForUnreadPosts, 5000);
+  }
+
+  function updateSideCounter (topicItem, count){
+    var counter = topicItem.children(".item-side-counter");
+    if (parseInt(counter.html()) === count){
+      return true;
+    }
+    counter.html(count);
+    counter.fadeIn(500);
+  }
 
 });

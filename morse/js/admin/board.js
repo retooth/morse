@@ -17,60 +17,45 @@
 
 $(document).on("ready", function () {
 
-  $("#boardsettings").submit(function(e){
+  $("#board-settings").submit(function(e){
     // prevent blank board title
-    if ($("#newboardtitle").val() !== ""){
+    if ($("#new-board-title").val() !== ""){
       return;
     }
-    $("#newboardtitle").addClass("redoutline");
-    $("#newboardtitle").focus();
+    $("#new-board-title").addClass("redoutline");
+    $("#new-board-title").focus();
     alertBoardSettings("blanktitle");
     e.preventDefault();
   });
 
-  $(".grouplist").sortable({ 
-    connectWith : ".grouplist",
-    placeholder : "ddplaceholder",
+  $(".mode ul").sortable({ 
+    connectWith : ".mode ul",
+    placeholder : "drag-and-drop-placeholder",
     create : allLiToHiddenInput,
     receive : allLiToHiddenInput
   });
 
   function allLiToHiddenInput (){
     $("#lihiddeninput").html("");
-    liToHiddenInput( $("#modelistignorant li"), "ignorant");
-    liToHiddenInput( $("#modelistreadonly li"), "readonly");
-    liToHiddenInput( $("#modelistposter li"), "poster");
+    liToHiddenInput( $("#ignorant-mode li"), "ignorant");
+    liToHiddenInput( $("#readonly-mode li"), "readonly");
+    liToHiddenInput( $("#poster-mode li"), "poster");
   }
 
   function liToHiddenInput (lilist, prefix){
     lilist.each(function (index){
-
       var group_id = $(this).attr("group-id");
-
       var hiddeninput = $("<input/>");
       hiddeninput.attr("type", "hidden");
       hiddeninput.attr("name", prefix + index);
       hiddeninput.val(group_id);
-      hiddeninput.appendTo("#lihiddeninput");
-
+      hiddeninput.appendTo("#li-hidden-input");
     });
   }
 
-  $("#showmodelist").click(function(){
-    $("#showmodelist").fadeOut(0);
-    $("#hidemodelist").fadeIn(0);
-    $("#modelist").slideDown(800);
-  });
-
-  $("#hidemodelist").click(function(){
-    $("#hidemodelist").fadeOut(0);
-    $("#showmodelist").fadeIn(0);
-    $("#modelist").slideUp(800);
-  });
-
   var ADMIN_GROUP_ID = "1";
 
-  $("#modelistignorant").on("sortreceive", function (e, ui){
+  $("#ignorant-mode").on("sortreceive", function (e, ui){
     if(ui.item.attr("group-id") === ADMIN_GROUP_ID){
       ui.item.remove();
       ui.item.appendTo(ui.sender);

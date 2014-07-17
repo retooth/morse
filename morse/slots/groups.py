@@ -87,15 +87,15 @@ def change_group_label():
 
     return ""
 
-@app.route('/groups/updateflags', methods=['POST'])
+@app.route('/groups/updaterights', methods=['POST'])
 @login_required
 @admin_rights_required
 @ajax_triggered
-def update_group_flags ():
+def update_group_rights ():
     """ 
-    updates the group flags defined by groupID. (label type and
-    group flags) this function is called by the javascript 
-    event handler for #updategroups in admin/groups.js.
+    updates the group rights defined by groupID. this function is 
+    called by a javascript event handler, that listens to checkbox 
+    changes in admin/groups.js.
     """
     group_id = request.json["groupID"]
     group = Group.query.get(group_id)

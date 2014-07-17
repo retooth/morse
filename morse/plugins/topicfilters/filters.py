@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from morse.models.discussion import Topic, Post, PostRead, TopicFollow 
+from morse.models.discussion import Topic, Post, ReadPost, FollowedTopic
 from morse.api.filters import TopicItemFilter
 from flask.ext.login import current_user
 from sqlalchemy import not_
@@ -27,7 +27,7 @@ class UnreadTopicFilter (TopicItemFilter):
     template = "topicfilters/templates/unread.html"
 
     def filter (self, query):
-        read_post_ids_generator = PostRead.query.filter(PostRead.user_id == current_user.id).values(PostRead.post_id)
+        read_post_ids_generator = ReadPost.query.filter(ReadPost.user_id == current_user.id).values(ReadPost.post_id)
         read_post_ids = [oneple[0] for oneple in read_post_ids_generator] 
         
         unread_topic_ids_generator = Post.query.filter(not_(Post.id.in_(read_post_ids))).values(Post.topic_id)
@@ -45,7 +45,7 @@ class FollowedTopicFilter (TopicItemFilter):
     template = "topicfilters/templates/followed.html"
 
     def filter (self, query):
-        followed_topic_ids_generator = TopicFollow.query.filter(TopicFollow.user_id == current_user.id).values(TopicFollow.topic_id)
+        followed_topic_ids_generator = FollowedTopic.query.filter(FollowedTopic.user_id == current_user.id).values(FollowedTopic.topic_id)
         followed_topic_ids = [oneple[0] for oneple in followed_topic_ids_generator]
         query = query.filter(Topic.id.in_(followed_topic_ids))
         return query

@@ -22,7 +22,7 @@ from ..rights import certain_rights_required, check_ban, possibly_banned
 from ..protocols import ajax_triggered
 from ..models import db
 from ..models.core import Board
-from ..models.discussion import Topic, Post, PostRead
+from ..models.discussion import Topic, Post, ReadPost
 from ..wrappers import TopicWrapper, PostWrapper
 from generators import PostListGenerator
 from sqlalchemy import not_
@@ -120,10 +120,10 @@ def reopen_topic (topic_str):
 @app.route('/topic/<topic_str>/follow', methods=['POST'])
 @login_required
 @ajax_triggered
-def follow (topic_str):
+def follow_topic (topic_str):
     """ 
     follows a topic. this function is called via ajax
-    by the click event handler for #follow-topic-switch in topic.js
+    by the click event handler for #follow-topic in topic.js
     """
     topic_id = int(topic_str.split("-")[0])
 
@@ -138,10 +138,10 @@ def follow (topic_str):
 @app.route('/topic/<topic_str>/unfollow', methods=['POST'])
 @login_required
 @ajax_triggered
-def unfollow (topic_str):
+def unfollow_topic (topic_str):
     """ 
     unfollows a topic. this function is called via ajax
-    by the click event handler for #follow-topic-switch in topic.js
+    by the click event handler for #unfollow-topic in topic.js
     """
     topic_id = int(topic_str.split("-")[0])
 
@@ -179,10 +179,11 @@ def get_posts (topic_str):
 
 @app.route('/topic/<topic_str>/unread.json', methods=['GET'])
 @ajax_triggered
-def unread_stats (topic_str):
+def unread_post_stats (topic_str):
     """ 
-    returns a JSON unread stats object for a topic defined by GET parameter topicID
-    (structure {unreadCount, firstUnreadID}) this function is called via ajax in topic.js
+    returns a JSON unread post stats object for a topic defined by topic_str 
+    (structure {unreadCount, firstUnreadID}) this function is called via ajax 
+    in board.js
     """
     topic_id = int(topic_str.split("-")[0])
 
@@ -196,15 +197,41 @@ def unread_stats (topic_str):
     post_id_generator = Post.query.filter(Post.topic_id == topic_id).values(Post.id)
     post_ids = [oneple[0] for oneple in post_id_generator] 
 
-    read_ids_generator = PostRead.query.filter(PostRead.user_id == current_user.id, PostRead.post_id.in_(post_ids)).values(PostRead.post_id)
+    read_ids_generator = ReadPost.query.filter(ReadPost.user_id == current_user.id, ReadPost.post_id.in_(post_ids)).values(ReadPost.post_id)
     read_ids = [oneple[0] for oneple in read_ids_generator] 
     
     unread_count = Post.query.filter(Post.topic_id == topic_id, not_(Post.id.in_(read_ids))).count()
     first_unread = Post.query.filter(Post.topic_id == topic_id, not_(Post.id.in_(read_ids))).first()
 
     if not first_unread:
-	first_unread_id = None
+        first_unread_id = None
     else:
-	first_unread_id = first_unread.id
+        first_unread_id = first_unread.id
 
     return jsonify(unreadCount = unread_count, firstUnreadID = first_unread_id)    
+
+@app.route('/topics/discover', methods=['POST'])
+@ajax_triggered
+def discover_topics ():
+    """ 
+    marks topics as disovered. this function is called via ajax
+    by the javascript function discoverVisibleTopics in board.js
+    """
+    # just return success and do nothing
+    # if user is guest
+    if current_user.is_anonymous():
+        return ""
+
+    # please note: we don't check if the topic
+    # is flagged as "followed". this way topics
+    # get flagged as "disovered" either way.    
+    topic_ids = request.json["topicIDs"]
+    topics = []
+    for topic_id in topic_ids:
+        topic = Topic.query.get(topic_id)
+        if not topic:
+            continue
+        topic = TopicWrapper(topic)
+        topic.discover()
+
+    return ""

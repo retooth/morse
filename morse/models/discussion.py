@@ -78,12 +78,12 @@ class Topic (db.Model):
         """ Returns all posts of this topic :rtype [Post] """    
         return Post.query.filter(Post.topic_id == self.id).all()
 
-class TopicFollow (db.Model):
+class FollowedTopic (db.Model):
 
     """ A many-to-many relation between users and topics. If relations exists
     the user with user_id follow the topic with topic_id. If not, not """
 
-    __tablename__ = "topicfollow"
+    __tablename__ = "followed_topics"
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), primary_key=True)
 
@@ -91,15 +91,28 @@ class TopicFollow (db.Model):
         self.user_id = user_id
         self.topic_id = topic_id
 
-class PostRead (db.Model):
+class ReadPost (db.Model):
 
     """ A many-to-many relation between users and posts. If relations exists
-    the user with user_id has read the post with topic_id. If not, not """
+    the user with user_id has read the post with post_id. If not, not """
 
-    __tablename__ = "postread"
+    __tablename__ = "read_posts"
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
 
     def __init__ (self, user_id, post_id):
         self.user_id = user_id
         self.post_id = post_id
+
+class DiscoveredTopic (db.Model):
+
+    """ A many-to-many relation between users and topics. If relations exists
+    the user with user_id has discovered the topic with topic_id. If not, not """
+
+    __tablename__ = "undiscovered_topic"
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    topic_id = db.Column(db.Integer, db.ForeignKey('topics.id'), primary_key=True)
+
+    def __init__ (self, user_id, topic_id):
+        self.user_id = user_id
+        self.topic_id = topic_id

@@ -1,0 +1,29 @@
+<div id="account-menu">
+  {% if current_user.is_anonymous() %}
+    <div id="guestavatar" class="profileimage" style="background-image:url('/static/anonymous.png')"></div>
+    <div id="account-label">
+      Guest
+    </div>
+    <a href="/account/login" class="divwrapper">
+      <div id="do-login">
+        <span class="icon">&#xf090;</span> Sign In
+      </div>
+    </a>
+  {% else %}
+    <a class="divwrapper" href="/account/settings">
+      <div id="useravatar" 
+           user-id="{{ current_user.id }}" 
+           class="profileimage" 
+           style="background-image:url('{{ current_user.profileimage }}')"></div>
+    </a>
+    <div id="account-label">
+      {{ current_user.username }}
+    </div>
+    <a href="/account/logout" class="divwrapper">
+      <div id="do-logout">
+        <span class="icon">&#xf08b;</span> Log Out
+      </div>
+    </a>
+  {% endif %}
+  <div class="clear"></div>
+</div>

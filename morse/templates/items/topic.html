@@ -1,22 +1,24 @@
-<div topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}" class="topicitem 
-    {% if topic.isfresh %} fresh {% endif %}
-    {% if topic.closed %} topicclosed {% endif %}
+<div topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}" topic-followed="{{ topic.followed }}" class="topic-item 
+    {% if topic.closed %} topic-closed {% endif %} {% if topic.isfresh %} fresh {% endif %}
     ">
   <a class="divwrapper" href="/topic/{{ topic.seostring }}">
-    <div class="topictitle">
-     <span class="topictitle">{{ topic.title | safe }}</span> 
+    <div class="topic-title">
+     {{ topic.title | safe }}
     </div>
    </a> 
    <div class="topictools">
    {% if current_user.may_close %}
      {% if topic.closed %}
-       <button class="close-topic" style="display:none"></button>
-       <button class="reopen-topic"></button>
+       <!--button class="close-topic" style="display:none"></button>
+       <button class="reopen-topic"></button-->
      {% else %}
-       <button class="close-topic"></button>
-       <button class="reopen-topic" style="display:none"></button>
+       <!--button class="close-topic"></button>
+       <button class="reopen-topic" style="display:none"></button-->
      {% endif %}
    {% endif %}
+   </div>
+   <div class="item-side-counter item-side-counter-unread">
+    0
    </div>
 <div class="clear"></div>
 </div>

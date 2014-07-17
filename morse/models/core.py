@@ -138,6 +138,19 @@ class User (db.Model):
                 break
         return False
 
+    @property
+    def may_ban (self):
+        """ signifies if user may ban other users. This is typically a moderator's right.
+        This property is read only. To change it for a specific user, move him/her
+        to the moderator / admin group or create a group with the may_close flag """
+        relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
+        for r in relations:
+            group = Group.query.get(r.group_id)
+            if group.may_ban:
+                return True
+                break
+        return False
+
     def may_post_in (self, board):
         """ signifies if a user may post in a specific board. """
         
@@ -258,6 +271,19 @@ class Board (db.Model):
                                                GroupMode.may_post == True).all()
         return map(groupmode_to_group, relationships)
 
+class FollowedBoard (db.Model):
+
+    """ A many-to-many relation between users and boards. If relations exists
+    the user with user_id follow the board with board_id. If not, not """
+
+    __tablename__ = "followed_boards"
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'), primary_key=True)
+
+    def __init__ (self, user_id, board_id):
+        self.user_id = user_id
+        self.board_id = board_id
+
 class Group (db.Model):
     __tablename__ = "groups"
     id = db.Column(db.Integer, primary_key=True)
@@ -266,15 +292,18 @@ class Group (db.Model):
     may_edit = db.Column(db.Boolean)
     may_close = db.Column(db.Boolean)
     may_stick = db.Column(db.Boolean)
+    may_ban = db.Column(db.Boolean)
     label = db.Column(db.Integer)
 
     def __init__ (self, name, may_structure = False, \
-                  may_edit = False, may_close = False, may_stick = False, label=0):
+                  may_edit = False, may_close = False, \
+                  may_stick = False, may_ban = False, label=0):
         self.name = name
         self.may_structure = may_structure
         self.may_edit = may_edit
         self.may_close = may_close
         self.may_stick = may_stick
+        self.may_ban = may_ban
         self.label = label
 
     @property

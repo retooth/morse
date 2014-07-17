@@ -16,9 +16,9 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from models import db
-from models.core import User, Board
-from models.discussion import Topic, TopicFollow, Post, PostRead
-from flask.ext.login import current_user, AnonymousUserMixin
+from models.core import User, Board, Guest, FollowedBoard
+from models.discussion import Topic, FollowedTopic, Post, ReadPost, DiscoveredTopic
+from flask.ext.login import current_user
 from collections import defaultdict
 
 class Wrapper (object):
@@ -30,7 +30,7 @@ class Wrapper (object):
 
 class PostWrapper (Wrapper):
 
-    """ A wrapper for the Post model defined in model. It adds the current
+    """ A wrapper for the Post model defined in models.discussion. It adds the current
     user as context in order to perform user specific alterations (such
     as the post-read-flag). It also provides some convenient functions and acts as
     a proxy for the wrapped post. It does however NOT inherit from the model,
@@ -41,28 +41,28 @@ class PostWrapper (Wrapper):
 
     @property
     def creator (self):
-        return User.query.get(self.user_id) or AnonymousUserMixin()
+        return User.query.get(self.user_id) or Guest()
 
     @property
     def isfresh (self):
-        postread = PostRead.query.filter(PostRead.user_id == current_user.id,\
-                                         PostRead.post_id == self.id).first()
+        post_is_read = ReadPost.query.filter(ReadPost.user_id == current_user.id,\
+                                             ReadPost.post_id == self.id).first()
 
         topic = Topic.query.get(self.topic_id)
         topic = TopicWrapper(topic)
-        if not postread and topic.followed:
+        if not post_is_read and topic.followed:
             return True
         return False
 
     def read (self):
         if self.isfresh:
-            postread = PostRead(current_user.id, self.id)
-            db.session.add(postread)
+            relation = ReadPost(current_user.id, self.id)
+            db.session.add(relation)
             db.session.commit()
 
 class TopicWrapper (Wrapper):
 
-    """ A wrapper for the Topic model defined in model. It adds the current
+    """ A wrapper for the Topic model defined in models.discussion It adds the current
     user as context in order to perform user specific alterations (such
     as the followed-flag). It also provides some convenient functions and acts as
     a proxy for the wrapped post. It does however NOT inherit from the model,
@@ -71,14 +71,14 @@ class TopicWrapper (Wrapper):
     def __init__ (self, topic):
         self._inner = topic
 
-    def _getfollowrelation(self):
-        return TopicFollow.query.filter(TopicFollow.user_id == current_user.id, \
-                                        TopicFollow.topic_id == self.id).first()
+    def _get_follow_relation(self):
+        return FollowedTopic.query.filter(FollowedTopic.user_id == current_user.id, \
+                                          FollowedTopic.topic_id == self.id).first()
 
     @property
     def followed (self):
         """ signifies, if follow flag is set """
-        relation = self._getfollowrelation()
+        relation = self._get_follow_relation()
         if relation:
             return True
         return False
@@ -86,27 +86,33 @@ class TopicWrapper (Wrapper):
     def follow (self):
         """ sets the follow flag for this topic """
         if not self.followed:
-            topicfollow = TopicFollow(current_user.id, self.id)
-            db.session.add(topicfollow)
+            relation = FollowedTopic(current_user.id, self.id)
+            db.session.add(relation)
             db.session.commit()
 
     def unfollow (self):
         """ unsets the follow flag for this topic """
-        relation = self._getfollowrelation()
+        relation = self._get_follow_relation()
         if relation:
             db.session.delete(relation)
             db.session.commit()
 
     @property
     def isfresh (self):
-        """ signifies if topic has posts that haven't been read 
-        by current user. returns false, if follow flag is not set."""
-        if self.followed:
-            onefresh = False
-            for post in self.posts:
-                onefresh |= post.isfresh
-            return onefresh
+        topic_entry_is_discovered = DiscoveredTopic.query.filter(DiscoveredTopic.user_id == current_user.id,\
+                                                                 DiscoveredTopic.topic_id == self.id).first()
+
+        board = Board.query.get(self.board_id)
+        board = BoardWrapper(board)
+        if not topic_entry_is_discovered and board.followed:
+            return True
         return False
+
+    def discover (self):
+        if self.isfresh:
+            relation = DiscoveredTopic(current_user.id, self.id)
+            db.session.add(relation)
+            db.session.commit()
 
     @property
     def posts (self):
@@ -132,3 +138,61 @@ class TopicWrapper (Wrapper):
                 limit = 0
             posts = Post.query.filter(Post.topic_id == self.id).offset(start).limit(limit).all()
             return map(PostWrapper, posts)
+
+class BoardWrapper (Wrapper):
+
+    """ A wrapper for the Board model defined in models.core. It adds the current
+    user as context in order to perform user specific alterations (such
+    as the followed-flag). It also provides some convenient functions and acts as
+    a proxy for the wrapped post. It does however NOT inherit from the model,
+    so saving it to the db session will fail"""
+    
+    def __init__ (self, board):
+        self._inner = board
+
+    def _get_follow_relation(self):
+        return FollowedBoard.query.filter(FollowedBoard.user_id == current_user.id, \
+                                          FollowedBoard.board_id == self.id).first()
+
+    @property
+    def followed (self):
+        """ signifies, if follow flag is set """
+        relation = self._get_follow_relation()
+        if relation:
+            return True
+        return False
+
+    def follow (self):
+        """ sets the follow flag for this board """
+        if not self.followed:
+            relation = FollowedBoard(current_user.id, self.id)
+            db.session.add(relation)
+            db.session.commit()
+
+    def unfollow (self):
+        """ unsets the follow flag for this board """
+        relation = self._get_follow_relation()
+        if relation:
+            db.session.delete(relation)
+            db.session.commit()
+
+    @property
+    def topics (self):
+        """ gets a list of topics wrapped by TopicWrapper """
+        topics = Topic.query.filter(Topic.board_id == self.id).all()
+        return map(TopicWrapper, topics)
+
+    def __getitem__ (self, val):
+        """ gets a single topic or a slice of topics """
+        if type(val) is slice:
+            if slice.step:
+                raise ValueError("Slice steps are not supported")
+            start = slice.start
+            if start < 0:
+                start = self.topic_count + start
+            if slice.stop:
+                limit = slice.stop - slice.start
+            else:
+                limit = 0
+            topics = Topic.query.filter(Topic.board_id == self.id).offset(start).limit(limit).all()
+            return map(TopicWrapper, topics)

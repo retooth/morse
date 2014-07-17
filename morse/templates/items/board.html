@@ -1,18 +1,14 @@
-<div class="boarditem">
-  <div class="header-image">
-  </div>
+<div class="board-item" board-id="{{ board.id }}" board-followed="{{ board.followed }}">
  <a class="divwrapper" href="/board/{{ board.seostring }}">
-  <div class="boardtitlewrapper">
-   <span class="boardtitle">{{ board.title }}</span> 
-   <span class="boarddescription">{{ board.description }}</span>
+  <div class="board-title-wrapper">
+   <span class="board-title">{{ board.title }}</span> 
+   <span class="board-description">{{ board.description }}</span>
  </div>
  </a>
- <div class="boardtools">
-   {% if current_user.may_structure %}
-   <a href="/admin/updateboard/{{ board.id }}">
-       <button class="editboard"></button>
-   </a>
-   {% endif %}
+ <div class="board-tools">
  </div> 
+  <div class="item-side-counter item-side-counter-unread">
+    0
+  </div>
 <div class="clear"></div>
 </div>
