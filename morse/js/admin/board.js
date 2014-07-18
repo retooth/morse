@@ -36,7 +36,7 @@ $(document).on("ready", function () {
   });
 
   function allLiToHiddenInput (){
-    $("#lihiddeninput").html("");
+    $("#li-hidden-input").html("");
     liToHiddenInput( $("#ignorant-mode li"), "ignorant");
     liToHiddenInput( $("#readonly-mode li"), "readonly");
     liToHiddenInput( $("#poster-mode li"), "poster");
