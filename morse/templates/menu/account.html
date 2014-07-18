@@ -4,13 +4,13 @@
     <div id="account-label">
       Guest
     </div>
-    <a href="/account/login" class="divwrapper">
+    <a href="/account/login" class="no-text-decoration">
       <div id="do-login">
         <span class="icon">&#xf090;</span> Sign In
       </div>
     </a>
   {% else %}
-    <a class="divwrapper" href="/account/settings">
+    <a class="no-text-decoration" href="/account/settings">
       <div id="useravatar" 
            user-id="{{ current_user.id }}" 
            class="profileimage" 
@@ -19,7 +19,7 @@
     <div id="account-label">
       {{ current_user.username }}
     </div>
-    <a href="/account/logout" class="divwrapper">
+    <a href="/account/logout" class="no-text-decoration">
       <div id="do-logout">
         <span class="icon">&#xf08b;</span> Log Out
       </div>

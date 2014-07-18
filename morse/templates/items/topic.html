@@ -1,7 +1,7 @@
 <div topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}" topic-followed="{{ topic.followed }}" class="topic-item 
     {% if topic.closed %} topic-closed {% endif %} {% if topic.isfresh %} fresh {% endif %}
     ">
-  <a class="divwrapper" href="/topic/{{ topic.seostring }}">
+  <a class="no-text-decoration" href="/topic/{{ topic.seostring }}">
     <div class="topic-title">
      {{ topic.title | safe }}
     </div>
