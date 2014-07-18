@@ -1,0 +1,88 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+.topic-item {
+  border-radius: 3pt;
+  border: 1pt solid #ccc;
+  padding:5pt 5pt 5pt 5pt;
+  margin-bottom:5pt;
+  background:#fcfcfc;
+  padding:0;
+  box-shadow:1px 1px #ddd;
+  -webkit-transition: all 5s ease;
+  -moz-transition: all 5s ease;
+  -o-transition: all 5s ease;
+  transition: all 5s ease;
+}
+
+.topic-item:hover {
+  background:#fff;
+}
+
+.topic-closed{
+  background:#DB3026;
+  color:#fff;
+}
+
+.topic-closed:hover {
+  background:#DE3329;
+  color:#fff;
+}
+
+    .topic-title{
+      padding:5pt;
+      color:#000;
+      font-weight:bold;
+      width:80%;
+      float:left;
+    }
+
+    .topic-tools{
+      float:right;
+    }
+
+    .close-topic{
+      border:none;
+      display:block;
+      padding:0;
+      background:none;
+      outline:none;
+      border-radius:0;
+      height:16px;
+      width:13px;
+      background-image: url('/static/unlocked.png');
+      background-size:auto 16px;
+      background-repeat:no-repeat;
+      margin-top:2px;
+      box-shadow:none;
+    }
+
+    .reopen-topic{
+      display:block;
+      border:none;
+      padding:0;
+      background:none;
+      outline:none;
+      border-radius:0;
+      height:16px;
+      width:13px;
+      background-image: url('/static/locked.png');
+      background-size:auto 16px;
+      background-repeat:no-repeat;
+      margin-top:2px;
+      box-shadow:none;
+    }
