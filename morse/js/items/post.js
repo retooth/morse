@@ -99,43 +99,87 @@ function rebindPostItemEvents (){
     return true;
   });
 
-  $(".post-action-edit").off("click");
-  $(".post-action-edit").on("click", function() {
+  function resetAllEditDialogs (){
     $(".post").attr("contenteditable", "False");
     $(".post[original-content]").each(function(){
       var originalContent = $(this).attr("original-content")
       $(this).html(originalContent);
     });
-    $(".post-item .tool-footer").fadeOut(200);
-    
+    $(".post-item .tool-footer").slideUp(200);
+    $("#editable-topic-title").slideUp(200);
+  }
+
+  $(".post-action-edit").off("click");
+  $(".post-action-edit").on("click", function() {
+
+    resetAllEditDialogs();
+
     var postItem = $(this).parents(".post-item");
     var post = postItem.find(".post")
+
+    /* save original content (in case user changes
+    his mind) */
     var content = post.html()
     post.attr("original-content", content);
+
+    /* show edit dialog */
     post.attr("contenteditable", "True");
     postItem.find(".tool-footer").slideDown(400);
-    post.focus();
+    if (postItem.attr("first-post") === "True"){
+      $("#editable-topic-title").slideDown(400);
+      $("#editable-topic-title").focus();
+    }else{
+      post.focus();
+    }
+
   });
 
   $(".submit-edited-post").off("click");
   $(".submit-edited-post").on("click", function(){
+
     var postItem = $(this).parents(".post-item");
     var postID = postItem.attr("post-id");
     var post = postItem.find(".post");
+
+    /* change post content */
+    if (postItem.attr("first-post") === "True"){
+        var topicID = $("#topic").attr("topic-id");
+        var title = $("#editable-topic-title").html()
+        var data = new Object( { newTitle : title  } );
+        var json = $.toJSON(data);
+
+        $.ajax({
+          url: "/topic/" + topicID + "/change-title",
+          data: json,
+          error: handleAjaxErrorBy( alertGlobal ),
+          success: topicTitleChanged 
+        });
+    }
+
+    /* change post content */
     var content = post.html()
     var data = new Object( { editedContent : content  } );
     var json = $.toJSON(data);
+
     $.ajax({
       url: "/post/" + postID + "/edit",
       data: json,
       error: handleAjaxErrorBy( alertGlobal ),
-      success: function () { 
-        $(".post-item .tool-footer").slideUp(200); 
-        $(".post-item .post").attr("contenteditable", "False"); 
-        $(".post-item .post").removeAttr("original-content"); 
-      },
+      success: postChanged 
     });
+
   });
 
+  function topicTitleChanged(){
+    var newTitle = $("#editable-topic-title").html()
+    $("#topic-title").html(newTitle)
+    $("#editable-topic-title").slideUp(200);
+  }
+
+  function postChanged () {
+    $(".post-item .tool-footer").slideUp(200); 
+    $(".post").attr("contenteditable", "False"); 
+    $(".post").removeAttr("original-content"); 
+  }
 
 }

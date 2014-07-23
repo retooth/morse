@@ -32,6 +32,18 @@
     display:none;
   }
 
+   #editable-topic-title{
+    margin-left:33pt;
+    font-size: 10pt;
+    outline:none;
+    border:none;
+    width:80%;
+    padding:5pt;
+    font-weight:bold;
+    font-size:12pt;
+    display:none;
+  }
+
   .post-item-selected .post-header{
     background:#e0e0e0;
   }

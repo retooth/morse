@@ -235,3 +235,24 @@ def discover_topics ():
         topic.discover()
 
     return ""
+
+@app.route('/topic/<topic_str>/change-title', methods=['POST'])
+@login_required
+@ajax_triggered
+def change_topic_title (topic_str):
+    """ 
+    changes a topic title. this function is called via ajax
+    by the click event handler for #submit-edited-post in topic.js
+    """
+    topic_id = int(topic_str.split("-")[0])
+
+    topic = Topic.query.get(topic_id)
+    if not topic:
+        return "nosuchtopic", 400
+    
+    if not current_user.may_edit(topic.first_post):
+        return "forbidden", 403
+
+    topic.title = request.json["newTitle"]
+    db.session.commit()
+    return ""

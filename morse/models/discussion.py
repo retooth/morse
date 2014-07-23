@@ -44,6 +44,14 @@ class Post (db.Model):
     def creator (self):
         return User.query.get(self.user_id) or Guest()
 
+    @property
+    def topic (self):
+        return Topic.query.get(self.topic_id)
+
+    @property
+    def is_first_post (self):
+        return self.id == self.topic.first_post.id
+
 class Topic (db.Model):
     
     """ Model for topic entries. Saves title and links to board. It 
@@ -79,9 +87,8 @@ class Topic (db.Model):
         return string
 
     @property
-    def posts (self):
-        """ Returns all posts of this topic :rtype [Post] """    
-        return Post.query.filter(Post.topic_id == self.id).all()
+    def first_post (self):
+        return Post.query.filter(Post.topic_id == self.id).order_by(Post.created_at).first()
 
 class FollowedTopic (db.Model):
 
