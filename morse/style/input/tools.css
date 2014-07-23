@@ -15,14 +15,14 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#toolfooter{
+.tool-footer{
   border-bottom-right-radius:3pt;
   border-bottom-left-radius:3pt;
   padding:5pt;
   background:#e8e8e8;
 }
 
-    #dopost{
+    #create-new-post{
       cursor:pointer;
       font-weight:bold;
       background: #ADF057;
@@ -35,7 +35,7 @@
       margin-right:2pt;
     }
 
-    #docreate{
+    #create-new-topic{
       cursor:pointer;
       font-weight:bold;
       background: #ADF057;
@@ -48,7 +48,19 @@
       margin-right:2pt;
     }
 
-    .formattool{
+    .submit-edited-post{
+      cursor:pointer;
+      font-weight:bold;
+      background: #ADF057;
+      border:1pt solid #ccc;
+      border-radius: 2pt;
+      float:left;
+      color:#000;
+      padding:2pt;
+      font-size:10pt !important;
+      margin-right:2pt;
+    }
+    .format-tool{
       border:1pt solid #ccc;
       border-radius:2pt !important;
       font-size:10pt !important;
@@ -61,18 +73,18 @@
       background:#fff;
     }
 
-    #makebold{
+    .format-bold{
       font-weight:bold !important;
     }
 
-    #makeitalic{
+    .format-italic{
       font-style:italic !important;
     }
 
-    #makequote{
+    .format-quote{
     }
 
-    #makelink{
+    .format-link{
       color:#7D7Af0;
       background:#fff;
       width:auto;

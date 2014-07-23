@@ -129,10 +129,53 @@ $(document).on("ready", function () {
   });
 
   $("#new-topic-button").click(function(){
-      $("#new-topic-button").slideUp(0);
-      $("#inputwrapper").slideDown(400);
-      $("#newtopictitle").focus();
+    showInputField();
   });
+
+  $("#top-action").mouseenter(function(){
+
+    /* block if divs are still in motion */
+    var currentTop = parseInt($("#board-title").css("top"));
+    if (currentTop > 0) { return true; }
+
+    var height = $("#top-action a").height();
+    var timer = setTimeout(function(){
+      $("#board").animate( { top : height + "px" }, {duration: 500 });
+      $("#board-description").animate( { top : height + "px" }, {duration: 500 });
+      $("#board-title").animate( { top : height + "px" }, {duration: 500, complete: fadeInTopActionInfo });
+    }, 400);
+    $(this).data("toolRevealDelay", timer);
+
+  });  
+
+  function fadeInTopActionInfo (){
+    $("#top-action a").fadeIn(200);
+  }
+
+  $("#top-action").mouseleave(function(){
+
+    /* clear timer, that was triggered on mousenter */
+    var timer = $(this).data("toolRevealDelay");
+    clearTimeout(timer);
+
+    fadeOutTopActionInfo();
+    $("#board-title").animate( { top : "0" }, {duration: 500});
+    $("#board-description").animate( { top : "0" }, {duration: 500});
+    $("#board").animate( { top : "0" }, {duration: 500});
+
+  });  
+
+  function fadeOutTopActionInfo (){
+    $("#top-action a").fadeOut(200);
+  }
+
+  $("#board-title").swipeSnap( { target: "top", snapInfo: $("#snap-tooltip-top"), 
+                                 companions: [$("#board"), $("board-description")], 
+                                 callback: gotoBoardIndex });
+
+  function gotoBoardIndex (){
+    window.location = "/";
+  }
 
   /* bidirectional infinite scrolling */
   var slot = "/board/" + $("#board").attr("board-id") + "/topics.json";
@@ -143,7 +186,6 @@ $(document).on("ready", function () {
   scrolling.showFromStart();
  
   $(window).scroll(scrolling.scroll, discoverVisibleTopics);
-
 
   $("#itemcontainer").on("emptycontainer", function(){
     $("#no-topics-yet").fadeIn(200);
@@ -165,9 +207,19 @@ $(document).on("ready", function () {
       success: function(){
         $("#no-topics-yet").fadeOut(0);
 	    scrolling.showFromStart();
+        updateTopicCache();
       },
     });
   });
+
+  function updateTopicCache (){
+    var boardID = $("#board").attr("board-id");
+    $.ajax({
+      url: "/board/" + boardID + "/update-topic-cache",
+      data: json,
+      error: handleAjaxErrorBy( alertGlobal ),
+    });
+  }
 
   function checkForUnreadPosts (){ 
     $(".topic-item").each(function(){
@@ -198,3 +250,9 @@ $(document).on("ready", function () {
   }
 
 });
+
+function showInputField (){
+  $("#input-wrapper").slideDown(400);
+  $("#new-post-button").slideUp(0);
+  $("#new-topic-title").focus();
+}

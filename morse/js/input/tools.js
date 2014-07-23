@@ -19,10 +19,9 @@ $(document).on("ready", function () {
  rebindPostToolEvents();
 });
 
-function formatSelectedTextBy (tag){
-  var activeID = $(document.activeElement).attr("id");
-  if (activeID === "newtopictext" ||
-      activeID === "newposttext")
+function formatSelectedTextBy (contentElement, tag){
+  var active = $(document.activeElement);
+  if (active.is(contentElement))
     {
       var wrap = document.createElement(tag);
       var selection = getSelection().getRangeAt(0);
@@ -36,30 +35,34 @@ function formatSelectedTextBy (tag){
 
 function rebindPostToolEvents (){
 
-  $("#makebold").off("mousedown");
-  $("#makebold").on("mousedown", function (){
-    formatSelectedTextBy("strong");
+  $(".format-bold").off("mousedown");
+  $(".format-bold").on("mousedown", function (){
+    var toolFooter = $(this).parents(".tool-footer");
+    var contentElement = toolFooter.siblings("article");
+    formatSelectedTextBy(contentElement, "strong");
   });
 
 
-  $("#makeitalic").off("mousedown");
-  $("#makeitalic").on("mousedown", function (){
-    formatSelectedTextBy("em");
+  $(".format-italic").off("mousedown");
+  $(".format-italic").on("mousedown", function (){
+    var toolFooter = $(this).parents(".tool-footer");
+    var contentElement = toolFooter.siblings("article");
+    formatSelectedTextBy(contentElement, "em");
   });
 
 
-  $("#makequote").off("mousedown");
-  $("#makequote").on("mousedown", function (){
-    formatSelectedTextBy("blockquote");
+  $(".format-quote").off("mousedown");
+  $(".format-quote").on("mousedown", function (){
+    var toolFooter = $(this).parents(".tool-footer");
+    var contentElement = toolFooter.siblings("article");
+    formatSelectedTextBy(contentElement, "blockquote");
   });
 
 
-  $("#makelink").off("mousedown");
-  $("#makelink").on("mousedown", function (){
-    var activeID = $(document.activeElement).attr("id");
-    if (activeID === "newtopictext" ||
-        activeID === "newposttext")
-      {
+  $(".format-link").off("mousedown");
+  $(".format-link").on("mousedown", function (){
+    var active = $(document.activeElement);
+    if (active.is("article[contenteditable=\"True\"]")){
         var wrap = document.createElement("span");
         var selection = getSelection().getRangeAt(0);
         wrap.setAttribute("id", "dummylink");
@@ -70,17 +73,14 @@ function rebindPostToolEvents (){
         $("#newhrefwrapper").slideDown(400);
         $("#closenewhref").fadeIn(200);
         $("#makelink").addClass("openrightborder");
-
-        $("#newtopictitle").removeAttr("contenteditable");
-        $("#newtopictext").removeAttr("contenteditable");
-        $("#newposttext").removeAttr("contenteditable");
-        $("#inputwrapper").addClass("disabledbox");
-      }
+        $("#new-post").removeAttr("contenteditable");
+        $("#input-wrapper").addClass("disabledbox");
+    }
   });
 
 
-  $("#makelink").off("mouseup");
-  $("#makelink").on("mouseup", function (){
+  $(".format-link").off("mouseup");
+  $(".format-link").on("mouseup", function (){
     $("#newhref").focus();
   });
 
@@ -91,14 +91,12 @@ function rebindPostToolEvents (){
       $("#newhrefwrapper").slideUp(200);
       $("#closenewhref").fadeOut(200);
       $("#makelink").removeClass("openrightborder");
+      
+      $(this).parents("#input-wrapper").find("article");
+      $("#new-post").attr("contenteditable", "true");
+      $("#input-wrapper").removeClass("disabledbox");
 
-      $("#newtopictitle").attr("contenteditable", "true");
-      $("#newtopictext").attr("contenteditable", "true");
-      $("#newposttext").attr("contenteditable", "true");
-      $("#inputwrapper").removeClass("disabledbox");
-
-      $("#newtopictext").focus();
-      $("#newposttext").focus();
+      $("#new-post").focus();
 
       var link = $("#dummylink").html();
       var href = $("#newhref").val();
@@ -113,13 +111,10 @@ function rebindPostToolEvents (){
     $(this).fadeOut(200);
     $("#makelink").removeClass("openrightborder");
 
-    $("#newtopictitle").attr("contenteditable", "true");
-    $("#newtopictext").attr("contenteditable", "true");
-    $("#newposttext").attr("contenteditable", "true");
-    $("#inputwrapper").removeClass("disabledbox");
+    $("#new-post").attr("contenteditable", "true");
+    $("#input-wrapper").removeClass("disabledbox");
 
-    $("#newtopictext").focus();
-    $("#newposttext").focus();
+    $("#new-post").focus();
     // FIXME: there is a bug, that doesn't do these last two
     // lines (at least the outline of dummylink is visible)
     // after that link creating doesn't work any more, probably

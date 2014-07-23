@@ -23,9 +23,28 @@ from ..protocols import ajax_triggered
 from ..models import db
 from ..models.core import Board
 from ..models.discussion import Topic, Post, DiscoveredTopic
-from generators import TopicListGenerator
+from ..generators import TopicListGenerator
 from ..wrappers import TopicWrapper, PostWrapper, BoardWrapper
+from ..cache import TopicCache
 from sqlalchemy import not_
+
+@app.route('/board/<board_str>/refresh-topic-cache', methods=['GET'])
+@ajax_triggered
+def refresh_topic_cache (board_str):
+    """ 
+    updates the topic cache for current user. this function
+    is called via ajax in board.js when filter or sorting
+    options change
+    """
+    board_id = int(board_str.split("-")[0])
+
+    board = Board.query.get(board_id)
+    if not board:
+        return "boardnotfound", 404
+
+    cache = TopicCache()
+    cache.refresh(board_id)
+    return ""
 
 @app.route('/board/<board_str>/topics.json', methods=['GET'])
 @ajax_triggered
@@ -44,8 +63,8 @@ def get_topics (board_str):
         return "forbidden", 403
 
     topic_ids = []
-    for topic_id in TopicListGenerator(board_id):
-        topic_ids.append(topic_id)
+    for topic in TopicListGenerator(board_id):
+        topic_ids.append(topic.id)
 
     return jsonify(IDs = topic_ids)
 

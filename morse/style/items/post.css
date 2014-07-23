@@ -15,10 +15,10 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-.postitem {
+.post-item {
   border-radius: 3pt;
   border:1pt solid #ccc;
-  padding:5pt 5pt 5pt 5pt;
+  padding:0;
   margin-bottom:5pt;
   background:#fff;
   box-shadow:1px 1px #ddd;
@@ -28,19 +28,30 @@
   transition: all 5s ease;
 }
 
+  .post-item .tool-footer {
+    display:none;
+  }
+
+  .post-item-selected .post-header{
+    background:#e0e0e0;
+  }
+
   .post{
     margin-left:33pt;
     font-size:11pt;
     padding:5pt;
   }
 
-  .postheader{
+  .post-header{
     padding:5pt;
+    background:#e8e8e8;
+    border-radius:3pt 3pt 0 0;
+    cursor:pointer;
   }
 
-      .postheader .profileimage{
+      .post-header .profile-image{
         background-size: 32px 32px;
-	float:left;
+	    float:left;
         border-radius: 50%;
         display: inline-block;
         height: 32px;
@@ -49,10 +60,11 @@
         cursor:pointer;
       }
 
-      .postcreator{
-	position:relative;
-	top:5px;
-	left:8px;
+      .post-creator{
+        float:left;
+        position:relative;
+        top:5px;
+        left:8px;
         padding:2pt;
         font-weight:bold;
         font-size:10pt;
@@ -69,3 +81,23 @@
     font-size:0;
   }
 
+  .post-tools{
+    display:none;
+    position:relative;
+    top:5px;
+    padding:2pt;
+    float:right;
+  }
+
+      .post-action{
+        border:none;
+        box-shadow:none;
+        background:none;
+        color:#333;
+        padding:0pt 2pt 0 2pt;
+        margin:0;
+      }
+
+      .post-action-quote{
+        display:none;
+      }

@@ -3,6 +3,8 @@
 {% block head %}
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='topic.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='format.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='labels.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='snappers.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='infobanners.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/input.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/post.css') }}">
@@ -21,11 +23,41 @@
 </nav>
 {% endblock %}
 {% block content %}
+<div id="top-action">
+  <a class="no-text-decoration" href="/board/{{ topic.board.seostring }}">
+    <span class="icon icon-tooltip">&#xf148;</span><br/>
+    Jump to board list
+  </a>
+</div>
+<div id="previous-topic">
+  <a class="no-text-decoration" href="/topic/{{ topic.previous.seostring }}">
+    <div id="previous-topic-icon" class="icon icon-tooltip">&#xf053;</div>
+  </a>
+  <a class="no-text-decoration" href="/topic/{{ topic.previous.seostring }}">
+    <div id="previous-topic-title">{{ topic.previous.title }}</div>
+  </a>
+</div>
+<div id="next-topic">
+  <a class="no-text-decoration" href="/topic/{{ topic.next.seostring }}">
+    <div id="next-topic-icon" class="icon icon-tooltip">&#xf054;</div>
+  </a>
+  <a class="no-text-decoration" href="/topic/{{ topic.next.seostring }}">
+    <div id="next-topic-title">{{ topic.next.title }}</div>
+  </a>
+</div>
+<div id="snap-tooltip-top">
+  <span class="icon icon-tooltip">&#xf148;</span><br/>
+  Let go to jump to topic list<br/>
+</div>
+<br/>
 <h1 id="topic-title">
   {{ topic.title | safe }}
 </h1>
 <br/>
-<div id="topic" may-post="{{ current_user.may_post_in(topic.board) }}" topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}">
+<div id="topic" may-post="{{ current_user.may_post_in(topic.board) }}" 
+                topic-id="{{ topic.id }}" 
+                board-id="{{ topic.board_id }}" 
+                topic-closed="{{ topic.closed }}">
  {% include "input/post.html" %}
  <div id="itemloader-top">
    <div id="info-init" class="hidden">Loading posts</div>
@@ -122,6 +154,8 @@
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('js', filename='scrolling.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery.swipesnap.js') }}"></script>
+<script src="{{ url_for('js', filename='items/post.js') }}"></script>
 <script src="{{ url_for('js', filename='topic.js') }}"></script>
 <script src="{{ url_for('js', filename='input/post.js') }}"></script>
 <script src="{{ url_for('js', filename='input/tools.js') }}"></script>

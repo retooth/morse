@@ -120,7 +120,9 @@ def updateboard(board_id):
 
     board.title = request.form['boardtitle']
     board.description = request.form['boardescription']
-
+    for key in request.form:
+        print key, request.form[key]
+    
     ignorant_ids = formlist_to_group_ids(request.form, "ignorant")
     readonly_ids = formlist_to_group_ids(request.form, "readonly")
     poster_ids   = formlist_to_group_ids(request.form, "poster")

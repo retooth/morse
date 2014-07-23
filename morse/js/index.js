@@ -47,4 +47,49 @@ $(document).on("ready", function () {
     counter.fadeIn(500);
   }
 
+  $("#top-action").mouseenter(function(){
+
+    /* block if divs are still in motion */
+    var currentTop = parseInt($("#index-header").css("top"));
+    if (currentTop > 0) { return true; }
+
+    var height = $("#top-action a").height();
+    var timer = setTimeout(function(){
+      $("#index-header").animate( { top : height + "px" }, {duration: 500 });
+      $("#index").animate( { top : height + "px" }, {duration: 500, complete: fadeInTopActionInfo });
+    }, 400);
+    $(this).data("toolRevealDelay", timer);
+
+  });  
+
+  function fadeInTopActionInfo (){
+    $("#top-action a").fadeIn(200);
+  }
+
+  $("#top-action").mouseleave(function(){
+
+    /* clear timer, that was triggered on mousenter */
+    var timer = $(this).data("toolRevealDelay");
+    clearTimeout(timer);
+
+    fadeOutTopActionInfo();
+    $("#index-header").animate( { top : "0" }, {duration: 500});
+    $("#index").animate( { top : "0" }, {duration: 500});
+
+  });  
+
+  function fadeOutTopActionInfo (){
+    $("#top-action a").fadeOut(200);
+  }
+
+  if ($("#snap-tooltip-top").length > 0){
+    $("#index-header").swipeSnap( { target: "top", snapInfo: $("#snap-tooltip-top"), 
+                                   companions: [$("index")], 
+                                   callback: gotoLogOut });
+  }
+
+  function gotoLogOut (){
+    window.location = "/account/logout";
+  }
+
 });

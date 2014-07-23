@@ -18,8 +18,9 @@
 from . import app
 from ..protocols import ajax_triggered
 from flask import request
-from flask.ext.login import current_user
+from flask.ext.login import current_user, login_required
 from ..models.discussion import Post
+from ..models import db
 from ..wrappers import PostWrapper
 
 @app.route('/posts/read', methods=['POST'])
@@ -47,3 +48,25 @@ def read_posts ():
         post.read()
 
     return ""
+
+@app.route('/post/<int:post_id>/edit', methods=['POST'])
+@ajax_triggered
+@login_required
+def edit_post (post_id):
+    """ 
+    marks posts as read. this function is called via ajax
+    by the javascript function readVisiblePosts in topic.js
+    """
+    post = Post.query.get(post_id)
+    if not post:
+        return "postnotfound", 404
+
+    if not current_user.may_edit (post):
+        return "forbidden", 403
+
+    editedContent = request.json["editedContent"]
+    post.content = editedContent
+    db.session.commit()
+    return ""
+
+

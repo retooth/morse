@@ -82,12 +82,96 @@ $(document).on("ready", function () {
     });
   });
 
+  /* navigation */
+
+  $("#top-action").mouseenter(function(){
+
+    /* block if divs are still in motion */
+    var currentTop = parseInt($("#topic-title").css("top"));
+    if (currentTop > 0) { return true; }
+
+    var height = $("#top-action a").height();
+
+    
+    var timer = setTimeout(function(){
+      $("#topic").animate( { top : height + "px" }, {duration: 500 });
+      $("#topic-title").animate( { top : height + "px" }, {duration: 500, complete: fadeInTopActionInfo });
+    }, 1000);
+    $(this).data("toolRevealDelay", timer);
+
+  });  
+
+  function fadeInTopActionInfo (){
+    $("#top-action a").fadeIn(200);
+  }
+
+  $("#top-action").mouseleave(function(){
+
+    /* clear timer, that was triggered on mousenter */
+    var timer = $(this).data("toolRevealDelay");
+    clearTimeout(timer);
+
+    fadeOutTopActionInfo();
+    $("#topic").animate( { top : "0" }, {duration: 500});
+    $("#topic-title").animate( { top : "0" }, {duration: 500});
+
+  });  
+
+  function fadeOutTopActionInfo (){
+    $("#top-action a").fadeOut(200);
+  }
+
+  $("#topic-title").swipeSnap( { target: "top", snapInfo: $("#snap-tooltip-top"), companions: [$("#topic")], callback: gotoTopicList });
+
+  function gotoTopicList (){
+    var boardID = $("#topic").attr("board-id");
+    window.location = "/board/" + boardID;
+  }
+
+  $("#previous-topic").mouseenter(function(){
+
+    var timer = setTimeout(function(){
+      $("#previous-topic a").fadeIn(400).css("display", "inline-block");
+    }, 1000);
+    $(this).data("toolRevealDelay", timer);
+
+  });  
+
+  $("#previous-topic").mouseleave(function(){
+
+    /* clear timer, that was triggered on mousenter */
+    var timer = $(this).data("toolRevealDelay");
+    clearTimeout(timer);
+
+    $("#previous-topic a").fadeOut(400);
+
+  });  
+
+  $("#next-topic").mouseenter(function(){
+
+    var timer = setTimeout(function(){
+      $("#next-topic a").fadeIn(400).css("display", "inline-block");
+    }, 1000);
+    $(this).data("toolRevealDelay", timer);
+
+  });  
+
+  $("#next-topic").mouseleave(function(){
+
+    /* clear timer, that was triggered on mousenter */
+    var timer = $(this).data("toolRevealDelay");
+    clearTimeout(timer);
+
+    $("#next-topic a").fadeOut(400);
+
+  });  
 
   /* bidirectional infinite scrolling */
   var slot = "/topic/" + $("#topic").attr("topic-id") + "/posts.json";
   var builder = "/topic/" + $("#topic").attr("topic-id") + "/certainposts";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".postitem", slot, builder, [rebindToolTipEvents, rebindPostItemEvents, readVisiblePosts], 3000, 20, 5);
+  scrolling.init(".postitem", slot, builder, [rebindToolTipEvents, rebindPostItemEvents, 
+                                              rebindPostToolEvents, readVisiblePosts], 3000, 20, 5);
 
   hash = window.location.hash;
   if (hash){
@@ -127,23 +211,6 @@ $(document).on("ready", function () {
   });
 
   rebindPostItemEvents();
-
-  function rebindPostItemEvents (){
-    $(".postitem").off("dblclick");
-    $(".postitem").on("dblclick", function(){
-      if ($("#topic").attr("topic-closed") === "True"){
-        return true;
-      }
-      var inputWrapper = $("#inputwrapper");
-      inputWrapper.remove();
-      inputWrapper.insertAfter($(this));
-      rebindPostButtonEvents();
-      rebindPostToolEvents();
-      inputWrapper.slideDown(400);
-      $("#new-post-button").slideUp(0);
-      $("#newposttext").focus();
-    });
-  }
 
   $("#new-post-button").click(function(){
       $("#new-post-button").slideUp(0);
@@ -185,3 +252,9 @@ $(document).on("ready", function () {
   });
 
 });
+
+function showInputField (){
+  $("#input-wrapper").slideDown(400);
+  $("#new-post-button").slideUp(0);
+  $("#new-post").focus();
+}

@@ -165,9 +165,9 @@ def certain_rights_required (may_close = False, may_edit = False, may_stick = Fa
 
 class _certain_rights_required (object):
 
-    def __init__ (self, f, may_close = False, may_edit = False, may_stick = False):
+    def __init__ (self, f, may_close = False, may_edit_all_posts = False, may_stick = False):
         self.f = f
-        self.required = { 'may_close': may_close, 'may_edit': may_edit, 'may_stick': may_stick }
+        self.required = { 'may_close': may_close, 'may_edit_all_posts': may_edit_all_posts, 'may_stick': may_stick }
         # needed for flask integration
         self.__name__ = self.f.__name__
 

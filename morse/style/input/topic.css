@@ -15,7 +15,7 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#newtopictitle{
+#new-topic-title{
   font-size: 10pt;
   outline:none;
   border:none;
@@ -23,15 +23,6 @@
   padding:5pt;
   font-weight:bold;
   font-size:12pt;
-}
-
-#newtopictext{
-  font: 10pt 'Roboto';
-  outline:none;
-  border:none;
-  width:98%;
-  overflow:hidden;
-  padding:5pt;
 }
 
 #new-topic-button{

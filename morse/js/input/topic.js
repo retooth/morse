@@ -17,40 +17,31 @@
 
 $(document).on("ready", function () {
 
-  $("#newtopictitle").keydown(function(keyevent){
+  $("#new-topic-title").keydown(function(keyevent){
     if (keyevent.which === KEY_RETURN){
-      $("#newtopictext").focus();
+      $("#new-post").focus();
       keyevent.preventDefault();
     }
     sanitizeTopicTitle();
   });
 
-  $("#newtopictitle").keyup(sanitizeTopicTitle);
-  $("#newtopictitle").blur(sanitizeTopicTitle);
+  $("#new-topic-title").keyup(sanitizeTopicTitle);
+  $("#new-topic-title").blur(sanitizeTopicTitle);
 
   function sanitizeTopicTitle (){
-    var title = $("#newtopictitle");
-    unwrapChildren(title);
+    var title = $("#new-topic-title");
     title.find("br").remove();
   }
 
-  function unwrapChildren (parentNode){
-    var children = parentNode.children()
-    children.each(function(){
-      unwrapChildren($(this));
-      $(this).replaceWith( $(this).html() );
-    });
-  }
-
-  $("#docreate").on("click", function(){
-    var title = $("#newtopictitle").html();
+  $("#create-new-topic").on("click", function(){
+    var title = $("#new-topic-title").html();
     
     if (title.length < 3){
       alertInput("title-too-short");
       return false;
     }
 
-    var text = $("#newtopictext").html();
+    var text = $("#new-post").html();
     if (text.length < 20){
       alertInput("text-too-short");
       return false;

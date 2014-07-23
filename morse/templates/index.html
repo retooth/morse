@@ -2,6 +2,7 @@
 {% extends "base.html" %}
 {% block head %}
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='index.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='snappers.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/items.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/board.css') }}">
 {% endblock %}
@@ -17,6 +18,21 @@
 </nav>
 {% endblock %}
 {% block content %}
+{% if not current_user.is_anonymous() %}
+<div id="top-action">
+  <a class="no-text-decoration" href="/account/logout">
+    <span class="icon icon-tooltip">&#xf08b;</span><br/>
+    Log out<br/>
+  </a>
+</div>
+<div id="snap-tooltip-top">
+  <span class="icon icon-tooltip">&#xf08b;</span><br/>
+  Let go to log out<br/>
+</div>
+{% endif %}
+<h1 id="index-header">
+  Board Index
+</h1>
 <div id="index">
 {% for board in boards %}
     {% include "items/board.html" %}
@@ -76,5 +92,6 @@
 <div class="clear"></div>
 {% endblock %}
 {% block script %}
+<script src="{{ url_for('js', filename='snappers.js') }}"></script>
 <script src="{{ url_for('js', filename='index.js') }}"></script>
 {% endblock %}

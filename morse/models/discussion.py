@@ -18,6 +18,7 @@
 from . import db
 from sqlalchemy import func
 from helpers import make_url_compatible
+from core import User, Guest
 
 class Post (db.Model):
 
@@ -38,6 +39,10 @@ class Post (db.Model):
         self.topic_id = topic_id
         self.content = content
         self.remote_addr = remote_addr
+
+    @property
+    def creator (self):
+        return User.query.get(self.user_id) or Guest()
 
 class Topic (db.Model):
     
@@ -116,3 +121,16 @@ class DiscoveredTopic (db.Model):
     def __init__ (self, user_id, topic_id):
         self.user_id = user_id
         self.topic_id = topic_id
+
+class PostReference (db.Model):
+
+    """ A many-to-many relation between posts. If relations exists the post
+    with post_id references the post with referenced_post_id """
+
+    __tablename__ = "post_references"
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+    referenced_post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), primary_key=True)
+
+    def __init__ (self, post_id, referenced_post_id):
+        self.post_id = post_id
+        self.referenced_post_id = referenced_post_id

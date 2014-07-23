@@ -17,9 +17,9 @@
 
 from flask.ext.login import current_user
 from sqlalchemy import not_
-from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
-from ..models.discussion import Post, Topic
-from ..models import db
+from api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from models.discussion import Post, Topic
+from models import db
 
 def TopicListGenerator (board_id):
     query = Topic.query.filter(Topic.board_id == board_id) 
@@ -32,7 +32,7 @@ def TopicListGenerator (board_id):
 
     # TODO: sorting preferences
     # TODO: guest preferences (cookies)
-    return query.values(Topic.id)
+    return query.all()
 
 def PostListGenerator (topic_id):
 
@@ -44,5 +44,5 @@ def PostListGenerator (topic_id):
             if post_filter == filt.id:
                 query = filt.filter(query)
 
-    return query.values(Post.id)
+    return query.order_by(Post.created_at).all()
 

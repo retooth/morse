@@ -15,34 +15,12 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#input-wrapper{
+#snap-tooltip-top{
+  position:absolute;
+  top:120pt;
+  left:0;
+  width:100%;
   display:none;
-  border-radius: 3pt;
-  padding:0;
-  background:#fff;
-  border: 1pt solid #ccc;
-  box-shadow:1px 1px #ddd;
-  margin-bottom:10pt;
-}
-
-#typing-info{
-  font-size:10pt;
-  font-weight:900;
-  height:12pt;
-}
-
-#typing-info-ghost{
-  display:none;
-  height:12pt;
-}
-
-.closedinfo{
-  border-radius:3pt;
-  background:#DB3026;
-  color:#fff;
-  padding:5pt;
-}
-
-#new-post{
-  padding:5pt;
+  text-align:center;
+  color:#333;
 }

@@ -24,7 +24,7 @@ from ..models import db
 from ..models.core import Board
 from ..models.discussion import Topic, Post, ReadPost
 from ..wrappers import TopicWrapper, PostWrapper
-from generators import PostListGenerator
+from ..generators import PostListGenerator
 from sqlalchemy import not_
 
 @app.route('/topic/<topic_str>/post', methods=['POST'])
@@ -172,8 +172,8 @@ def get_posts (topic_str):
         return "forbidden", 403
 
     post_ids = []
-    for post_id in PostListGenerator(topic_id):
-        post_ids.append(post_id)
+    for post in PostListGenerator(topic_id):
+        post_ids.append(post.id)
 
     return jsonify(IDs = post_ids)
 

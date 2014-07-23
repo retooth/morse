@@ -26,6 +26,11 @@
   font-family: 'Font Awesome' !important;
 }
 
+.icon-tooltip{
+  font-size:30pt;
+  color:#444;
+}
+
 .option{
   padding:5pt 5pt 5pt 5pt;
   background:#fff;
@@ -43,6 +48,7 @@ body {
   font-family:'Roboto';
   font-size:11pt;
   background:#ccc;
+  height:100%;
 }
 
 input {
@@ -71,7 +77,7 @@ button::-moz-focus-inner {
   padding:5pt;
   display:block;
   margin:auto;
-  min-height:100%;
+  min-height:400pt;
   background:#f3f3f3;
   max-width:50em;
 }

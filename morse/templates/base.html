@@ -24,11 +24,11 @@
 </header>
 {% block navigation %}{% endblock %}
 {% include "alerts/global.html" %}
-<br />
 {% block content %}{% endblock %}
 <script src="{{ url_for('js', filename='jquery-1.9.1.min.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery-ui-1.10.4.custom.min.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery.ui.touch-punch.min.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery.touchSwipe.min.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery.json-2.4.min.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery-autogrow.min.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery-visible.min.js') }}"></script>

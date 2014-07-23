@@ -15,18 +15,30 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#index-header{
+  position:relative;
+  top:0px;
+  text-align:center;
+}
+
 #index{
+  position:relative;
 }
 
-#admintools{
-  padding:5pt;
+#top-action {
+  position:absolute;
+  padding-top:5pt;
+  min-height:20pt;
+  width:50%;
+  left:25%;
+  text-align:center;
 }
 
-#createnewboard{
-  float:right;
+#top-action a {
+  color:#333;
+  display:none;
 }
 
-    #createnewboard img{
-      height:16px;
-      width:auto;
-    }
+#top-action a:visited {
+  color:#333;
+}

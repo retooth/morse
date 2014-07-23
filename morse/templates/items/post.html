@@ -1,18 +1,27 @@
-<div tooltip="post" post-id="{{ post.id }}" class="postitem {% if post.isfresh %} fresh {% endif %}">
+<div tooltip="post" post-id="{{ post.id }}" class="post-item {% if post.isfresh %} fresh {% endif %}">
 <!--a id="post{{ post.id }}" class="postheader"></a-->
-  <div class="postheader">
+  <div class="post-header">
     {% if post.creator.is_anonymous() %}
-      <div class="profileimage" style="background-image:url('/static/anonymous.png')"></div>
-      <div class="postcreator">Guest</div>
+      <div class="profile-image" style="background-image:url('/static/anonymous.png')"></div>
+      <div class="post-creator">Guest</div>
     {% else %}
-      <div class="profileimage" style="background-image:url('{{ post.creator.profileimage }}')"></div>
-      <div class="postcreator">{{ post.creator.username }} wrote</div>
+      <div class="profile-image" style="background-image:url('{{ post.creator.profileimage }}')"></div>
+      <div class="post-creator">{{ post.creator.username }} wrote</div>
+      <div class="post-tools">
+        {% if current_user.may_post_in(post.topic.board) %}
+          <button class="post-action-quote post-action"><span class="icon">&#xf10e;</span></button>
+          {% if current_user.may_edit(post) %}
+            <button class="post-action-edit post-action"><span class="icon">&#xf040;</span></button>
+          {% endif %}
+          <button class="post-action"><span class="icon">&#xf112;</span></button>
+        {% endif %}
+      </div>
     {% endif %}
   <div class="clear"></div>
   </div>
   <article class="post">
    {{ post.content | safe }}
  </article>
- <div class="clear"></div>
+ {% include "input/edit.html" %}
 <div class="postfooter"></div>
 </div>

@@ -20,6 +20,7 @@ from models.core import User, Board, Guest, FollowedBoard
 from models.discussion import Topic, FollowedTopic, Post, ReadPost, DiscoveredTopic
 from flask.ext.login import current_user
 from collections import defaultdict
+from cache import TopicCache
 
 class Wrapper (object):
 
@@ -40,10 +41,6 @@ class PostWrapper (Wrapper):
         self._inner = post
 
     @property
-    def creator (self):
-        return User.query.get(self.user_id) or Guest()
-
-    @property
     def isfresh (self):
         post_is_read = ReadPost.query.filter(ReadPost.user_id == current_user.id,\
                                              ReadPost.post_id == self.id).first()
@@ -53,6 +50,11 @@ class PostWrapper (Wrapper):
         if not post_is_read and topic.followed:
             return True
         return False
+
+    @property
+    def topic (self):
+        topic = Topic.query.get(self.topic_id)
+        return TopicWrapper(topic)
 
     def read (self):
         if self.isfresh:
@@ -122,7 +124,38 @@ class TopicWrapper (Wrapper):
 
     @property
     def board (self):
-        return Board.query.get(self.board_id)
+        board = Board.query.get(self.board_id)
+        return BoardWrapper(board)
+
+    @property
+    def next (self):
+        cache = TopicCache()
+        topics = cache.fetch(self.board_id)
+        topics_count = len(topics)
+        for index, topic in enumerate(topics):
+            if topic.id == self.id:
+                if index == (topics_count - 1):
+                    return TopicWrapper(topics[0])
+                    break
+                else:
+                    return TopicWrapper(topics[index + 1])
+                    break
+        return TopicWrapper(topics[0])
+
+    @property
+    def previous (self):
+        cache = TopicCache()
+        topics = cache.fetch(self.board_id)
+        topics_count = len(topics)
+        for index, topic in enumerate(topics):
+            if topic.id == self.id:
+                if index == 0:
+                    return TopicWrapper(topics[topics_count - 1])
+                    break
+                else:
+                    return TopicWrapper(topics[index - 1])
+                    break
+        return TopicWrapper(topics[0])
 
     def __getitem__ (self, val):
         """ gets a single post or a slice of posts """

@@ -16,16 +16,125 @@
 */
 
 #topic{
+  position:relative
 }
 
     #topic-title {
+      position:relative;
+      top: 0px; /* important for topic.js swipe */
       font-weight:bold;
       color:#000;
-      margin-top: -5pt;
+      margin-top: 5pt;
       padding:0;
       font-size:30pt;
       text-shadow:1px 1px #ddd;
+      text-align:center;
     }
+
+    #top-action {
+      position:absolute;
+      padding-top:5pt;
+      min-height:20pt;
+      width:50%;
+      left:25%;
+      text-align:center;
+    }
+
+    #top-action a {
+      color:#333;
+      display:none;
+    }
+
+    #top-action a:visited {
+      color:#333;
+    }
+
+    #previous-topic {
+      padding:10pt;
+      position:fixed;
+      left:0;
+      top:10%;
+      height:80%;
+      width:70pt;
+    }
+
+    #previous-topic a{
+      display:none;
+      position:relative;
+      top:40%;
+      color:#333;
+    }
+
+    #previous-topic a:visited {
+      color:#333;
+    }
+
+    #previous-topic-icon {
+      position:relative;
+    }
+
+    #previous-topic-title {
+      font-size:20pt;
+      /*position:fixed;*/
+      position:relative;
+      top:55pt;
+      text-align:center;
+      margin-left:60pt;
+      width:200pt;
+      -webkit-transform: rotate(-90deg);
+      -webkit-transform-origin: left bottom;
+      -moz-transform: rotate(-90deg);
+      -moz-transform-origin: left bottom;
+      -ms-transform: rotate(-90deg);
+      -ms-transform-origin: left bottom;
+      -o-transform: rotate(-90deg);
+      -o-transform-origin: left bottom;
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+    } 
+
+    #next-topic {
+      text-align:right;
+      padding:10pt;
+      position:fixed;
+      right:0;
+      top:10%;
+      height:80%;
+      width:70pt;
+    }
+
+    #next-topic a{
+      display:none;
+      position:relative;
+      top:40%;
+      color:#333;
+    }
+
+    #next-topic a:visited {
+      color:#333;
+    }
+
+    #next-topic-icon {
+      position:relative;
+    }
+
+    #next-topic-title {
+      font-size:20pt;
+      /*position:fixed;*/
+      position:relative;
+      text-align:center;
+      width:200pt;
+      top:-145pt;
+      left:10pt;
+      -webkit-transform: rotate(90deg);
+      -webkit-transform-origin: left bottom;
+      -moz-transform: rotate(90deg);
+      -moz-transform-origin: left bottom;
+      -ms-transform: rotate(90deg);
+      -ms-transform-origin: left bottom;
+      -o-transform: rotate(90deg);
+      -o-transform-origin: left bottom;
+      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+    } 
 
     #topic-tools{
       margin-bottom:5pt;

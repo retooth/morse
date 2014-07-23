@@ -113,7 +113,7 @@ class User (db.Model):
         return False
 
     @property
-    def may_edit (self):
+    def may_edit_all_posts (self):
         """ signifies if user may edit *ALL* posts. This is typically a moderator's right.
         This property is read only. To change it for a specific user, move him/her
         to the moderator / admin group or create a group with the may_edit flag """
@@ -174,6 +174,21 @@ class User (db.Model):
                 return True
                 break
         return False
+
+    def may_edit (self, post):
+        """ signifies if a user may edit in a specific post. """
+        return (self.may_edit_all_posts and \
+               not post.creator.may_structure) or post.creator.id == self.id
+            
+
+    @property
+    def groups (self):
+        groups = []
+        relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
+        for r in relations:
+            group = Group.query.get(r.group_id)
+            groups.append(group)
+        return groups
 
     @property
     def topic_sorting_preference (self):

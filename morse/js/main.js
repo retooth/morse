@@ -25,10 +25,6 @@ $(document).on("ready", function () {
   reinitCheckboxes();
   rebindCheckboxEvents();
 
-  /* make multiline text inputs autogrow */
-  $("#newtopictext").autogrow();
-  $("#newposttext").autogrow();
-
   $.ajaxSetup({
     contentType: "application/json",
     traditional: true,
@@ -65,26 +61,10 @@ $(document).on("ready", function () {
     }
 
 
-    var activeID = $(document.activeElement).attr("id");
-    var atNewPost = $("#newposttext").length > 0;
-    var atNewTopic = $("#newtopictitle").length > 0;
+    var active = $(document.activeElement);
 
-    if (activeID !== "newtopictitle" &&
-        activeID !== "newtopictext" &&
-        activeID !== "newposttext" &&
-        activeID !== "search" &&
-        activeID !== "newhref"){
-
-      $("#inputwrapper").slideDown(400);
-
-      if (atNewPost){
-        $("#new-post-button").slideUp(0);
-        $("#newposttext").focus();
-      }else if (atNewTopic){
-        $("#new-topic-button").slideUp(0);
-        $("#newtopictitle").focus();
-      }
-
+    if (!active.is("input") && !active.is("[contenteditable]")) {
+      showInputField();
     }else{
       return true;
     }
@@ -93,9 +73,7 @@ $(document).on("ready", function () {
 
   /* This is a workaround for a bug, that adds a another blockquote,
      if the user is inside a blockquote and presses enter */
-  $("#newtopictext").on("keypress", blockquoteWorkaround);
-  $("#newposttext").on("keypress", blockquoteWorkaround);
-
+  $("#new-post").on("keypress", blockquoteWorkaround);
 
   function blockquoteWorkaround (keyevent) {
 

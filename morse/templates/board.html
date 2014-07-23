@@ -3,6 +3,7 @@
 {% block head %}
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='board.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='format.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='snappers.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='infobanners.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/input.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/topic.css') }}">
@@ -22,6 +23,16 @@
 </nav>
 {% endblock %}
 {% block content %}
+<div id="top-action">
+  <a class="no-text-decoration" href="/">
+    <span class="icon icon-tooltip">&#xf148;</span><br/>
+    Jump to board index
+  </a>
+</div>
+<div id="snap-tooltip-top">
+  <span class="icon icon-tooltip">&#xf148;</span><br/>
+  Let go to jump to board index<br/>
+</div>
 <h1 id="board-title">
   <!--span class="icon" style="color:#00CBE7">&#xf075;</span-->
   {{ board.title }}
@@ -114,6 +125,7 @@
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('js', filename='scrolling.js') }}"></script>
+<script src="{{ url_for('js', filename='jquery.swipesnap.js') }}"></script>
 <script src="{{ url_for('js', filename='board.js') }}"></script>
 <script src="{{ url_for('js', filename='input/topic.js') }}"></script>
 <script src="{{ url_for('js', filename='input/tools.js') }}"></script>

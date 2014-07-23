@@ -21,9 +21,9 @@ $(document).on("ready", function () {
 
 function rebindPostButtonEvents (){
 
-  $("#dopost").on("click", function(){
+  $("#create-new-post").on("click", function(){
 
-    var text = $("#newposttext").html();
+    var text = $("#new-post").html();
     if (text.length < 20){
       alertInput("text-too-short");
       return false;
