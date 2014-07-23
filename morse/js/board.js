@@ -253,6 +253,6 @@ $(document).on("ready", function () {
 
 function showInputField (){
   $("#input-wrapper").slideDown(400);
-  $("#new-post-button").slideUp(0);
+  $("#new-topic-button").slideUp(0);
   $("#new-topic-title").focus();
 }

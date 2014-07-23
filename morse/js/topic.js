@@ -213,9 +213,7 @@ $(document).on("ready", function () {
   rebindPostItemEvents();
 
   $("#new-post-button").click(function(){
-      $("#new-post-button").slideUp(0);
-      $("#inputwrapper").slideDown(400);
-      $("#newposttext").focus();
+    showInputField();
   });
 
   $("#close-topic").click(function(){
