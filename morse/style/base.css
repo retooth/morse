@@ -73,6 +73,7 @@ button::-moz-focus-inner {
 }
 
 #body-wrapper{
+  position:relative;
   border-radius:3pt;
   padding:5pt;
   display:block;
@@ -80,6 +81,7 @@ button::-moz-focus-inner {
   min-height:400pt;
   background:#f3f3f3;
   max-width:50em;
+  z-index:1;
 }
 
 /* header -------------------------------------- */

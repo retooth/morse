@@ -22,13 +22,7 @@
   {% endif %}
 </nav>
 {% endblock %}
-{% block content %}
-<div id="top-action">
-  <a class="no-text-decoration" href="/board/{{ topic.board.seostring }}">
-    <span class="icon icon-tooltip">&#xf148;</span><br/>
-    Jump to board list
-  </a>
-</div>
+{% block outer %}
 <div id="previous-topic">
   <a class="no-text-decoration" href="/topic/{{ topic.previous.seostring }}">
     <div id="previous-topic-icon" class="icon icon-tooltip">&#xf053;</div>
@@ -43,6 +37,14 @@
   </a>
   <a class="no-text-decoration" href="/topic/{{ topic.next.seostring }}">
     <div id="next-topic-title">{{ topic.next.title }}</div>
+  </a>
+</div>
+{% endblock %}
+{% block content %}
+<div id="top-action">
+  <a class="no-text-decoration" href="/board/{{ topic.board.seostring }}">
+    <span class="icon icon-tooltip">&#xf148;</span><br/>
+    Jump to board list
   </a>
 </div>
 <div id="snap-tooltip-top">
