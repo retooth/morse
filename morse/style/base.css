@@ -81,7 +81,6 @@ button::-moz-focus-inner {
   min-height:400pt;
   background:#f3f3f3;
   max-width:50em;
-  z-index:1;
 }
 
 @media only screen and (max-device-width: 480px) {
