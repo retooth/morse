@@ -128,6 +128,7 @@ $(document).on("ready", function () {
     window.location = "/board/" + boardID;
   }
 
+  /*
   $("#topic").swipeSnap( { target: "left", snapInfo: $("#snap-previous-topic"), companions: [$("#topic-title")], callback: gotoPreviousTopic });
   $("#topic").swipeSnap( { target: "right", snapInfo: $("#snap-next-topic"), companions: [$("#topic-title")], callback: gotoNextTopic });
 
@@ -139,7 +140,7 @@ $(document).on("ready", function () {
   function gotoNextTopic(){
     var nextTopicID = $("#topic").attr("next-topic-id");
     window.location = "/topic/" + nextTopicID;
-  }
+  }*/
 
   $("#previous-topic").mouseenter(function(){
 
