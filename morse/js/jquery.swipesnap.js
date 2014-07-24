@@ -74,7 +74,7 @@
 
         $.fn.swipeSnap.leftActive = true;
         $.fn.swipeSnap.leftOptions = opt;
-        this.swipe( { swipeStatus: $.fn.swipeSnap.snapHorizontal } );
+        this.swipe( { swipeStatus: $.fn.swipeSnap.snapHorizontal, allowPageScroll: "vertical" } );
 
       }else
       if (opt.target === "right"){
@@ -91,7 +91,7 @@
 
         $.fn.swipeSnap.rightActive = true;
         $.fn.swipeSnap.rightOptions = opt;
-        this.swipe( { swipeStatus: $.fn.swipeSnap.snapHorizontal } );
+        this.swipe( { swipeStatus: $.fn.swipeSnap.snapHorizontal, allowPageScroll: "vertical" } );
 
       } 
     };

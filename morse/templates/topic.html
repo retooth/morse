@@ -47,6 +47,14 @@
     Jump to board list
   </a>
 </div>
+<div id="snap-previous-topic">
+  <div id="snap-previous-topic-icon" class="icon icon-tooltip">&#xf053;</div>
+  Let go to switch to <div id="snap-previous-topic-title">{{ topic.previous.title }}</div>
+</div>
+<div id="snap-next-topic">
+  <div id="snap-next-topic-icon" class="icon icon-tooltip">&#xf054;</div>
+  Let go to switch to <div id="snap-next-topic-title">{{ topic.next.title }}</div>
+</div>
 <div id="snap-tooltip-top">
   <span class="icon icon-tooltip">&#xf148;</span><br/>
   Let go to jump to topic list<br/>
@@ -59,6 +67,8 @@
 <div id="topic" may-post="{{ current_user.may_post_in(topic.board) }}" 
                 topic-id="{{ topic.id }}" 
                 board-id="{{ topic.board_id }}" 
+                previous-topic-id="{{ topic.previous.id }}"
+                next-topic-id="{{ topic.next.id }}"
                 topic-closed="{{ topic.closed }}">
  {% include "input/post.html" %}
  <div id="itemloader-top">

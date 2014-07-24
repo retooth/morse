@@ -24,3 +24,27 @@
   text-align:center;
   color:#333;
 }
+
+#snap-previous-topic{
+  position:fixed;
+  left:0;
+  top:150pt;
+  padding:5pt;
+  width:60pt;
+  display:none;
+  height:100%;
+  text-align:center;
+  color:#333;
+}
+
+#snap-next-topic{
+  position:fixed;
+  right:0;
+  top:150pt;
+  padding:5pt;
+  width:60pt;
+  display:none;
+  height:100%;
+  text-align:center;
+  color:#333;
+}
