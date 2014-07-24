@@ -6,9 +6,9 @@
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='labels.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='snappers.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='infobanners.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/input.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/post.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/tools.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='contribution/contribution.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='contribution/post.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='contribution/tools.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/post.css') }}">
 {% endblock %}
 {% block navigation %}
@@ -70,7 +70,7 @@
                 previous-topic-id="{{ topic.previous.id }}"
                 next-topic-id="{{ topic.next.id }}"
                 topic-closed="{{ topic.closed }}">
- {% include "input/post.html" %}
+ {% include "contribution/post.html" %}
  <div id="itemloader-top">
    <div id="info-init" class="hidden">Loading posts</div>
    <div id="info-older-items" class="hidden">Loading older posts</div>
@@ -169,7 +169,7 @@
 <script src="{{ url_for('js', filename='jquery.swipesnap.js') }}"></script>
 <script src="{{ url_for('js', filename='items/post.js') }}"></script>
 <script src="{{ url_for('js', filename='topic.js') }}"></script>
-<script src="{{ url_for('js', filename='input/input.js') }}"></script>
-<script src="{{ url_for('js', filename='input/post.js') }}"></script>
-<script src="{{ url_for('js', filename='input/tools.js') }}"></script>
+<script src="{{ url_for('js', filename='contribution/contribution.js') }}"></script>
+<script src="{{ url_for('js', filename='contribution/post.js') }}"></script>
+<script src="{{ url_for('js', filename='contribution/tools.js') }}"></script>
 {% endblock %}

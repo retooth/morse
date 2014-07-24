@@ -5,9 +5,9 @@
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='format.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='snappers.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='infobanners.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/input.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/topic.css') }}">
-<link rel=stylesheet type=text/css href="{{ url_for('style', filename='input/tools.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='contribution/contribution.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='contribution/topic.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='contribution/tools.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/items.css') }}">
 <link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/topic.css') }}">
 {% endblock %}
@@ -42,7 +42,7 @@
 </h2>
 <br/>
 <div id="board" may-post="{{ current_user.may_post_in (board) }}" board-id="{{ board.id }}">
- {% include "input/topic.html" %}
+ {% include "contribution/topic.html" %}
  <div id="itemloader-top">
    <div id="info-init" class="hidden">Loading topics</div>
    <div id="info-older-items" class="hidden">Loading</div>
@@ -127,7 +127,7 @@
 <script src="{{ url_for('js', filename='scrolling.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery.swipesnap.js') }}"></script>
 <script src="{{ url_for('js', filename='board.js') }}"></script>
-<script src="{{ url_for('js', filename='input/input.js') }}"></script>
-<script src="{{ url_for('js', filename='input/topic.js') }}"></script>
-<script src="{{ url_for('js', filename='input/tools.js') }}"></script>
+<script src="{{ url_for('js', filename='contribution/contribution.js') }}"></script>
+<script src="{{ url_for('js', filename='contribution/topic.js') }}"></script>
+<script src="{{ url_for('js', filename='contribution/tools.js') }}"></script>
 {% endblock %}

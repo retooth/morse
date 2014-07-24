@@ -1,9 +1,9 @@
-<div id="input-wrapper">
-  <div id="new-topic-title" class="inputheader" contenteditable="True"></div>
-  <article id="new-post" class="inputheader" contenteditable="True"></article>
+<div id="new-contribution">
+  <div id="new-topic-title" contenteditable="True"></div>
+  <article id="new-post" contenteditable="True"></article>
   <div class="tool-footer">
     <button id="create-new-topic">Post</button>
-    {% include "input/tools.html" %}
+    {% include "contribution/tools.html" %}
   </div>
 </div>
 {% if current_user.may_post_in( board ) %}

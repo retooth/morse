@@ -74,7 +74,7 @@ function rebindPostToolEvents (){
         $("#closenewhref").fadeIn(200);
         $("#makelink").addClass("openrightborder");
         $("#new-post").removeAttr("contenteditable");
-        $("#input-wrapper").addClass("disabledbox");
+        $("#new-contribution").addClass("disabledbox");
     }
   });
 
@@ -92,9 +92,9 @@ function rebindPostToolEvents (){
       $("#closenewhref").fadeOut(200);
       $("#makelink").removeClass("openrightborder");
       
-      $(this).parents("#input-wrapper").find("article");
+      $(this).parents("#new-contribution").find("article");
       $("#new-post").attr("contenteditable", "true");
-      $("#input-wrapper").removeClass("disabledbox");
+      $("#new-contribution").removeClass("disabledbox");
 
       $("#new-post").focus();
 
@@ -112,7 +112,7 @@ function rebindPostToolEvents (){
     $("#makelink").removeClass("openrightborder");
 
     $("#new-post").attr("contenteditable", "true");
-    $("#input-wrapper").removeClass("disabledbox");
+    $("#new-contribution").removeClass("disabledbox");
 
     $("#new-post").focus();
     // FIXME: there is a bug, that doesn't do these last two

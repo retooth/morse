@@ -15,35 +15,15 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#input-wrapper{
-  display:none;
-  border-radius: 3pt;
-  padding:0;
-  background:#fff;
-  border: 1pt solid #ccc;
-  box-shadow:1px 1px #ddd;
-  margin-bottom:10pt;
+function putNewContributionFieldAfter (element){
+  var wrapper = $("#new-contribution");
+  wrapper.remove();
+  wrapper.insertAfter(element);
 }
 
-#typing-info{
-  font-size:10pt;
-  font-weight:900;
-  height:12pt;
+function prependNewContributionFieldTo (element){
+  var wrapper = $("#new-contribution");
+  wrapper.remove();
+  wrapper.prependTo(element);
 }
 
-#typing-info-ghost{
-  display:none;
-  height:12pt;
-}
-
-.closedinfo{
-  border-radius:3pt;
-  background:#DB3026;
-  color:#fff;
-  padding:5pt;
-}
-
-#new-post{
-  padding:5pt;
-  min-height:15pt;
-}

@@ -218,7 +218,7 @@ $(document).on("ready", function () {
       data: json,
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(){
-        putInputWrapperAfter($("#topic-title"));
+        prependNewContributionFieldTo($("#topic"));
 	    scrolling.showFromStart();
       },
     });
@@ -227,7 +227,7 @@ $(document).on("ready", function () {
   rebindPostItemEvents();
 
   $("#new-post-button").click(function(){
-    showInputField();
+    showNewContributionField();
   });
 
   $("#close-topic").click(function(){
@@ -239,7 +239,7 @@ $(document).on("ready", function () {
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(response){
         switchButton(that);
-        $("#inputwrapper").fadeOut(0);
+        $("#new-contribution").fadeOut(0);
         $("#topic").attr("topic-closed", "True");
         $("#this-topic-is-closed").fadeIn(0);
         $("#new-post-button").fadeOut(0);
@@ -265,8 +265,8 @@ $(document).on("ready", function () {
 
 });
 
-function showInputField (){
-  $("#input-wrapper").slideDown(400);
+function showNewContributionField (){
+  $("#new-contribution").slideDown(400);
   $("#new-post-button").slideUp(0);
   $("#new-post").focus();
 }

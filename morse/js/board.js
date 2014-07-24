@@ -129,7 +129,7 @@ $(document).on("ready", function () {
   });
 
   $("#new-topic-button").click(function(){
-    showInputField();
+    showNewContributionField();
   });
 
   $("#top-action").mouseenter(function(){
@@ -251,8 +251,8 @@ $(document).on("ready", function () {
 
 });
 
-function showInputField (){
-  $("#input-wrapper").slideDown(400);
+function showNewContributionField (){
+  $("#new-contribution").slideDown(400);
   $("#new-topic-button").slideUp(0);
   $("#new-topic-title").focus();
 }

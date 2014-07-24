@@ -64,7 +64,7 @@ $(document).on("ready", function () {
     var active = $(document.activeElement);
 
     if (!active.is("input") && !active.is("[contenteditable]")) {
-      showInputField();
+      showNewContributionField();
     }else{
       return true;
     }

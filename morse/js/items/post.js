@@ -102,9 +102,8 @@ function rebindPostItemEvents (){
   $(".post-action-reply").off("click");
   $(".post-action-reply").on("click", function() {
     var postItem = $(this).parents(".post-item");
-    putInputWrapperAfter(postItem);
-    $("#input-wrapper").slideDown(400);
-    $("#new-post").focus();
+    putNewContributionFieldAfter(postItem);
+    showNewContributionField();
   });
 
   function resetAllEditDialogs (){
