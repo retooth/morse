@@ -19,11 +19,15 @@ function putNewContributionFieldAfter (element){
   var wrapper = $("#new-contribution");
   wrapper.remove();
   wrapper.insertAfter(element);
+  rebindPostButtonEvents();
+  rebindPostToolEvents();
 }
 
 function prependNewContributionFieldTo (element){
   var wrapper = $("#new-contribution");
   wrapper.remove();
   wrapper.prependTo(element);
+  rebindPostButtonEvents();
+  rebindPostToolEvents();
 }
 
