@@ -218,7 +218,8 @@ $(document).on("ready", function () {
       data: json,
       error: handleAjaxErrorBy( alertGlobal ),
       success: function(){
-	scrolling.showFromStart();
+        putInputWrapperAfter($("#topic-title"));
+	    scrolling.showFromStart();
       },
     });
   });
