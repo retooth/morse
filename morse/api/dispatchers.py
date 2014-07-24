@@ -35,6 +35,30 @@ class DataDispatcher (object):
     def dispatch (self, section):
         return self._data[section]
 
+class FormatToolDispatcher (object):
+
+    __monostate = None
+
+    def __init__ (self):
+        if not FormatToolDispatcher.__monostate:
+            FormatToolDispatcher.__monostate = self.__dict__
+            self._tools = []
+        else:
+            self.__dict__ = FormatToolDispatcher.__monostate
+
+    def attach (self, filt):
+        # TODO: check for database inconsistency
+        self._tools.append(filt)
+
+    @property
+    def is_empty(self):
+        return self._tools == []
+
+    def __iter__ (self):
+        for tool_blueprint in self._tools:
+            tool = tool_blueprint()
+            yield tool
+
 class TopicFilterDispatcher (object):
 
     __monostate = None

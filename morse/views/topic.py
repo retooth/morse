@@ -22,7 +22,7 @@ from ..rights import possibly_banned, check_ban
 from ..models import db
 from ..models.discussion import Topic
 from ..wrappers import TopicWrapper
-from ..api.dispatchers import PostFilterDispatcher
+from ..api.dispatchers import PostFilterDispatcher, FormatToolDispatcher
 
 @app.route('/topic/<topic_str>', methods=['GET'])
 @possibly_banned
@@ -48,4 +48,8 @@ def topic (topic_str):
     db.session.commit()
 
     post_filter_dispatcher = PostFilterDispatcher()
-    return render_template("topic.html", topic = topic, post_filter_dispatcher = post_filter_dispatcher)
+    format_tool_dispatcher = FormatToolDispatcher()
+
+    return render_template("topic.html", topic = topic, 
+                            post_filter_dispatcher = post_filter_dispatcher,
+                            format_tool_dispatcher = format_tool_dispatcher)

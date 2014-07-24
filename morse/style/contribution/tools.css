@@ -16,6 +16,7 @@
 */
 
 .tool-footer{
+  position:relative;
   border-bottom-right-radius:3pt;
   border-bottom-left-radius:3pt;
   padding:5pt;
@@ -30,7 +31,7 @@
       border-radius: 2pt;
       float:left;
       color:#000;
-      padding:2pt;
+      padding:5pt;
       font-size:10pt !important;
       margin-right:2pt;
     }
@@ -43,7 +44,7 @@
       border-radius: 2pt;
       float:left;
       color:#000;
-      padding:2pt;
+      padding:5pt;
       font-size:10pt !important;
       margin-right:2pt;
     }
@@ -56,7 +57,7 @@
       border-radius: 2pt;
       float:left;
       color:#000;
-      padding:2pt;
+      padding:5pt;
       font-size:10pt !important;
       margin-right:2pt;
     }
@@ -64,82 +65,27 @@
       border:1pt solid #ccc;
       border-radius:2pt !important;
       font-size:10pt !important;
-      padding:2pt;
+      padding:5pt;
       margin-right:2pt;
       min-width:15pt;
       float:left;
       cursor:pointer;
-      color:#000;
+      color:#333;
       background:#fff;
     }
 
-    .format-bold{
-      font-weight:bold !important;
-    }
-
-    .format-italic{
-      font-style:italic !important;
-    }
-
-    .format-quote{
-    }
-
-    .format-link{
-      color:#7D7Af0;
-      background:#fff;
-      width:auto;
-      margin-right:0;
-    }
-
-    #newhref{
-      font-family:'Roboto';
-      border:none;
-      margin:0;
-      font-size:9pt;
-      padding:0;
-      outline:none;
-      width:190pt;
-    }
-
-    /* this is a (dirty) workaround for a chrome bug */
-    .openrightborder{
-      border-right: none !important;
-      border-top-right-radius:0 !important;
-      border-bottom-right-radius:0 !important;
-    }
-
-    #closenewhref{
-      display:none;
-      border-right:1pt solid #ccc;  
-      border-bottom:1pt solid #ccc;  
-      border-top:1pt solid #ccc;  
-      border-left:none;
-      border-radius:0 2pt 2pt 0 !important;
-      cursor:pointer;
-      min-width:15pt;
-      padding:2pt;
-      margin-right:2pt;
-      margin-left:0;
-      font-weight:bold;
-      font-size:10pt !important;
-      color:#444;
-      background:#fff;
-      float:left;
-    }
-
-    #closenewhref img {
-      border:none;
-      width:12px;
-      height:auto;
-    }
-
-    #newhrefwrapper{
+    .attr-input{
+      -webkit-box-sizing : border-box;
+      -moz-box-sizing : border-box;
+      box-sizing : border-box;
+      width:100%;
+      margin-top:5pt;
       display:none;
     }
 
-    #newhref:focus{
-      border:none;
-      outline:none;
+    .pseudo-selection{
+      background:#9DAC99;
+      color:#fff;
     }
 
     .inputalert{
@@ -154,7 +100,3 @@
   background:#DDEAD0;
 }
 
-#dummylink{
-  background:#9DAC99;
-  color:#fff;
-}

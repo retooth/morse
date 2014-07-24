@@ -27,6 +27,7 @@ from ..models.core import Board
 from ..wrappers import PostWrapper, TopicWrapper
 from flask import request, render_template
 from ..protocols import ajax_triggered
+from ..api.dispatchers import FormatToolDispatcher
 from sqlalchemy import not_
 from flask.ext.login import current_user
 
@@ -55,7 +56,8 @@ def certain_posts (topic_str):
         post = PostWrapper(post)
         posts.append(post)
 
-    return render_template("partial/posts.html", posts = posts)
+    format_tool_dispatcher = FormatToolDispatcher()
+    return render_template("partial/posts.html", posts = posts, format_tool_dispatcher = format_tool_dispatcher)
 
 @app.route('/board/<board_str>/certaintopics', methods=['POST'])
 @ajax_triggered

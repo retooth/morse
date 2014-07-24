@@ -20,7 +20,7 @@ from flask.ext.login import current_user
 from flask import render_template
 from ..rights import check_ban, possibly_banned 
 from ..models.core import Board
-from ..api.dispatchers import TopicFilterDispatcher
+from ..api.dispatchers import TopicFilterDispatcher, FormatToolDispatcher
 from ..cache import TopicCache
 
 @app.route('/board/<board_str>')
@@ -44,4 +44,8 @@ def board(board_str):
     cache.refresh(board_id) 
 
     topic_filter_dispatcher = TopicFilterDispatcher()
-    return render_template('board.html', board = board, topic_filter_dispatcher = topic_filter_dispatcher)
+    format_tool_dispatcher = FormatToolDispatcher()
+
+    return render_template('board.html', board = board,
+                            topic_filter_dispatcher = topic_filter_dispatcher,
+                            format_tool_dispatcher = format_tool_dispatcher)

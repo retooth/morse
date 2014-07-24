@@ -35,73 +35,72 @@ function formatSelectedTextBy (contentElement, tag){
 
 function rebindPostToolEvents (){
 
-  $(".format-bold").off("mousedown");
-  $(".format-bold").on("mousedown", function (){
+  $(".format-tool[format-type=\"simple-wrap\"]").off("mousedown");
+  $(".format-tool[format-type=\"simple-wrap\"]").on("mousedown", function (){
     var toolFooter = $(this).parents(".tool-footer");
     var contentElement = toolFooter.siblings("article");
-    formatSelectedTextBy(contentElement, "strong");
+    var tag = $(this).attr("tag");
+    formatSelectedTextBy(contentElement, tag);
   });
 
-
-  $(".format-italic").off("mousedown");
-  $(".format-italic").on("mousedown", function (){
-    var toolFooter = $(this).parents(".tool-footer");
-    var contentElement = toolFooter.siblings("article");
-    formatSelectedTextBy(contentElement, "em");
-  });
-
-
-  $(".format-quote").off("mousedown");
-  $(".format-quote").on("mousedown", function (){
-    var toolFooter = $(this).parents(".tool-footer");
-    var contentElement = toolFooter.siblings("article");
-    formatSelectedTextBy(contentElement, "blockquote");
-  });
-
-
-  $(".format-link").off("mousedown");
-  $(".format-link").on("mousedown", function (){
+  $(".format-tool[format-type=\"attr-input\"]").off("mousedown");
+  $(".format-tool[format-type=\"attr-input\"]").on("mousedown", function (){
     var active = $(document.activeElement);
     if (active.is("article[contenteditable=\"True\"]")){
+
         var wrap = document.createElement("span");
         var selection = getSelection().getRangeAt(0);
-        wrap.setAttribute("id", "dummylink");
         selection.surroundContents(wrap);
+        $(wrap).addClass("pseudo-selected");
 
-        $("#newhref").val("http://");
-
-        $("#newhrefwrapper").slideDown(400);
-        $("#closenewhref").fadeIn(200);
-        $("#makelink").addClass("openrightborder");
-        $("#new-post").removeAttr("contenteditable");
-        $("#new-contribution").addClass("disabledbox");
+        active.removeAttr("contenteditable");
     }
   });
 
-
-  $(".format-link").off("mouseup");
-  $(".format-link").on("mouseup", function (){
-    $("#newhref").focus();
+  $(".format-tool[format-type=\"attr-input\"]").off("mouseup");
+  $(".format-tool[format-type=\"attr-input\"]").on("mouseup", function (){
+    var toolFooter = $(this).parents(".tool-footer");
+    var attrInput = toolFooter.children(".attr-input");
+    attrInput.slideDown(400);
+    attrInput.val("http://");
+    attrInput.focus();
+    var len = attrInput.val().length;
+    attrInput[0].setSelectionRange(len, len);
+    attrInput.attr("tag", $(this).attr("tag"));
+    attrInput.attr("attr", $(this).attr("attr"));
+    attrInput.attr("empty-selection-default", $(this).attr("empty-selection-default"));
   });
-
   
-  $("#newhref").off("keypress");
-  $("#newhref").on("keypress", function (keyevent){
+  $(".attr-input").off("keypress");
+  $(".attr-input").on("keypress", function (keyevent){
     if(keyevent.which === KEY_RETURN){ 
-      $("#newhrefwrapper").slideUp(200);
-      $("#closenewhref").fadeOut(200);
-      $("#makelink").removeClass("openrightborder");
+
+      $(this).slideUp(400);
       
-      $(this).parents("#new-contribution").find("article");
-      $("#new-post").attr("contenteditable", "true");
-      $("#new-contribution").removeClass("disabledbox");
+      var article = $(this).parents(".tool-footer").siblings("article");
+      article.attr("contenteditable", "true");
+      article.focus();
 
-      $("#new-post").focus();
+      var selectedElement = article.find(".pseudo-selected");
+      var selectedContent = selectedElement.html()
+      var tag = $(this).attr("tag");
+      var attrName = $(this).attr("attr");
+      var attrValue = $(this).val();
+      
+      if (selectedContent === ""){
+        switch ($(this).attr("empty-selection-default")){
+          case "inherit-from-attr":
+            selectedContent = attrValue;
+            break;
+        }
+      }
+    
 
-      var link = $("#dummylink").html();
-      var href = $("#newhref").val();
-      link = (link === "" ? href : link);
-      $("#dummylink").replaceWith("<a href=\"" + href +"\">" + link + "</a>");
+      var newElement = $("<" + tag + ">");
+      newElement.attr(attrName, attrValue);
+      newElement.html(selectedContent);
+
+      selectedElement.replaceWith(newElement);
     }
   });
 

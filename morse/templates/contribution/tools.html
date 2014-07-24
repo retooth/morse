@@ -1,11 +1,6 @@
-    <button class="format-bold format-tool">b</button>
-    <button class="format-italic format-tool">i</button>
-    <button class="format-quote format-tool">"</button>
-    <button class="format-link format-tool">a 
-     <span id="newhrefwrapper"> | <input id="newhref"/> </span>
-    </button>
-    <button id="closenewhref">
-      <img src="{{ url_for('static', filename='close.png') }}"/>
-    </button>
+    {% for format_tool in format_tool_dispatcher %}
+      {% include format_tool.template %}
+    {% endfor %}
     {% include "alerts/input.html" %}
     <div class="clear"></div>
+    <input class="attr-input"/>
