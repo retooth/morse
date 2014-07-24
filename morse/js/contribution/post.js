@@ -21,21 +21,22 @@ $(document).on("ready", function () {
 
 function rebindPostButtonEvents (){
 
+  $("#create-new-post").off("click");
   $("#create-new-post").on("click", function(){
-
     var text = $("#new-post").html();
     if (text.length < 20){
       alertInput("text-too-short");
       return false;
     }
 
-    var topic_id = $("#topic").attr("topic-id");
+    var topicID = $("#topic").attr("topic-id");
+    var references = getPostReferences($("#new-contribution"));
 
-    var data = new Object({ text: text });
+    var data = new Object({ text: text, referencedPostIDs: references });
     var json = $.toJSON(data);
 
     $.ajax({
-      url: topic_id + "/post",
+      url: topicID + "/post",
       data: json,
       error: handleAjaxErrorBy( alertInput ),
       success: processNewPostResponse,

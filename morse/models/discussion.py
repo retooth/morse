@@ -52,6 +52,20 @@ class Post (db.Model):
     def is_first_post (self):
         return self.id == self.topic.first_post.id
 
+    @property
+    def references (self):
+        post_references = PostReference.query.filter(PostReference.post_id == self.id).all()
+        for post_reference in post_references:
+            post = Post.query.get(post_reference.referenced_post_id)
+            yield post
+
+    @property
+    def replies (self):
+        post_references = PostReference.query.filter(PostReference.referenced_post_id == self.id).all()
+        for post_reference in post_references:
+            post = Post.query.get(post_reference.post_id)
+            yield post
+
 class Topic (db.Model):
     
     """ Model for topic entries. Saves title and links to board. It 

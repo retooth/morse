@@ -22,7 +22,7 @@ from ..rights import certain_rights_required, check_ban, possibly_banned
 from ..protocols import ajax_triggered
 from ..models import db
 from ..models.core import Board
-from ..models.discussion import Topic, Post, ReadPost
+from ..models.discussion import Topic, Post, ReadPost, PostReference
 from ..wrappers import TopicWrapper, PostWrapper
 from ..generators import PostListGenerator
 from sqlalchemy import not_
@@ -66,6 +66,16 @@ def post (topic_str):
     #TODO: calculate interesting
 
     db.session.add(post)
+    db.session.commit()
+
+    for referenced_post_id_string in request.json["referencedPostIDs"]:
+        try:
+            referenced_post_id = int(referenced_post_id_string)
+        except ValueError:
+            continue
+        reference = PostReference(post.id, referenced_post_id)
+        db.session.add(reference)
+
     db.session.commit()
 
     post = PostWrapper(post)

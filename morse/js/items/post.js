@@ -104,6 +104,7 @@ function rebindPostItemEvents (){
     var postItem = $(this).parents(".post-item");
     putNewContributionFieldAfter(postItem);
     showNewContributionField();
+    createPostReference($("#new-contribution"), postItem.attr("post-id"));
   });
 
   function resetAllEditDialogs (){

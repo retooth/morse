@@ -1,7 +1,10 @@
 <div tooltip="post" post-id="{{ post.id }}" 
      {% if post.is_first_post %} first-post="True" {% endif %}
-     class="post-item {% if post.isfresh %} fresh {% endif %}">
-<!--a id="post{{ post.id }}" class="postheader"></a-->
+     class="post-item {% if post.isfresh %} fresh {% endif %}"
+     replies = "{% for reply in post.replies %}{{ reply.id }} {% endfor %}"
+     references = "{% for reference in post.references %}{{ reference.id }} {% endfor %}"
+     >
+     
   <div class="post-header">
     {% if post.creator.is_anonymous() %}
       <div class="profile-image" style="background-image:url('/static/anonymous.png')"></div>
