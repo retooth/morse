@@ -16,16 +16,25 @@
 */
 
 function createPostReference (owner, postID){
-  var refString = owner.attr("referenced-posts");
+  var refString = owner.attr("references");
   var refArray = refString.split(" ");
   refArray.push(postID);
   refArray = $.unique(refArray);
   refString = refArray.join(" ");
-  owner.attr("referenced-posts", refString);
+  owner.attr("references", refString);
 }
 
 function getPostReferences (owner){
-  var refString = owner.attr("referenced-posts");
+  var refString = owner.attr("references");
   var refArray = refString.split(" ");
   return refArray;
+}
+
+function fetchContext (postID, callback){
+  $.ajax({
+    url: "/post/" + postID  + "/full-context.json",
+    error: handleAjaxErrorBy( alertGlobal ),
+    type: 'GET',
+    success: callback,
+  });
 }

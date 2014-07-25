@@ -82,7 +82,6 @@ function rebindPostItemEvents (){
   $(document).off("mouseup");
   $(document).on("mouseup",function (){
     var selection = getSelection().getRangeAt(0);
-    console.log(selection);
     /* check, in which element text was selected */
     var container = $(selection.commonAncestorContainer);
     /* there is a small problem concerning single-line
@@ -105,6 +104,19 @@ function rebindPostItemEvents (){
     putNewContributionFieldAfter(postItem);
     showNewContributionField();
     createPostReference($("#new-contribution"), postItem.attr("post-id"));
+  });
+
+  $(".post-action-context").off("click");
+  $(".post-action-context").on("click", function() {
+    var postItem = $(this).parents(".post-item");
+    var postID = postItem.attr("post-id");
+    fetchContext(postID, highlightPosts); 
+  });
+
+  $(".post-item-downlighted").off("click");
+  $(".post-item-downlighted").on("click", function() {
+    $("#topic").attr("highlighting-active", "False");
+    redrawPostHighlighting();
   });
 
   function resetAllEditDialogs (){

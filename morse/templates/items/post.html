@@ -13,6 +13,7 @@
       <div class="profile-image" style="background-image:url('{{ post.creator.profileimage }}')"></div>
       <div class="post-creator">{{ post.creator.username }} wrote</div>
       <div class="post-tools">
+        <button class="post-action-context post-action"><span class="icon">&#xf0e8;</span></button>
         {% if current_user.may_post_in(post.topic.board) %}
           <button class="post-action-quote post-action"><span class="icon">&#xf10e;</span></button>
           {% if current_user.may_edit(post) %}

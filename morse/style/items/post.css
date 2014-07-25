@@ -48,6 +48,13 @@
     background:#e0e0e0;
   }
 
+  .post-item-highlighted {
+  }
+
+  .post-item-downlighted {
+    opacity:0.2;
+  }
+
   .post{
     margin-left:33pt;
     font-size:11pt;

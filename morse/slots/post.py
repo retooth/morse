@@ -17,7 +17,7 @@
 
 from . import app
 from ..protocols import ajax_triggered
-from flask import request
+from flask import request, jsonify
 from flask.ext.login import current_user, login_required
 from ..models.discussion import Post
 from ..models import db
@@ -69,4 +69,32 @@ def edit_post (post_id):
     db.session.commit()
     return ""
 
+@app.route('/post/<int:post_id>/full-context.json', methods=['GET'])
+@ajax_triggered
+def full_context (post_id):
+    """ 
+    returns a json list of all posts connected to
+    post with post_id
+    """
 
+    post = Post.query.get(post_id)
+    if not post:
+        return "postnotfound", 404
+
+    post = PostWrapper(post)
+    first_post_id = post.topic.first_post.id
+
+    queue = [post_id]
+    context = []
+    while queue:
+        current_post_id = queue.pop(0)
+        if current_post_id in context:
+            continue
+        context.append(current_post_id)
+        if not current_post_id == first_post_id:
+            current_post = Post.query.get(current_post_id)
+            reply_ids = [post.id for post in current_post.replies]
+            reference_ids = [post.id for post in current_post.references]
+            queue += (reply_ids + reference_ids)
+
+    return jsonify(posts = context)

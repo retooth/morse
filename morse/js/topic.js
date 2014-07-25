@@ -184,8 +184,8 @@ $(document).on("ready", function () {
   var slot = "/topic/" + $("#topic").attr("topic-id") + "/posts.json";
   var builder = "/topic/" + $("#topic").attr("topic-id") + "/certainposts";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".postitem", slot, builder, [rebindToolTipEvents, rebindPostItemEvents, 
-                                              rebindPostToolEvents, readVisiblePosts], 3000, 20, 5);
+  scrolling.init(".post-item", slot, builder, [rebindToolTipEvents, rebindPostItemEvents, 
+                                              rebindPostToolEvents, readVisiblePosts, redrawPostHighlighting], 3000, 20, 5);
 
   hash = window.location.hash;
   if (hash){
@@ -270,4 +270,43 @@ function showNewContributionField (){
   $("#new-contribution").slideDown(400);
   $("#new-post-button").slideUp(0);
   $("#new-post").focus();
+}
+
+function highlightPosts (jsonResponse){
+  var postList = jsonResponse.posts.join(" ");
+  console.log(postList);
+  $("#topic").attr("highlighted-posts", postList);
+  $("#topic").attr("highlighting-active", "True");
+  redrawPostHighlighting();
+}
+
+function redrawPostHighlighting (){
+
+  var active = $("#topic").attr("highlighting-active");
+
+  if (active === "True"){
+
+      var highlighted = $("#topic").attr("highlighted-posts").split(" ");
+      $(".post-item").each(function(){
+        var currentPostID = $(this).attr("post-id");
+        if (highlighted.indexOf(currentPostID) === -1){
+          $(this).removeClass("post-item-highlighted");
+          $(this).addClass("post-item-downlighted");
+        }else{
+          $(this).removeClass("post-item-downlighted");
+          $(this).addClass("post-item-highlighted");
+        }
+      });
+
+      rebindPostItemEvents();
+
+  }else{
+
+      $(".post-item").each(function(){
+          $(this).removeClass("post-item-downlighted");
+          $(this).removeClass("post-item-highlighted");
+      });
+
+  }
+
 }
