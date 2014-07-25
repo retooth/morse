@@ -170,7 +170,7 @@ $(document).on("ready", function () {
   }
 
   $("#board-title").swipeSnap( { target: "top", snapInfo: $("#snap-tooltip-top"), 
-                                 companions: [$("#board"), $("board-description")], 
+                                 companions: [$("#board"), $("#board-description")], 
                                  callback: gotoBoardIndex });
 
   function gotoBoardIndex (){
@@ -181,7 +181,7 @@ $(document).on("ready", function () {
   var slot = "/board/" + $("#board").attr("board-id") + "/topics.json";
   var builder = "/board/" + $("#board").attr("board-id") + "/certaintopics";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".topicitem", slot, builder, [rebindToolTipEvents, rebindTopicItemEvents, 
+  scrolling.init(".topic-item", slot, builder, [rebindToolTipEvents, rebindTopicItemEvents, 
                                                checkForUnreadPosts, discoverVisibleTopics], 3000, 20, 5);
   scrolling.showFromStart();
  
