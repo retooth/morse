@@ -117,6 +117,15 @@
         margin:0;
       }
 
+      @media only screen and (max-device-width: 480px) {
+
+        .post-action {
+          font-size:15pt !important;
+          margin-left:15pt;
+        }
+
+      }
+
       .post-action-quote{
         display:none;
       }
