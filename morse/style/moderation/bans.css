@@ -1,0 +1,73 @@
+/*
+    This file is part of Morse.
+
+    Morse is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Morse is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#create-new-ip-ban{
+  border-radius: 3pt;
+  border:1pt solid #E00D17;
+  padding:5pt;
+  margin-bottom:10pt;
+  box-shadow:1px 1px #ddd;
+  color:#fff;
+  background:#F01D27;
+  cursor:pointer;
+}
+
+#new-ip-ban {
+  display:none;
+  border-radius: 3pt;
+  border:1pt solid #ccc;
+  padding:0;
+  margin-bottom:5pt;
+  background:#fff;
+  box-shadow:1px 1px #ddd;
+}
+
+#new-ip-ban-header{
+  border-radius:3pt 3pt 0 0;
+  cursor:pointer;
+  padding:5pt;
+  background-color:#ddd;
+}
+
+    #new-ip-ban-ip-range{
+      float:left;
+      padding:5pt;
+    }
+
+    #new-ip-ban-duration{
+      float:left;
+      padding:5pt;
+    }
+
+
+#new-ip-ban-reason{
+  padding:10pt;
+  font-size:11pt;
+  border:none;
+}
+
+#new-ip-ban-footer{
+  background:#ddd;
+  padding:5pt;
+}
+
+    #issue-new-ip-ban{
+      background:#F01D27;
+      border:1pt solid #ccc;
+      border-radius:2pt;
+      font-size:10pt !important;
+    }

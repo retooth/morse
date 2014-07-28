@@ -1,0 +1,32 @@
+<div ban-id="{{ ban.id }}" class="ban-item {% if ban.has_expired %} ban-item-expired {% endif %}">
+  <div class="ban-header">
+    <div class="ban-ip-range">
+      {{ ban._ip_range }}
+    </div>
+    <div class="ban-duration">
+      for {{ ban.duration.days }} days
+    </div>
+    <div class="ban-item-tools">
+      {% if ban.has_expired %}
+        <button class="ban-action-delete ban-action"><span class="icon">&#xf00d;</span></button>
+      {% else %}
+        <button class="ban-action-edit ban-action"><span class="icon">&#xf040;</span></button>
+      {% endif %}
+    </div>
+    <div class="clear"></div>
+  </div>
+    <div class="ban-expiration-progress-wrapper">
+      <div class="ban-expiration-progress" style="width:{{ ban.percentage_of_time_left }}%;">
+        <div class="ban-expiration-time-left">
+          {% if ban.has_expired %}
+            ban has expired
+          {% else %}
+            {{ ban.days_left }} days {{ ban.hours_left }} hours {{ ban.minutes_left }} minutes left
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="ban-reason">
+      {{ ban.reason }}
+    </div>
+</div>

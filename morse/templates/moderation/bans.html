@@ -1,0 +1,44 @@
+<!doctype html>
+{% extends "base.html" %}
+{% block head %}
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='banned.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='moderation/bans.css') }}">
+<link rel=stylesheet type=text/css href="{{ url_for('style', filename='items/ban.css') }}">
+{% endblock %}
+{% block navigation %}
+<nav id="header-nav">
+  <button id="show-user-menu" class="icon menu-button">&#xf0c9;</button>
+  <button id="show-moderator-menu" class="icon menu-button">&#xf1de;</button>
+  {% if current_user.may_structure %}
+    <button id="show-admin-menu" class="icon menu-button">&#xf1b3;</button>
+  {% endif %}
+</nav>
+{% endblock %}
+{% block content %}
+<h1>Banned IPs</h1>
+<div id="create-new-ip-ban">Create new IP ban</div>
+<div id="new-ip-ban">
+  <div id="new-ip-ban-header">
+    <input id="new-ip-ban-ip-range" placeholder="Single IP or IP range">
+    <input id="new-ip-ban-duration" placeholder="duration in days">
+    <div class="clear"></div>
+  </div>
+  <div id="new-ip-ban-reason" contenteditable>
+    a short reason ...
+  </div>
+  <div id="new-ip-ban-footer">
+    <button id="issue-new-ip-ban">Issue Ban</button>
+  </div>
+</div>
+{% if ip_bans|length > 0 %}
+  {% for ban in ip_bans %}
+    {% include "items/ban.html" %}
+  {% endfor %}
+{% else %}
+  <span id="there-are-no-banned-ips">There are currently no banned IPs</span>
+{% endif %}
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('js', filename='moderation/bans.js') }}"></script>
+<script src="{{ url_for('js', filename='items/ban.js') }}"></script>
+{% endblock %}
