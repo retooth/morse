@@ -268,7 +268,7 @@ $(document).on("ready", function () {
 
 function showNewContributionField (){
   $("#new-contribution").slideDown(400);
-  $("#new-post-button").slideUp(0);
+  $("#new-post-button").slideUp(400);
   $("#new-post").focus();
 }
 

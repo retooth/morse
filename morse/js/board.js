@@ -252,7 +252,7 @@ $(document).on("ready", function () {
 });
 
 function showNewContributionField (){
+  $("#new-topic-button").slideUp(400);
   $("#new-contribution").slideDown(400);
-  $("#new-topic-button").slideUp(0);
   $("#new-topic-title").focus();
 }

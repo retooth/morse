@@ -19,7 +19,7 @@ $(document).on("ready", function () {
   rebindBanItemEvents();
 
   $("#create-new-ip-ban").on("click", function(){
-    $(this).slideUp(200);
+    $(this).slideUp(400);
     $("#new-ip-ban").slideDown(400);
   });
 

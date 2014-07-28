@@ -15,21 +15,12 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#newposttext{
-  font: 11pt 'Roboto';
-  outline:none;
-  border:none;
-  width:98%;
-  overflow:hidden;
-  padding:5pt;
-}
-
 #new-post-button{
   border-radius: 3pt;
   border: 1pt solid #ccc;
   padding:5pt 5pt 5pt 5pt;
   margin-bottom:5pt;
-  background:#f8f8f8;
+  background:#ADF057;
   cursor:pointer;
   box-shadow:1px 1px #ddd;
 }

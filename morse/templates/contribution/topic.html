@@ -1,11 +1,3 @@
-<div id="new-contribution">
-  <div id="new-topic-title" contenteditable="True"></div>
-  <article id="new-post" contenteditable="True"></article>
-  <div class="tool-footer">
-    <button id="create-new-topic">Post</button>
-    {% include "contribution/tools.html" %}
-  </div>
-</div>
 {% if current_user.may_post_in( board ) %}
 <div id="new-topic-button">
   Click here to create a new discussion <small>(or just start typing)</small>
@@ -15,3 +7,11 @@
   You may not post here
 </div>
 {% endif %}
+<div id="new-contribution">
+  <div id="new-topic-title" contenteditable="True"></div>
+  <article id="new-post" contenteditable="True"></article>
+  <div class="tool-footer">
+    <button id="create-new-topic">Post</button>
+    {% include "contribution/tools.html" %}
+  </div>
+</div>
