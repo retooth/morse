@@ -19,6 +19,7 @@ from . import db
 from iptools import IpRange
 from datetime import datetime, timedelta
 from core import Board
+from ..enum import ALL_BOARDS
 
 class Ban (db.Model):
     """ abstract model for bans """
@@ -42,6 +43,11 @@ class BannedOn (db.Model):
     """ abstract model of ban <-> board relation """
     __abstract__ = True
     ban_id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True)
+
+    def __init__ (self, board_id, ban_id):
+        self.board_id = board_id
+        self.ban_id = ban_id
 
 class IPBan (Ban):
     """ abstract model for IP bans """
@@ -113,10 +119,13 @@ class PermaIPBan (IPBan):
         board_ids = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id).values(PermaIPBannedOn.board_id)
         return board_ids
 
+    @property
+    def is_global (self):
+        rel = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id, PermaIPBannedOn.board_id == ALL_BOARDS).first() 
+        return rel is not None 
 
 class PermaIPBannedOn (BannedOn):
     __tablename__ = "permanent_ipbanned_on"
-    board_id = db.Column(db.Integer, primary_key=True)
 
 class LimitedIPBan (IPBan, ExpirationMixin):
     """ Use this, if you want to create a limited IP ban """
@@ -135,6 +144,11 @@ class LimitedIPBan (IPBan, ExpirationMixin):
         board_ids = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id).values(LimitedIPBannedOn.board_id)
         return board_ids
 
+    @property
+    def is_global (self):
+        rel = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id, LimitedIPBannedOn.board_id == ALL_BOARDS).first() 
+        return rel is not None 
+
 class LimitedIPBannedOn (BannedOn):
     __tablename__ = "limited_ipbanned_on"
 
@@ -152,9 +166,13 @@ class PermaUserBan (Ban):
         board_ids = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id).values(PermaUserBannedOn.board_id)
         return board_ids
 
+    @property
+    def is_global (self):
+        rel = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id, PermaUserBannedOn.board_id == ALL_BOARDS).first() 
+        return rel is not None 
+
 class PermaUserBannedOn (BannedOn):
     __tablename__ = "permanent_userbanned_on"
-    board_id = db.Column(db.Integer, primary_key=True)
 
 class LimitedUserBan (Ban, ExpirationMixin):
     """ Use this, if you want to create a limited user ban """
@@ -173,6 +191,10 @@ class LimitedUserBan (Ban, ExpirationMixin):
         board_ids = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id).values(LimitedUserBannedOn.board_id)
         return board_ids
 
+    @property
+    def is_global (self):
+        rel = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id, LimitedUserBannedOn.board_id == ALL_BOARDS).first() 
+        return rel is not None 
+
 class LimitedUserBannedOn (BannedOn):
     __tablename__ = "limited_userbanned_on"
-    board_id = db.Column(db.Integer, primary_key=True)

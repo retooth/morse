@@ -26,6 +26,21 @@
         </div>
       </div>
     </div>
+    <div class="ban-affected-boards">
+      <div class="ban-affected-boards-header">Affected Boards:</div>
+      {% if ban.is_global %}
+        <ul>
+          <li>all boards</li>
+        </ul>
+      {% else %}
+        <ul>
+        {% for board in ban.affected_boards %}
+          <li>{{ board.title }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+      <div class="clear"></div>
+    </div>
     <div class="ban-reason">
       {{ ban.reason }}
     </div>

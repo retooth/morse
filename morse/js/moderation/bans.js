@@ -30,4 +30,38 @@ $(document).on("ready", function () {
       $("#new-ip-ban-duration").fadeIn(400);
     }
   });
+
+
+  $("#issue-new-ip-ban").on("click", function(){
+
+    var ALL_BOARDS = 0;
+    var affectedBoards = [];
+
+    var unchecked = $("#new-ip-ban-affected-boards input:checkbox:not(:checked)")
+    if (unchecked.length === 0){
+      affectedBoards = [ALL_BOARDS]
+    }else{
+      $("#new-ip-ban-affected-boards input:checkbox:checked").each(function(){
+        var board_id = parseInt($(this).attr("board-id"))
+        affectedBoards.push(board_id);
+      }); 
+    }
+
+    var permanent = $("#new-ip-ban-option-permanent").is(":checked");
+    var IPRange = $("#new-ip-ban-ip-range").val();
+    var reason = $("#new-ip-ban-reason").html();
+
+    var data = new Object({ IPRange: IPRange, reason: reason, affectedBoards: affectedBoards });
+    if (!permanent){
+        var duration = parseInt($("#new-ip-ban-duration").val());
+        data.duration = duration;
+    }
+
+    var json = $.toJSON(data);
+    $.ajax({
+      url: "/bans/issue-ip-ban",
+      data: json
+    });
+  });
+
 });

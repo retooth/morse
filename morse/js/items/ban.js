@@ -26,9 +26,11 @@ function rebindBanItemEvents (){
     $(this).data("toolRevealDelay", timer);
     var reason = $(this).find(".ban-reason");
     var timeLeft = $(this).find(".ban-expiration-time-left");
+    var affectedBoards = $(this).find(".ban-affected-boards");
     var timer = setTimeout(function(){
       reason.slideDown(400);
       timeLeft.fadeIn(400);
+      affectedBoards.slideDown(400);
     }, 1000);
     $(this).data("dataRevealDelay", timer);
   });
@@ -45,7 +47,9 @@ function rebindBanItemEvents (){
 
     var reason = $(this).find(".ban-reason");
     var timeLeft = $(this).find(".ban-expiration-time-left");
+    var affectedBoards = $(this).find(".ban-affected-boards");
     reason.slideUp(400);
     timeLeft.fadeOut(400);
+    affectedBoards.slideUp(400);
   });
 }

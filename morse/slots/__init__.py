@@ -27,3 +27,4 @@ import groups
 import post
 import search
 import topic
+import bans

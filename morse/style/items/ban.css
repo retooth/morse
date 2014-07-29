@@ -93,3 +93,25 @@
 }
 
 
+.ban-affected-boards{
+  display:none;
+  border-bottom:1pt solid #ccc;
+}
+
+    .ban-affected-boards ul{
+      list-style-type:none;
+      padding-left:5pt;
+      display:inline;
+    }
+
+    .ban-affected-boards li{
+      padding:5pt;
+      font-size:10pt;
+      float:left;
+    }
+
+.ban-affected-boards-header{
+  font-size:10pt;
+  font-weight:bold;
+  padding:5pt;
+}
