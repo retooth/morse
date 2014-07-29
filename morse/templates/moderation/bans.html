@@ -29,12 +29,12 @@
     </div>
     <div class="clear"></div>
   </div>
-  <div id="banned-in-these-boards">
-    <div id="banned-in-these-boards-header">Ban IP in these boards</div>
+  <div id="new-ip-ban-affected-boards">
+    <div id="new-ip-ban-affected-boards-header">Ban IP in these boards</div>
   {% for board in boards %}
   <div class="option">
-    <input id="banned-in-board-{{board.id}}" board-id="{{board.id}}" type="checkbox" checked/>
-    <label for="banned-in-board-{{board.id}}">
+    <input id="new-ip-ban-banned-in-board-{{board.id}}" board-id="{{board.id}}" type="checkbox" checked/>
+    <label for="new-ip-ban-banned-in-board-{{board.id}}">
       <span>{{ board.title }}</span>
     </label>
   </div>
