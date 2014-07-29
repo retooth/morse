@@ -33,6 +33,11 @@ class Ban (db.Model):
             return self.reason[0:25] + "..."
         return self.reason
         
+    @property 
+    def affected_boards (self):
+        for board_id in self.affected_board_ids:
+            yield Board.query.get(board_id)
+
 class BannedOn (db.Model):
     """ abstract model of ban <-> board relation """
     __abstract__ = True
@@ -104,14 +109,14 @@ class PermaIPBan (IPBan):
         self.reason = reason
 
     @property
-    def affected_boards (self):
+    def affected_board_ids (self):
         board_ids = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id).values(PermaIPBannedOn.board_id)
-        for board_in in board_ids:
-            yield Board.query.get(board_id)
+        return board_ids
+
 
 class PermaIPBannedOn (BannedOn):
     __tablename__ = "permanent_ipbanned_on"
-    board_id = db.Column(db.ForeignKey("boards.id"), primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True)
 
 class LimitedIPBan (IPBan, ExpirationMixin):
     """ Use this, if you want to create a limited IP ban """
@@ -125,10 +130,9 @@ class LimitedIPBan (IPBan, ExpirationMixin):
         self.expires = expires
 
     @property
-    def affected_boards (self):
-         board_ids = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id).values(LimitedIPBannedOn.board_id)
-         for board_in in board_ids:
-             yield Board.query.get(board_id)
+    def affected_board_ids (self):
+        board_ids = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id).values(LimitedIPBannedOn.board_id)
+        return board_ids
 
 class LimitedIPBannedOn (BannedOn):
     __tablename__ = "limited_ipbanned_on"
@@ -143,14 +147,13 @@ class PermaUserBan (Ban):
         self.reason = reason
 
     @property
-    def affected_boards (self):
+    def affected_board_ids (self):
         board_ids = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id).values(PermaUserBannedOn.board_id)
-        for board_in in board_ids:
-            yield Board.query.get(board_id)
+        return board_ids
 
 class PermaUserBannedOn (BannedOn):
     __tablename__ = "permanent_userbanned_on"
-    board_id = db.Column(db.ForeignKey("boards.id"), primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True)
 
 class LimitedUserBan (Ban, ExpirationMixin):
     """ Use this, if you want to create a limited user ban """
@@ -164,11 +167,10 @@ class LimitedUserBan (Ban, ExpirationMixin):
         self.expires = expires
 
     @property
-    def affected_boards (self):
+    def affected_board_ids (self):
         board_ids = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id).values(LimitedUserBannedOn.board_id)
-        for board_in in board_ids:
-            yield Board.query.get(board_id)
+        return board_ids
 
 class LimitedUserBannedOn (BannedOn):
     __tablename__ = "limited_userbanned_on"
-    board_id = db.Column(db.ForeignKey("boards.id"), primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True)
