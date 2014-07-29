@@ -18,6 +18,7 @@
 from . import db
 from iptools import IpRange
 from datetime import datetime
+from core import Board
 
 class Ban (db.Model):
     """ abstract model for bans """
@@ -31,6 +32,11 @@ class Ban (db.Model):
         if reason_length > 25:
             return self.reason[0:25] + "..."
         return self.reason
+        
+class BannedOn (db.Model):
+    """ abstract model of ban <-> board relation """
+    __abstract__ = True
+    ban_id = db.Column(db.Integer, primary_key=True)
 
 class IPBan (Ban):
     """ abstract model for IP bans """
@@ -92,46 +98,77 @@ class ExpirationMixin (object):
 class PermaIPBan (IPBan):
     """ Use this, if you want to create a permanent IP ban """
     __tablename__ = "permanent_ipbans"
-    board_id = db.Column(db.ForeignKey("boards.id"))
 
-    def __init__ (self, ip_range, board_id, reason):
+    def __init__ (self, ip_range, reason):
         self._ip_range = ip_range
-        self.board_id = board_id
         self.reason = reason
+
+    @property
+    def affected_boards (self):
+        board_ids = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id).values(PermaIPBannedOn.board_id)
+        for board_in in board_ids:
+            yield Board.query.get(board_id)
+
+class PermaIPBannedOn (BannedOn):
+    __tablename__ = "permanent_ipbanned_on"
+    board_id = db.Column(db.ForeignKey("boards.id"), primary_key=True)
 
 class LimitedIPBan (IPBan, ExpirationMixin):
     """ Use this, if you want to create a limited IP ban """
     __tablename__ = "limited_ipbans"
     duration = db.Column(db.Interval)
     expires = db.Column(db.DateTime)
-    board_id = db.Column(db.ForeignKey("boards.id"))
 
-    def __init__ (self, ip_range, board_id, reason, expires):
+    def __init__ (self, ip_range, reason, expires):
         self._ip_range = ip_range
-        self.board_id = board_id
         self.reason = reason
         self.expires = expires
+
+    @property
+    def affected_boards (self):
+         board_ids = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id).values(LimitedIPBannedOn.board_id)
+         for board_in in board_ids:
+             yield Board.query.get(board_id)
+
+class LimitedIPBannedOn (BannedOn):
+    __tablename__ = "limited_ipbanned_on"
 
 class PermaUserBan (Ban):
     """ Use this, if you want to create a permanent user ban """
     __tablename__ = "permanent_userbans"
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    board_id = db.Column(db.ForeignKey("boards.id"))
 
-    def __init__ (self, user_id, board_id, reason):
+    def __init__ (self, user_id, reason):
         self.user_id = user_id
-        self.board_id = board_id
         self.reason = reason
+
+    @property
+    def affected_boards (self):
+        board_ids = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id).values(PermaUserBannedOn.board_id)
+        for board_in in board_ids:
+            yield Board.query.get(board_id)
+
+class PermaUserBannedOn (BannedOn):
+    __tablename__ = "permanent_userbanned_on"
+    board_id = db.Column(db.ForeignKey("boards.id"), primary_key=True)
 
 class LimitedUserBan (Ban, ExpirationMixin):
     """ Use this, if you want to create a limited user ban """
     __tablename__ = "limited_userbans"
     duration = db.Column(db.Interval)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    board_id = db.Column(db.ForeignKey("boards.id"))
 
-    def __init__ (self, user_id, board_id, reason, expires):
+    def __init__ (self, user_id, reason, expires):
         self.user_id = user_id
-        self.board_id = board_id
         self.reason = reason
         self.expires = expires
+
+    @property
+    def affected_boards (self):
+        board_ids = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id).values(LimitedUserBannedOn.board_id)
+        for board_in in board_ids:
+            yield Board.query.get(board_id)
+
+class LimitedUserBannedOn (BannedOn):
+    __tablename__ = "limited_userbanned_on"
+    board_id = db.Column(db.ForeignKey("boards.id"), primary_key=True)
