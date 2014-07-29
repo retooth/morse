@@ -17,7 +17,7 @@
 
 from . import db
 from iptools import IpRange
-from datetime import datetime
+from datetime import datetime, timedelta
 from core import Board
 
 class Ban (db.Model):
@@ -124,10 +124,11 @@ class LimitedIPBan (IPBan, ExpirationMixin):
     duration = db.Column(db.Interval)
     expires = db.Column(db.DateTime)
 
-    def __init__ (self, ip_range, reason, expires):
+    def __init__ (self, ip_range, reason, duration_in_days):
         self._ip_range = ip_range
         self.reason = reason
-        self.expires = expires
+        self.duration = timedelta(days = duration_in_days)
+        self.expires = datetime.now() + self.duration
 
     @property
     def affected_board_ids (self):
@@ -161,10 +162,11 @@ class LimitedUserBan (Ban, ExpirationMixin):
     duration = db.Column(db.Interval)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__ (self, user_id, reason, expires):
+    def __init__ (self, user_id, reason, duration_in_days):
         self.user_id = user_id
         self.reason = reason
-        self.expires = expires
+        self.duration = timedelta(days = duration_in_days)
+        self.expires = datetime.now() + self.duration
 
     @property
     def affected_board_ids (self):
