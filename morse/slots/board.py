@@ -109,6 +109,9 @@ def start_topic (board_str):
         post = PostWrapper(post)
         post.read()
 
+    cache = TopicCache()
+    cache.refresh(board_id)
+
     return jsonify(topicId = topic.id)
 
 @app.route('/board/<board_str>/follow', methods=['POST'])
