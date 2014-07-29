@@ -19,6 +19,7 @@ from . import app
 from flask.ext.login import current_user
 from flask import render_template
 from ..rights import certain_rights_required 
+from ..models.core import Board
 from ..models.bans import PermaIPBan, LimitedIPBan
 from ..wrappers import BoardWrapper
 
@@ -33,4 +34,5 @@ def bans():
     perma_bans = PermaIPBan.query.all()
     ip_bans = limited_bans + perma_bans
 
-    return render_template('moderation/bans.html', ip_bans = ip_bans)
+    boards = Board.query.all();
+    return render_template('moderation/bans.html', ip_bans = ip_bans, boards = boards)

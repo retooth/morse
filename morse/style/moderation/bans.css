@@ -53,7 +53,16 @@
       padding:5pt;
     }
 
+    #new-ip-ban-header .option{
+      float:right;
+      background:none;
+      border:none;
+    }
 
+    #new-ip-ban-header .option-selected{
+      background:none !important;
+    }
+    
 #new-ip-ban-reason{
   padding:10pt;
   font-size:11pt;
@@ -71,3 +80,14 @@
       border-radius:2pt;
       font-size:10pt !important;
     }
+
+#banned-in-these-boards-header{
+  font-size:10pt;
+  font-weight:bold;
+  padding:5pt;
+}
+
+#new-ip-ban .option-selected{
+  background:#F01D27;
+  border-color:#F01D27;
+}

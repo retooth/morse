@@ -21,7 +21,24 @@
   <div id="new-ip-ban-header">
     <input id="new-ip-ban-ip-range" placeholder="Single IP or IP range">
     <input id="new-ip-ban-duration" placeholder="duration in days">
+    <div class="option">
+      <input id="new-ip-ban-option-permanent" type="checkbox"/>
+      <label for="new-ip-ban-option-permanent">
+        <span>Ban this IP permanently</span>
+      </label>
+    </div>
     <div class="clear"></div>
+  </div>
+  <div id="banned-in-these-boards">
+    <div id="banned-in-these-boards-header">Ban IP in these boards</div>
+  {% for board in boards %}
+  <div class="option">
+    <input id="banned-in-board-{{board.id}}" board-id="{{board.id}}" type="checkbox" checked/>
+    <label for="banned-in-board-{{board.id}}">
+      <span>{{ board.title }}</span>
+    </label>
+  </div>
+  {% endfor %}
   </div>
   <div id="new-ip-ban-reason" contenteditable>
     a short reason ...

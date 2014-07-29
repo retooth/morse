@@ -23,4 +23,11 @@ $(document).on("ready", function () {
     $("#new-ip-ban").slideDown(400);
   });
 
+  $("#new-ip-ban-option-permanent").on("click", function(){
+    if ($(this).is(":checked")){
+      $("#new-ip-ban-duration").fadeOut(400);
+    }else{
+      $("#new-ip-ban-duration").fadeIn(400);
+    }
+  });
 });
