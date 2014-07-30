@@ -60,7 +60,9 @@ $(document).on("ready", function () {
     var json = $.toJSON(data);
     $.ajax({
       url: "/bans/issue-ip-ban",
-      data: json
+      data: json,
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function () { window.location.reload();  }
     });
   });
 
