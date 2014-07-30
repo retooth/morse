@@ -12,17 +12,17 @@
     {% else %}
       <div class="profile-image" style="background-image:url('{{ post.creator.profileimage }}')"></div>
       <div class="post-creator">{{ post.creator.username }} wrote</div>
-      <div class="post-tools">
-        <button class="post-action-context post-action"><span class="icon">&#xf0e8;</span></button>
-        {% if current_user.may_post_in(post.topic.board) %}
-          <button class="post-action-quote post-action"><span class="icon">&#xf10e;</span></button>
-          {% if current_user.may_edit(post) %}
-            <button class="post-action-edit post-action"><span class="icon">&#xf040;</span></button>
-          {% endif %}
-          <button class="post-action-reply post-action"><span class="icon">&#xf112;</span></button>
-        {% endif %}
-      </div>
     {% endif %}
+    <div class="post-tools">
+      <button class="post-action-context post-action"><span class="icon">&#xf0e8;</span></button>
+      {% if current_user.may_post_in(post.topic.board) %}
+        <button class="post-action-quote post-action"><span class="icon">&#xf10e;</span></button>
+        {% if current_user.may_edit(post) %}
+          <button class="post-action-edit post-action"><span class="icon">&#xf040;</span></button>
+        {% endif %}
+        <button class="post-action-reply post-action"><span class="icon">&#xf112;</span></button>
+      {% endif %}
+    </div>
   <div class="clear"></div>
   </div>
   {% if post.is_first_post %}
