@@ -180,7 +180,6 @@ class User (db.Model):
         return (self.may_edit_all_posts and \
                not post.creator.may_structure) or post.creator.id == self.id
             
-
     @property
     def groups (self):
         groups = []
@@ -237,6 +236,14 @@ class Guest (AnonymousUserMixin):
                                       GroupMode.board_id == board.id).first()
         return mode.may_read
  
+    def may_edit (self, post):
+        # i set False as default, because checking by
+        # ip has unwanted consequences: for starters
+        # you can edit posts by everyone logged in
+        # on the same ip. maybe there is some cool
+        # cookie solution
+        return False
+
 def groupmode_to_group (groupmode):
     """ maps a groupmode relationship to its group object """
     return Group.query.get(groupmode.group_id)
