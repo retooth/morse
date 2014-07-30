@@ -18,7 +18,29 @@ suddenly notice, that my pasta water is boiling over). I have to remember flaggi
 unread. In Morse a post gets only flagged, when the bottom of the post is in the browser
 viewport, which means you actually have to read the post (or scroll down like a maniac)
 
-#### Current version
+#### Demo
 
-Morse is not really finished yet. It lacks an admin panel and some small features. But if 
-you want to hack into the code and temper with the database yourself, you can try it already. 
+Morse is not really finished yet. It lacks some admin/mod panels and is still buggy sometimes. 
+You can check out a demo (updated in irregular intervals) [here](http://morse-rvws.rhcloud.com)
+
+#### Installing
+
+You can install the current version in the master branch by these commands:
+```
+git clone https://github.com/retooth/morse.git
+cd morse
+sudo pip install -r requirements.txt
+vim config.py
+```
+
+then edit the config matching your database settings
+
+after that, open a webbrowser and type:
+```
+http://127.0.0.1:5000/install
+```
+
+voila!
+
+
+
