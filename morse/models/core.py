@@ -222,6 +222,22 @@ class Guest (AnonymousUserMixin):
     def active_post_filters(self):
         return []
 
+    @property
+    def may_structure (self):
+        return False
+
+    @property
+    def may_close (self):
+        return False
+
+    @property
+    def may_ban (self):
+        return False
+
+    @property
+    def may_edit_all_posts (self):
+        return False
+
     def may_post_in (self, board):
         """ signifies if a user may post in a specific board. """
         
@@ -243,6 +259,14 @@ class Guest (AnonymousUserMixin):
         # on the same ip. maybe there is some cool
         # cookie solution
         return False
+
+    @property
+    def groups (self):
+        return [ Group.query.get(GROUP_ID_GUESTS) ]
+        
+    @property
+    def topic_sorting_preference (self):
+        raise NotImplementedError("") #TODO
 
 def groupmode_to_group (groupmode):
     """ maps a groupmode relationship to its group object """
