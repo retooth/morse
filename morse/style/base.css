@@ -99,7 +99,7 @@ button::-moz-focus-inner {
 
 /* header -------------------------------------- */
 
-header {
+#community-header {
   background:#3D322E; 
   border-radius: 3pt 3pt 0pt 0pt;
   padding:5pt 5pt 5pt 5pt; 
@@ -107,15 +107,16 @@ header {
   box-shadow:1px 1px #ddd;
 }
 
-    header a {
+    #community-header a {
       color:#fff;
+      text-decoration:none;
     }
     
-    header a:visited {
+    #community-header a:visited {
       color:#fff;
     }
 
-    #headertitle{
+    #header-title{
       float:left;
       text-shadow:1px 1px #333;
     }
