@@ -40,7 +40,7 @@ after that, open a webbrowser and type:
 http://127.0.0.1:5000/install
 ```
 
-voila!
+voila! - Login with admin/admin
 
 
 
