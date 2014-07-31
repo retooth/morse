@@ -33,9 +33,12 @@ sudo pip install -r requirements.txt
 vim config.py
 ```
 
-then edit the config matching your database settings
+then edit the config matching your database settings, start the server by
+```
+python runserver.py
+```
 
-after that, open a webbrowser and type:
+and - after that - open a webbrowser and type:
 ```
 http://127.0.0.1:5000/install
 ```
