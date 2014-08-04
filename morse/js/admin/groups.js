@@ -321,7 +321,7 @@ $(document).on("ready", function () {
     });
     newGroup.find(".picked").removeClass("picked");
     newGroup.find(".colorpicker[label-id=0]").addClass("picked");
-    newGroup.find(".groupuserlist").html("");
+    newGroup.find(".group-property-members .user").remove();
 
     /* insert delete button*/
     var deleteButton = $("<button/>");
