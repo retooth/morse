@@ -16,7 +16,9 @@
 */
 
 $(document).on("ready", function () {
-  rebindBanItemEvents();
+  bindBanItemMouseOverEvents();
+  rebindBanToolEvents();
+  rebindBanEditActions();
 
   $("#create-new-ip-ban").on("click", function(){
     $(this).slideUp(400);
@@ -59,7 +61,7 @@ $(document).on("ready", function () {
 
     var json = $.toJSON(data);
     $.ajax({
-      url: "/bans/issue-ip-ban",
+      url: "/ip-bans/new",
       data: json,
       error: handleAjaxErrorBy( alertGlobal ),
       success: function () { window.location.reload();  }
