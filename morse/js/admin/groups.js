@@ -323,12 +323,6 @@ $(document).on("ready", function () {
     newGroup.find(".colorpicker[label-id=0]").addClass("picked");
     newGroup.find(".groupuserlist").html("");
 
-    // we can be sure, that there is always at least one
-    // .new-member li. By cloning we can change the close
-    // button in the template without the need to change it here
-    var newUserLi = $(".new-member").first().clone();
-    newGroup.find(".group-property-members ul").append(newUserLi);
-
     /* insert delete button*/
     var deleteButton = $("<button/>");
     deleteButton.addClass("delete-group");
