@@ -15,9 +15,13 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-function rebindBanItemEvents (){
-
+function unbindBanItemMouseOverEvents(){
   $(".ban-item").off("mouseenter");
+  $(".ban-item").off("mouseleave");
+}
+
+function bindBanItemMouseOverEvents (){
+
   $(".ban-item").on("mouseenter", function(){
     var banItemTools = $(this).find(".ban-item-tools");
     var timer = setTimeout(function(){
@@ -26,7 +30,7 @@ function rebindBanItemEvents (){
     $(this).data("toolRevealDelay", timer);
     var reason = $(this).find(".ban-reason");
     var timeLeft = $(this).find(".ban-expiration-time-left");
-    var affectedBoards = $(this).find(".ban-affected-boards");
+    var affectedBoards = $(this).find(".ban-affected-boards-display");
     var timer = setTimeout(function(){
       reason.slideDown(400);
       timeLeft.fadeIn(400);
@@ -35,7 +39,6 @@ function rebindBanItemEvents (){
     $(this).data("dataRevealDelay", timer);
   });
 
-  $(".ban-item").off("mouseleave");
   $(".ban-item").on("mouseleave", function(){
     var timer = $(this).data("toolRevealDelay");
     clearTimeout(timer);
@@ -47,9 +50,85 @@ function rebindBanItemEvents (){
 
     var reason = $(this).find(".ban-reason");
     var timeLeft = $(this).find(".ban-expiration-time-left");
-    var affectedBoards = $(this).find(".ban-affected-boards");
+    var affectedBoards = $(this).find(".ban-affected-boards-display");
     reason.slideUp(400);
     timeLeft.fadeOut(400);
     affectedBoards.slideUp(400);
   });
+}
+
+function rebindBanToolEvents (){
+
+  $(".ban-action-edit").off("click");
+  $(".ban-action-edit").on("click", function () {
+    var banItem = $(this).parents(".ban-item");
+    banItem.find(".ban-header-display").slideUp(400);
+    banItem.find(".ban-header-edit").slideDown(400);
+    banItem.find(".ban-affected-boards-display").slideUp(400);
+    banItem.find(".ban-affected-boards-edit").slideDown(400);
+    banItem.find(".ban-edit-footer").slideDown(400);
+    unbindBanItemMouseOverEvents();
+  });
+
+}
+
+function rebindBanEditActions (){
+
+  $(".ban-item .ban-edit-action-update").off("click");
+  $(".ban-item .ban-edit-action-update").on("click", function () {
+    var banItem = $(this).parents(".ban-item");
+    var IPRange = banItem.find(".ban-ip-range").val();
+    var duration = parseInt(banItem.find(".ban-duration").val())
+    var reason = $(".ban-reason").html();
+    
+    var ALL_BOARDS = 0;
+    var affectedBoards = [];
+
+    var unchecked = banItem.find(".ban-affected-boards-edit input:checkbox:not(:checked)")
+    if (unchecked.length === 0){
+      affectedBoards = [ALL_BOARDS]
+    }else{
+      banItem.find(".ban-affected-boards-edit input:checkbox:checked").each(function(){
+        var board_id = parseInt($(this).attr("board-id"))
+        affectedBoards.push(board_id);
+      }); 
+    }
+
+    var permanent = banItem.find(".ban-option-permanent").is(":checked");
+
+    var data = new Object({ IPRange: IPRange, reason: reason, affectedBoards: affectedBoards });
+    if (!permanent){
+        var duration = parseInt(banItem.find(".ban-duration").val());
+        data.duration = duration;
+    }
+    var json = $.toJSON(data);
+
+    var urlPrefix = ""
+    if (banItem.attr("permanent") === "True"){
+      urlPrefix = "/ip-bans/permanent/"
+    }else{
+      urlPrefix = "/ip-bans/limited/"
+    }
+
+    var banID = banItem.attr("ban-id")
+
+    $.ajax({
+      url: urlPrefix + banID + "/update",
+      data: json,
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function () { window.location.reload();  }
+    });
+
+  });
+
+  $(".ban-option-permanent").off("change");
+  $(".ban-option-permanent").on("change", function(){
+    var banItem = $(this).parents(".ban-item");
+    if ($(this).is(":checked")){
+      banItem.find(".ban-duration").fadeOut(400);
+    }else{
+      banItem.find(".ban-duration").fadeIn(400);
+    }
+  });
+
 }

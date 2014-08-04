@@ -33,6 +33,10 @@ class Ban (db.Model):
         if reason_length > 25:
             return self.reason[0:25] + "..."
         return self.reason
+
+    def is_issued_for (self, board):
+        affected = self.affected_board_ids
+        return affected == [ALL_BOARDS] or board.id in affected
         
     @property 
     def affected_boards (self):
@@ -63,6 +67,17 @@ class IPBan (Ban):
         return IpRange(self._ip_range)
 
 class ExpirationMixin (object):
+
+    @property
+    def is_permanent (self):
+        return False
+
+    def update_duration_in_days (self, duration):
+        old_beginning = self.expires - self.duration
+        self.duration = timedelta(days = duration)
+        self.expires = old_beginning + self.duration
+    
+    duration_in_days = property(fset = update_duration_in_days)
 
     @property
     def has_expired (self):
@@ -106,7 +121,14 @@ class ExpirationMixin (object):
         seconds_without_hours = seconds % 60**2
         return seconds_without_hours // 60
 
-class PermaIPBan (IPBan):
+class PermaMixin (object):
+
+    @property
+    def is_permanent (self):
+        return True
+
+
+class PermaIPBan (IPBan, PermaMixin):
     """ Use this, if you want to create a permanent IP ban """
     __tablename__ = "permanent_ipbans"
 
@@ -116,7 +138,8 @@ class PermaIPBan (IPBan):
 
     @property
     def affected_board_ids (self):
-        board_ids = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id).values(PermaIPBannedOn.board_id)
+        board_id_generator = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id).values(PermaIPBannedOn.board_id)
+        board_ids = [oneple[0] for oneple in board_id_generator]
         return board_ids
 
     @property
@@ -141,7 +164,8 @@ class LimitedIPBan (IPBan, ExpirationMixin):
 
     @property
     def affected_board_ids (self):
-        board_ids = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id).values(LimitedIPBannedOn.board_id)
+        board_id_generator = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id).values(LimitedIPBannedOn.board_id)
+        board_ids = [oneple[0] for oneple in board_id_generator]
         return board_ids
 
     @property
@@ -152,7 +176,7 @@ class LimitedIPBan (IPBan, ExpirationMixin):
 class LimitedIPBannedOn (BannedOn):
     __tablename__ = "limited_ipbanned_on"
 
-class PermaUserBan (Ban):
+class PermaUserBan (Ban, PermaMixin):
     """ Use this, if you want to create a permanent user ban """
     __tablename__ = "permanent_userbans"
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -163,7 +187,8 @@ class PermaUserBan (Ban):
 
     @property
     def affected_board_ids (self):
-        board_ids = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id).values(PermaUserBannedOn.board_id)
+        board_id_generator = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id).values(PermaUserBannedOn.board_id)
+        board_ids = [oneple[0] for oneple in board_id_generator]
         return board_ids
 
     @property
@@ -188,7 +213,8 @@ class LimitedUserBan (Ban, ExpirationMixin):
 
     @property
     def affected_board_ids (self):
-        board_ids = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id).values(LimitedUserBannedOn.board_id)
+        board_id_generator = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id).values(LimitedUserBannedOn.board_id)
+        board_ids = [oneple[0] for oneple in board_id_generator]
         return board_ids
 
     @property

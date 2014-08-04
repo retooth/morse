@@ -24,7 +24,7 @@ from ..protocols import ajax_triggered
 from ..models.bans import LimitedIPBan, PermaIPBan, LimitedIPBannedOn, PermaIPBannedOn
 from ..enum import DEFAULT_MODE_DUMMY_ID
 
-@app.route('/bans/issue-ip-ban', methods=['POST'])
+@app.route('/ip-bans/new', methods=['POST'])
 @login_required
 @certain_rights_required(may_ban=True)
 @ajax_triggered
@@ -56,3 +56,84 @@ def issue_ip_ban():
     db.session.commit()
     
     return ""
+
+
+@app.route('/ip-bans/permanent/<int:ban_id>/update', methods=['POST'])
+@login_required
+@certain_rights_required(may_ban=True)
+@ajax_triggered
+def update_perma_ip_ban(ban_id):
+    
+    ban = PermaIPBan.query.get(ban_id)
+    if not ban:
+        return "bannotfound", 404
+
+    ip_range = request.json["IPRange"]
+    reason = request.json["reason"]
+    affected_boards = request.json["affectedBoards"]
+
+    old_affected_boards = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == ban.id).all()
+    for banned_board in old_affected_boards:
+        db.session.delete(banned_board)
+
+    if 'duration' in request.json:
+        db.session.delete(ban)
+        ban = LimitedIPBan(ip_range, reason, duration)
+        db.session.add(ban)
+        db.session.commit()
+        for board_id in affected_boards:
+            banned_board = LimitedIPBannedOn(board_id, ban.id)
+            db.session.add(banned_board)
+
+    else:
+        ban._ip_range = ip_range
+        ban.reason = reason
+        db.session.commit()
+        for board_id in affected_boards:
+            banned_board = PermaIPBannedOn(board_id, ban.id)
+            db.session.add(banned_board)
+
+    db.session.commit()
+    return "", 200
+    
+@app.route('/ip-bans/limited/<int:ban_id>/update', methods=['POST'])
+@login_required
+@certain_rights_required(may_ban=True)
+@ajax_triggered
+def update_limited_ip_ban(ban_id):
+    
+    ban = LimitedIPBan.query.get(ban_id)
+    if not ban:
+        return "bannotfound", 404
+
+    ip_range = request.json["IPRange"]
+    reason = request.json["reason"]
+    affected_boards = request.json["affectedBoards"]
+
+    old_affected_boards = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == ban.id).all()
+    for banned_board in old_affected_boards:
+        db.session.delete(banned_board)
+
+    if not 'duration' in request.json:
+        db.session.delete(ban)
+        ban = PermaIPBan(ip_range, reason)
+        db.session.add(ban)
+        db.session.commit()
+        for board_id in affected_boards:
+            banned_board = PermaIPBannedOn(board_id, ban.id)
+            db.session.add(banned_board)
+
+    else:
+        ban._ip_range = ip_range
+        ban.reason = reason
+        
+        ban.duration_in_days = request.json["duration"]
+
+        db.session.commit()
+        for board_id in affected_boards:
+            banned_board = LimitedIPBannedOn(board_id, ban.id)
+            db.session.add(banned_board)
+
+    db.session.commit()
+    return "", 200
+    

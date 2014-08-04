@@ -29,12 +29,32 @@
 }
 
 .ban-header{
+  padding:5pt;
   border-radius:3pt 3pt 0 0;
   cursor:pointer;
   background-color:#ddd;
 }
 
-    .ban-ip-range{
+.ban-header-edit {
+  display:none;
+}
+
+    .ban-header-edit input[type="text"]{
+      float:left;
+    }
+
+    .ban-header-edit .option {
+      float:left;
+      background:none;
+      border:none;
+    }
+
+
+.ban-header-display{
+
+}
+
+    .ban-header-display .ban-ip-range{
       float:left;
       padding:5pt;
       border-radius:3pt 0pt 0 0;
@@ -42,13 +62,13 @@
       height:100%;
     }
 
-    .ban-duration{
+    .ban-header-display .ban-duration{
       float:left;
       padding:5pt;
       font-style:italic;
     }
 
-    .ban-item-tools{
+    .ban-header-display .ban-item-tools{
       display:none;
       float:right;
       padding:5pt;
@@ -98,20 +118,52 @@
   border-bottom:1pt solid #ccc;
 }
 
-    .ban-affected-boards ul{
+    .ban-affected-boards header{
+      font-size:10pt;
+      font-weight:bold;
+      padding:5pt;
+    }
+
+.ban-affected-boards-display{
+}
+
+    .ban-affected-boards-display ul{
       list-style-type:none;
       padding-left:5pt;
       display:inline;
     }
 
-    .ban-affected-boards li{
+    .ban-affected-boards-display li{
       padding:5pt;
       font-size:10pt;
       float:left;
     }
 
-.ban-affected-boards-header{
-  font-size:10pt;
-  font-weight:bold;
-  padding:5pt;
+.ban-affected-boards-edit{
+  display:none;
 }
+
+    .ban-affected-boards-edit .option-selected{
+      background:#F01D27;
+      border-color:#F01D27;
+    }
+
+.ban-edit-footer {
+  background:#ddd;
+  padding:5pt;
+  display:none;
+}
+
+    .ban-edit-action-update {
+      background:#F01D27;
+      border:1pt solid #ccc;
+      border-radius:2pt;
+      font-size:10pt !important;
+    }
+
+    .ban-edit-action-pardon {
+      background:#F01D27;
+      border:1pt solid #ccc;
+      border-radius:2pt;
+      font-size:10pt !important;
+    }

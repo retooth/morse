@@ -1,10 +1,28 @@
 <div ban-id="{{ ban.id }}" class="ban-item {% if ban.has_expired %} ban-item-expired {% endif %}">
-  <div class="ban-header">
+  <div class="ban-header ban-header-edit">
+    <input class="ban-ip-range" type="text" value="{{ ban._ip_range }}" placeholder="Single IP or IP range">
+    <div class="option">
+      <input id="ban-option-permanent-{{ ban.id }}" class="ban-option-permanent" type="checkbox" 
+       {% if ban.is_permanent %} checked {% endif %}/>
+      <label for="ban-option-permanent-{{ ban.id }}">
+        <span>Ban this IP permanently</span>
+      </label>
+    </div>
+    <input class="ban-duration" type="text"
+    value = "{% if not ban.is_permanent %} {{ ban.duration.days }} {% endif %}"
+    placeholder="duration in days">
+    <div class="clear"></div>
+  </div>
+  <div class="ban-header ban-header-display">
     <div class="ban-ip-range">
       {{ ban._ip_range }}
     </div>
     <div class="ban-duration">
-      for {{ ban.duration.days }} days
+      {% if ban.is_permanent %}
+        permanent
+      {% else %}
+        for {{ ban.duration.days }} days
+      {% endif %}
     </div>
     <div class="ban-item-tools">
       {% if ban.has_expired %}
@@ -26,8 +44,20 @@
         </div>
       </div>
     </div>
-    <div class="ban-affected-boards">
-      <div class="ban-affected-boards-header">Affected Boards:</div>
+    <div class="ban-affected-boards ban-affected-boards-edit">
+      <header>Ban IP in these boards</header>
+      {% for board in boards %}
+      <div class="option">
+        <input id="{{ ban.id }}-banned-in-board-{{board.id}}" board-id="{{board.id}}" type="checkbox"
+         {% if ban.is_issued_for(board) %} checked {% endif %}/>
+        <label for="{{ ban.id }}-banned-in-board-{{board.id}}">
+          <span>{{ board.title }}</span>
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="ban-affected-boards ban-affected-boards-display">
+      <header>Affected Boards:</header>
       {% if ban.is_global %}
         <ul>
           <li>all boards</li>
@@ -43,5 +73,9 @@
     </div>
     <div class="ban-reason">
       {{ ban.reason }}
+    </div>
+    <div class="ban-edit-footer">
+      <button class="ban-edit-action-update">Update</button>
+      <button class="ban-edit-action-pardon">Pardon</button>
     </div>
 </div>
