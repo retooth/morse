@@ -44,6 +44,10 @@
           margin-left:2pt;
         }
 
+        .group-pennon:before {
+          content:"\f02e";
+        }
+
         .group-name{
           padding:5pt;
         }
