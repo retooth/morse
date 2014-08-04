@@ -295,13 +295,25 @@ $(document).on("ready", function () {
 
     var newLi = $("<li>");
     newLi.attr("group-id", groupID);
-    newLi.addClass("label0"); 
-    newLi.html(name);
+
+    var newPennon = $("<span>");
+    newPennon.addClass("icon");
+    newPennon.addClass("group-pennon");
+    newPennon.addClass("label-0");
+    
+    var newGroupName = $("<span>");
+    newGroupName.addClass("group-name");
+    newGroupName.html(name);
+
+    newPennon.appendTo(newLi); 
+    newGroupName.appendTo(newLi); 
+
     newLi.insertBefore("#new-group");
     rebindGroupNavEvents();
 
     var newGroup = $(".group-properties-menu[group-id=1]").clone();
     newGroup.attr("group-id", groupID);
+    newGroup.find(".current-group-name").html(name);
 
     /* make clean */
     newGroup.find("input").each(function(){
