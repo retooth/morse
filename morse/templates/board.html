@@ -55,73 +55,56 @@
    <div id="info-rockbottom" class="hidden">You hit rock bottom!</div>
  </div>
 </div>
-<div id="user-menu">
- {% include "menu/account.html" %}
- <div id="board-tools">
-   {% if not current_user.is_anonymous() %}
-     {% if board.followed %}
-       <button id="follow-board" class="user-action switch switch-button-activate" switched-button="unfollow-board" style="display:none">
-         <span class="icon menu-icon">&#xf024;</span> Alert me about new topics
-       </button>
-       <button id="unfollow-board" class="user-action switch switch-button-deactivate" switched-button="follow-board">
-         <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new topics
-       </button>
-     {% else %}
-       <button id="follow-board" class="user-action switch switch-button-activate" switched-button="unfollow-board">
-         <span class="icon menu-icon">&#xf024;</span> Alert me about new topics
-       </button>
-       <button id="unfollow-board" class="user-action switch switch-button-deactivate" switched-button="follow-board" style="display:none">
-         <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new topics
-       </button>
-     {% endif %}
-   {% endif %}
-  </div>
- <div id="order-dropdown" class="closed-dropdown" dropdown-menu-id="order-menu" tooltip="sorting">
-   Sorted by <span id="active-order">most interesting</span> <div class="icon icon-dropdown"></div>
- </div>
- <div id="order-menu" tooltip="sorting">
-   <div switched="least interesting" class="order-option option option-selected">most interesting</div>
-   <div switched="least recent post" class="order-option option">most recent post</div>
-   <div switched="fewest posts" class="order-option option">most posts</div>
-   <div switched="fewest views" class="order-option option">most views</div>
-   <div switched="fewest contributors" class="order-option option">most contributors</div>
- </div>
- {% if not current_user.is_anonymous() and not topic_filter_dispatcher.is_empty %}
- <div id="filter-dropdown" class="closed-dropdown" dropdown-menu-id="filter-menu" tooltip="filter">
-   Filters <div class="icon icon-dropdown"></div>
- </div>
- <div id="filter-menu" tooltip="filter">
-     {% for topic_filter in topic_filter_dispatcher %}
-       {% include topic_filter.template %}
-     {% endfor %}
- </div>
- {% endif %}
- <div id="tooltip">
-   <div id="tooltip-default">
-   </div>
-   <div id="tooltip-sorting">
-     Select a sorting method from the list.
-     Click on a selected item to switch from
-     ascending to descending and vice versa.
-   </div>
-   <div id="tooltip-filter">
-     Toggle filters to narrow the list of
-     topics.
-   </div>
- </div>
-</div>
-<div id="moderator-menu">
-  {% include "menu/moderation.html" %}
-</div>
+<div class="clear"></div>
+{% endblock %}
+{% block admin_menu_after_defaults %}
 {% if current_user.may_structure %}
-<div id="admin-menu">
- <div class="menu-item">
-   <a href="/admin/updateboard/{{ board.id }}"><span class="icon menu-icon">&#xf044;</span> Edit board properties</a>
- </div>
- {% include "menu/admin.html" %}
+  <div class="menu-item">
+    <a href="/admin/updateboard/{{ board.id }}"><span class="icon menu-icon">&#xf044;</span> Edit board properties</a>
+  </div>
+{% endif %}
+{% endblock %}
+{% block user_menu_after_defaults %}
+<div id="board-tools">
+ {% if not current_user.is_anonymous() %}
+   {% if board.followed %}
+     <button id="follow-board" class="user-action switch switch-button-activate" switched-button="unfollow-board" style="display:none">
+       <span class="icon menu-icon">&#xf024;</span> Alert me about new topics
+     </button>
+     <button id="unfollow-board" class="user-action switch switch-button-deactivate" switched-button="follow-board">
+       <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new topics
+     </button>
+   {% else %}
+     <button id="follow-board" class="user-action switch switch-button-activate" switched-button="unfollow-board">
+       <span class="icon menu-icon">&#xf024;</span> Alert me about new topics
+     </button>
+     <button id="unfollow-board" class="user-action switch switch-button-deactivate" switched-button="follow-board" style="display:none">
+       <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new topics
+     </button>
+   {% endif %}
+ {% endif %}
+</div>
+<div id="order-dropdown" class="closed-dropdown" dropdown-menu-id="order-menu" tooltip="sorting">
+ Sorted by <span id="active-order">most interesting</span> <div class="icon icon-dropdown"></div>
+</div>
+<div id="order-menu" tooltip="sorting">
+ <div switched="least interesting" class="order-option option option-selected">most interesting</div>
+ <div switched="least recent post" class="order-option option">most recent post</div>
+ <div switched="fewest posts" class="order-option option">most posts</div>
+ <div switched="fewest views" class="order-option option">most views</div>
+ <div switched="fewest contributors" class="order-option option">most contributors</div>
+</div>
+{% if not current_user.is_anonymous() and not topic_filter_dispatcher.is_empty %}
+<div id="filter-dropdown" class="closed-dropdown" dropdown-menu-id="filter-menu" tooltip="filter">
+ Filters <div class="icon icon-dropdown"></div>
+</div>
+<div id="filter-menu" tooltip="filter">
+   {% for topic_filter in topic_filter_dispatcher %}
+     {% include topic_filter.template %}
+   {% endfor %}
 </div>
 {% endif %}
-<div class="clear"></div>
+</div>
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('js', filename='scrolling.js') }}"></script>

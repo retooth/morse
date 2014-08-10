@@ -38,8 +38,16 @@
     {% include "items/board.html" %}
 {% endfor %}
 </div>
-<div id="user-menu">
- {% include "menu/account.html" %}
+<div class="clear"></div>
+{% endblock %}
+{% block admin_menu_before_defaults %}
+{% if current_user.may_structure %}
+ <div class="menu-item">
+   <a href="/admin/newboard"><span class="icon menu-icon">&#xf055;</span> Add new board</a>
+ </div>
+{% endif %}
+{% endblock %}
+{% block user_menu_after_defaults %}
  {% if not current_user.is_anonymous() %}
  <div id="filter-dropdown" class="closed-dropdown" tooltip="filter">
    Filters <div class="icon icon-dropdown"></div>
@@ -63,33 +71,6 @@
      </div>
  </div>
  {% endif %}
- <div id="tooltip">
-   <div id="tooltip-default">
-     Hi! Welcome. Choose a board, that matches your interests.
-   </div>
-   <div id="tooltip-sorting">
-     Select a sorting method from the list.
-     Click on a selected item to switch from
-     ascending to descending and vice versa.
-   </div>
-   <div id="tooltip-filter">
-     Toggle filters to narrow the list of
-     topics.
-   </div>
- </div>
-</div>
-<div id="moderator-menu">
-  {% include "menu/moderation.html" %}
-</div>
-{% if current_user.may_structure %}
-<div id="admin-menu">
- <div class="menu-item">
-   <a href="/admin/newboard"><span class="icon menu-icon">&#xf055;</span> Add new board</a>
- </div>
- {% include "menu/admin.html" %}
-</div>
-{% endif %}
-<div class="clear"></div>
 {% endblock %}
 {% block script %}
 <script src="{{ url_for('js', filename='snappers.js') }}"></script>

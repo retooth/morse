@@ -82,85 +82,67 @@
    <div id="info-rockbottom" class="hidden">You hit rock bottom!</div>
  </div>
 </div>
-<div id="moderator-menu">
-  {% if topic.sticky %}
-    <button id="pin-topic" class="moderator-action switch switch-button-activate" switched-button="unpin-topic" style="display:none">
-      <span class="icon menu-icon">&#xf08d;</span> Pin topic
-    </button>
-    <button id="unpin-topic" class="moderator-action switch switch-button-deactivate" switched-button="pin-topic">
-      <span class="icon menu-icon">&#xf08d;</span> Unpin topic
-    </button>
-  {% else %}
-    <button id="pin-topic" class="moderator-action switch switch-button-activate" switched-button="unpin-topic">
-      <span class="icon menu-icon">&#xf08d;</span> Pin topic
-    </button>
-    <button id="unpin-topic" class="moderator-action switch switch-button-deactivate" switched-button="pin-topic" style="display:none">
-      <span class="icon menu-icon">&#xf08d;</span> Unpin topic
-    </button>
-  {% endif %}
-  {% if topic.closed %}
-    <button id="close-topic" class="moderator-action switch switch-button-activate" switched-button="reopen-topic" style="display:none">
-      <span class="icon menu-icon">&#xf023;</span> Close topic
-    </button>
-    <button id="reopen-topic" class="moderator-action switch switch-button-deactivate" switched-button="close-topic">
-      <span class="icon menu-icon">&#xf13e;</span> Reopen topic
-    </button>
-  {% else %}
-    <button id="close-topic" class="moderator-action switch switch-button-activate" switched-button="reopen-topic">
-      <span class="icon menu-icon">&#xf023;</span> Close topic
-    </button>
-    <button id="reopen-topic" class="moderator-action switch switch-button-deactivate" switched-button="close-topic" style="display:none">
-      <span class="icon menu-icon">&#xf13e;</span> Reopen topic
-    </button>
-  {% endif %}
-  {% include "menu/moderation.html" %}
-</div>
-<div id="user-menu">
-  {% include "menu/account.html" %}
-  <div id="topic-tools">
-   {% if not current_user.is_anonymous() %}
-     {% if topic.followed %}
-       <button id="follow-topic" class="user-action switch switch-button-activate" switched-button="unfollow-topic" style="display:none">
-         <span class="icon menu-icon">&#xf024;</span> Alert me about new posts
-       </button>
-       <button id="unfollow-topic" class="user-action switch switch-button-deactivate" switched-button="follow-topic">
-         <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new posts
-       </button>
-     {% else %}
-       <button id="follow-topic" class="user-action switch switch-button-activate" switched-button="unfollow-topic">
-         <span class="icon menu-icon">&#xf024;</span> Alert me about new posts
-       </button>
-       <button id="unfollow-topic" class="user-action switch switch-button-deactivate" switched-button="follow-topic" style="display:none">
-         <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new posts
-       </button>
-     {% endif %}
+{% endblock %}
+{% block moderator_menu_before_defaults %}
+{% if topic.sticky %}
+  <button id="pin-topic" class="moderator-action switch switch-button-activate" switched-button="unpin-topic" style="display:none">
+    <span class="icon menu-icon">&#xf08d;</span> Pin topic
+  </button>
+  <button id="unpin-topic" class="moderator-action switch switch-button-deactivate" switched-button="pin-topic">
+    <span class="icon menu-icon">&#xf08d;</span> Unpin topic
+  </button>
+{% else %}
+  <button id="pin-topic" class="moderator-action switch switch-button-activate" switched-button="unpin-topic">
+    <span class="icon menu-icon">&#xf08d;</span> Pin topic
+  </button>
+  <button id="unpin-topic" class="moderator-action switch switch-button-deactivate" switched-button="pin-topic" style="display:none">
+    <span class="icon menu-icon">&#xf08d;</span> Unpin topic
+  </button>
+{% endif %}
+{% if topic.closed %}
+  <button id="close-topic" class="moderator-action switch switch-button-activate" switched-button="reopen-topic" style="display:none">
+    <span class="icon menu-icon">&#xf023;</span> Close topic
+  </button>
+  <button id="reopen-topic" class="moderator-action switch switch-button-deactivate" switched-button="close-topic">
+    <span class="icon menu-icon">&#xf13e;</span> Reopen topic
+  </button>
+{% else %}
+  <button id="close-topic" class="moderator-action switch switch-button-activate" switched-button="reopen-topic">
+    <span class="icon menu-icon">&#xf023;</span> Close topic
+  </button>
+  <button id="reopen-topic" class="moderator-action switch switch-button-deactivate" switched-button="close-topic" style="display:none">
+    <span class="icon menu-icon">&#xf13e;</span> Reopen topic
+  </button>
+{% endif %}
+{% endblock %}
+{% block user_menu_after_defaults %}
+<div id="topic-tools">
+ {% if not current_user.is_anonymous() %}
+   {% if topic.followed %}
+     <button id="follow-topic" class="user-action switch switch-button-activate" switched-button="unfollow-topic" style="display:none">
+       <span class="icon menu-icon">&#xf024;</span> Alert me about new posts
+     </button>
+     <button id="unfollow-topic" class="user-action switch switch-button-deactivate" switched-button="follow-topic">
+       <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new posts
+     </button>
+   {% else %}
+     <button id="follow-topic" class="user-action switch switch-button-activate" switched-button="unfollow-topic">
+       <span class="icon menu-icon">&#xf024;</span> Alert me about new posts
+     </button>
+     <button id="unfollow-topic" class="user-action switch switch-button-deactivate" switched-button="follow-topic" style="display:none">
+       <span class="icon menu-icon">&#xf11d;</span> Don't alert me about new posts
+     </button>
    {% endif %}
-  </div>
- {% if not current_user.is_anonymous() and not post_filter_dispatcher.is_empty %}
- <div id="filter-dropdown" class="closed-dropdown" dropdown-menu-id="filter-menu" tooltip="filter">
-   Filters <div class="icon icon-dropdown"></div>
- </div>
- <div id="filter-menu" tooltip="filter">
-     {% for post_filter in post_filter_dispatcher %}
-       {% include post_filter.template %}
-     {% endfor %}
- </div>
  {% endif %}
-<div id="tooltip">
-  <div id="tooltip-default">
-  </div>
-  <div id="tooltip-filter">
-     Toggle filters to narrow the list of
-     posts.
-  </div>
-  <div id="tooltip-post">
-     Double Click on a post to answer it
-  </div>
 </div>
+{% if not current_user.is_anonymous() and not post_filter_dispatcher.is_empty %}
+<div id="filter-dropdown" class="closed-dropdown" dropdown-menu-id="filter-menu" tooltip="filter">
+ Filters <div class="icon icon-dropdown"></div>
 </div>
-{% if current_user.may_structure %}
-<div id="admin-menu">
- {% include "menu/admin.html" %}
+<div id="filter-menu" tooltip="filter">
+   {% for post_filter in post_filter_dispatcher %}
+     {% include post_filter.template %}
+   {% endfor %}
 </div>
 {% endif %}
 {% endblock %}

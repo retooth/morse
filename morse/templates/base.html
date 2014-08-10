@@ -26,6 +26,23 @@
 {% block navigation %}{% endblock %}
 {% include "alerts/global.html" %}
 {% block content %}{% endblock %}
+{% if current_user.may_structure %}
+<div id="admin-menu">
+ {% block admin_menu_before_defaults %}{% endblock %}
+ {% include "menu/admin.html" %}
+ {% block admin_menu_after_defaults %}{% endblock %}
+</div>
+{% endif %}
+<div id="moderator-menu">
+  {% block moderator_menu_before_defaults %}{% endblock %}
+  {% include "menu/moderation.html" %}
+  {% block moderator_menu_after_defaults %}{% endblock %}
+</div>
+<div id="user-menu">
+  {% block user_menu_before_defaults %}{% endblock %}
+  {% include "menu/account.html" %}
+  {% block user_menu_after_defaults %}{% endblock %}
+</div>
 <script src="{{ url_for('js', filename='jquery-1.9.1.min.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery-ui-1.10.4.custom.min.js') }}"></script>
 <script src="{{ url_for('js', filename='jquery.ui.touch-punch.min.js') }}"></script>

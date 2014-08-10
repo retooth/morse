@@ -13,15 +13,6 @@
 </nav>
 {% endblock %}
 {% block content %}
-<div id="user-menu">
- {% include "menu/account.html" %}
-</div>
-<div id="admin-menu">
- {% include "menu/admin.html" %}
-</div>
-<div id="moderator-menu">
-  {% include "menu/moderation.html" %}
-</div>
 <div id="adminwrapper">
 <b>Update Board</b><br/><br/>
 <form id="board-settings" action="/admin/updateboard/{{ board.id }}" method="POST">
