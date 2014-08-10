@@ -18,73 +18,65 @@
 from . import db
 from iptools import IpRange
 from datetime import datetime, timedelta
-from core import Board
-from ..enum import ALL_BOARDS
+from core import Board, User
 
 class Ban (db.Model):
-    """ abstract model for bans """
+
+    """ Ban is an abstract model for IPBan and UserBan. It provides
+    methods to check for affected boards and some to get different parts 
+    of the ban duration """
+
     __abstract__ = True
     id = db.Column(db.Integer, primary_key=True)
     reason = db.Column(db.String)
+    duration = db.Column(db.Interval)
+    expiration_date = db.Column(db.DateTime)
 
-    @property
-    def short_reason (self):
-        reason_length = len(self.reason)
-        if reason_length > 25:
-            return self.reason[0:25] + "..."
-        return self.reason
-
-    def is_issued_for (self, board):
+    def __init__ (self, reason, duration_in_days = None):
+        self.reason = reason
+        if duration_in_days:
+            self.duration = timedelta(days = duration_in_days)
+            self.expiration_date = datetime.now() + self.duration
+    
+    def applies_to (self, board):
+        """ signifies whether a ban applies to a certain board """
         affected = self.affected_board_ids
-        return affected == [ALL_BOARDS] or board.id in affected
+        return board.id in affected
         
     @property 
     def affected_boards (self):
+        """ a list of all affected boards """
         for board_id in self.affected_board_ids:
             yield Board.query.get(board_id)
 
-class BannedOn (db.Model):
-    """ abstract model of ban <-> board relation """
-    __abstract__ = True
-    ban_id = db.Column(db.Integer, primary_key=True)
-    board_id = db.Column(db.Integer, primary_key=True)
-
-    def __init__ (self, board_id, ban_id):
-        self.board_id = board_id
-        self.ban_id = ban_id
-
-class IPBan (Ban):
-    """ abstract model for IP bans """
-    __abstract__ = True
-    _ip_range = db.Column(db.String)
-
-    @property
-    def ip_range (self):
-        """ use this property instead of _ip_range. it provides a
-        iptools.IpRange object instead of a simple string, which
-        means you can perform containment operations (e.g.
-        "my_ip in ban.ip_range" and the like) """
-        return IpRange(self._ip_range)
-
-class ExpirationMixin (object):
-
     @property
     def is_permanent (self):
-        return False
+        return self.expiration_date is None
 
     def update_duration_in_days (self, duration):
-        old_beginning = self.expires - self.duration
-        self.duration = timedelta(days = duration)
-        self.expires = old_beginning + self.duration
+        if duration is None:
+            self.duration = None
+            self.expiration_date = None
+        else:
+            if self.is_permanent:
+                old_beginning = datetime.now()
+            else:
+                old_beginning = self.expiration_date - self.duration
+            self.duration = timedelta(days = duration)
+            self.expiration_date = old_beginning + self.duration
     
     duration_in_days = property(fset = update_duration_in_days)
 
     @property
     def has_expired (self):
-        return self.expires < datetime.now()
+        if self.is_permanent:
+            return False
+        return self.expiration_date < datetime.now()
 
     @property
     def percentage_of_time_served (self):
+        if self.is_permanent:
+            return 0
         if self.has_expired:
             return 100
         served = self.time_served
@@ -100,127 +92,134 @@ class ExpirationMixin (object):
 
     @property
     def time_served (self):
-        return self.duration - self._time_left
+        """ a timedelta object that signifies the 
+        served time (only possible on limited bans) """
+        if self.is_permanent:
+            raise TypeError("this method is not available on permanent bans")
+        return self.duration - self.time_left
 
     @property
-    def _time_left (self):
-        return self.expires - datetime.now()
+    def time_left (self):
+        """ a timedelta object that signifies the 
+        time left to serve (only possible on limited bans) """
+        if self.is_permanent:
+            raise TypeError("this method is not available on permanent bans")
+        return self.expiration_date - datetime.now()
 
     @property
     def days_left (self):
-        return self._time_left.days
+        """ an integer that signifies the number of days
+        left to serve (only possible on limited bans) """
+        if self.is_permanent:
+            raise TypeError("this method is not available on permanent bans")
+        return self.time_left.days
 
     @property
     def hours_left (self):
-        seconds = self._time_left.seconds
+        """ an integer that signifies the number of hours
+        left to serve (only possible on limited bans) 
+
+        !!! this attribute DOES NOT signify the absolute
+        number of hours left, but rather the numbers of
+        hours left modulo 24
+        """
+        if self.is_permanent:
+            raise TypeError("this method is not available on permanent bans")
+        seconds = self.time_left.seconds
         return seconds // 60**2
 
     @property
     def minutes_left (self):
-        seconds = self._time_left.seconds
+        """ an integer that signifies the number of minutes
+        left to serve (only possible on limited bans) 
+
+        !!! this attribute DOES NOT signify the absolute
+        number of minutes left, but rather the numbers of
+        minutes left modulo 60
+        """
+        if self.is_permanent:
+            raise TypeError("this method is not available on permanent bans")
+        seconds = self.time_left.seconds
         seconds_without_hours = seconds % 60**2
         return seconds_without_hours // 60
 
-class PermaMixin (object):
+class IPBan (Ban):
+
+    """ model for IP bans """
+
+    __tablename__ = "ip_bans"
+
+    ip_range = db.Column(db.String)
+
+    def __init__ (self, ip_range, reason, duration_in_days = None):
+        Ban.__init__(self, reason, duration_in_days)
+        self.ip_range = ip_range
 
     @property
-    def is_permanent (self):
-        return True
-
-
-class PermaIPBan (IPBan, PermaMixin):
-    """ Use this, if you want to create a permanent IP ban """
-    __tablename__ = "permanent_ipbans"
-
-    def __init__ (self, ip_range, reason):
-        self._ip_range = ip_range
-        self.reason = reason
-
-    @property
-    def affected_board_ids (self):
-        board_id_generator = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id).values(PermaIPBannedOn.board_id)
-        board_ids = [oneple[0] for oneple in board_id_generator]
-        return board_ids
-
-    @property
-    def is_global (self):
-        rel = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == self.id, PermaIPBannedOn.board_id == ALL_BOARDS).first() 
-        return rel is not None 
-
-class PermaIPBannedOn (BannedOn):
-    __tablename__ = "permanent_ipbanned_on"
-
-class LimitedIPBan (IPBan, ExpirationMixin):
-    """ Use this, if you want to create a limited IP ban """
-    __tablename__ = "limited_ipbans"
-    duration = db.Column(db.Interval)
-    expires = db.Column(db.DateTime)
-
-    def __init__ (self, ip_range, reason, duration_in_days):
-        self._ip_range = ip_range
-        self.reason = reason
-        self.duration = timedelta(days = duration_in_days)
-        self.expires = datetime.now() + self.duration
+    def affected_ips (self):
+        """ use this property instead of ip_range. it provides a
+        iptools.IpRange object instead of a simple string, which
+        means you can perform containment operations (e.g.
+        "my_ip in ban.ip_range" and the like) """
+        return IpRange(self.ip_range)
 
     @property
     def affected_board_ids (self):
-        board_id_generator = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id).values(LimitedIPBannedOn.board_id)
+        """ an ID list of all affected boards """
+        query = IPBannedOn.query
+        query = query.filter(IPBannedOn.ban_id == self.id)
+        board_id_generator = query.values(IPBannedOn.board_id)
         board_ids = [oneple[0] for oneple in board_id_generator]
         return board_ids
 
+class IPBannedOn (db.Model):
+
+    """ A relation between ip bans and boards, that signify
+    which boards are affected by a certain ip ban """
+
+    __tablename__ = "ip_banned_on"
+
+    ban_id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True)
+
+    def __init__ (self, board_id, ban_id):
+        self.board_id = board_id
+        self.ban_id = ban_id
+
+class UserBan (Ban):
+
+    """ model for user bans """
+
+    user_id = db.Column(db.ForeignKey("users.id"))
+
+    def __init__ (self, user_id, reason, duration_in_days = None):
+        Ban.__init__(self, reason, duration_in_days)
+        self.user_id, user_id
+
     @property
-    def is_global (self):
-        rel = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == self.id, LimitedIPBannedOn.board_id == ALL_BOARDS).first() 
-        return rel is not None 
-
-class LimitedIPBannedOn (BannedOn):
-    __tablename__ = "limited_ipbanned_on"
-
-class PermaUserBan (Ban, PermaMixin):
-    """ Use this, if you want to create a permanent user ban """
-    __tablename__ = "permanent_userbans"
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    def __init__ (self, user_id, reason):
-        self.user_id = user_id
-        self.reason = reason
+    def affected_user (self):
+        return User.query.get(self.user_id)
 
     @property
     def affected_board_ids (self):
-        board_id_generator = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id).values(PermaUserBannedOn.board_id)
+        """ an ID list of all affected boards """
+        query = UserBannedOn.query
+        query = query.filter(UserBannedOn.ban_id == self.id)
+        board_id_generator = query.values(UserBannedOn.board_id)
         board_ids = [oneple[0] for oneple in board_id_generator]
         return board_ids
 
-    @property
-    def is_global (self):
-        rel = PermaUserBannedOn.query.filter(PermaUserBannedOn.ban_id == self.id, PermaUserBannedOn.board_id == ALL_BOARDS).first() 
-        return rel is not None 
 
-class PermaUserBannedOn (BannedOn):
-    __tablename__ = "permanent_userbanned_on"
+class UserBannedOn (db.Model):
 
-class LimitedUserBan (Ban, ExpirationMixin):
-    """ Use this, if you want to create a limited user ban """
-    __tablename__ = "limited_userbans"
-    duration = db.Column(db.Interval)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    """ A relation between user bans and boards, that signify
+    which boards are affected by a certain user ban """
 
-    def __init__ (self, user_id, reason, duration_in_days):
-        self.user_id = user_id
-        self.reason = reason
-        self.duration = timedelta(days = duration_in_days)
-        self.expires = datetime.now() + self.duration
+    __tablename__ = "user_banned_on"
 
-    @property
-    def affected_board_ids (self):
-        board_id_generator = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id).values(LimitedUserBannedOn.board_id)
-        board_ids = [oneple[0] for oneple in board_id_generator]
-        return board_ids
+    ban_id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer, primary_key=True)
 
-    @property
-    def is_global (self):
-        rel = LimitedUserBannedOn.query.filter(LimitedUserBannedOn.ban_id == self.id, LimitedUserBannedOn.board_id == ALL_BOARDS).first() 
-        return rel is not None 
-
-class LimitedUserBannedOn (BannedOn):
-    __tablename__ = "limited_userbanned_on"
+    def __init__ (self, board_id, ban_id):
+        self.board_id = board_id
+        self.ban_id = ban_id

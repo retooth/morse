@@ -20,7 +20,7 @@ from flask.ext.login import current_user
 from flask import render_template
 from ..rights import certain_rights_required 
 from ..models.core import Board
-from ..models.bans import PermaIPBan, LimitedIPBan
+from ..models.bans import IPBan
 from ..wrappers import BoardWrapper
 
 @app.route('/moderation/bans')
@@ -30,9 +30,7 @@ def bans():
     Renders the banned users view
     :rtype: html
     """
-    limited_bans = LimitedIPBan.query.order_by(LimitedIPBan.expires.asc()).all()
-    perma_bans = PermaIPBan.query.all()
-    ip_bans = limited_bans + perma_bans
+    ip_bans = IPBan.query.order_by(IPBan.expiration_date.asc()).all()
 
     boards = Board.query.all();
     return render_template('moderation/bans.html', ip_bans = ip_bans, boards = boards)

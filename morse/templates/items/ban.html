@@ -1,6 +1,6 @@
 <div ban-id="{{ ban.id }}" class="ban-item {% if ban.has_expired %} ban-item-expired {% endif %}">
   <div class="ban-header ban-header-edit">
-    <input class="ban-ip-range" type="text" value="{{ ban._ip_range }}" placeholder="Single IP or IP range">
+    <input class="ban-ip-range" type="text" value="{{ ban.ip_range }}" placeholder="Single IP or IP range">
     <div class="option">
       <input id="ban-option-permanent-{{ ban.id }}" class="ban-option-permanent" type="checkbox" 
        {% if ban.is_permanent %} checked {% endif %}/>
@@ -15,7 +15,7 @@
   </div>
   <div class="ban-header ban-header-display">
     <div class="ban-ip-range">
-      {{ ban._ip_range }}
+      {{ ban.ip_range }}
     </div>
     <div class="ban-duration">
       {% if ban.is_permanent %}
@@ -36,10 +36,12 @@
     <div class="ban-expiration-progress-wrapper">
       <div class="ban-expiration-progress" style="width:{{ ban.percentage_of_time_left }}%;">
         <div class="ban-expiration-time-left">
-          {% if ban.has_expired %}
-            ban has expired
-          {% else %}
-            {{ ban.days_left }} days {{ ban.hours_left }} hours {{ ban.minutes_left }} minutes left
+          {% if not ban.is_permanent %}
+            {% if ban.has_expired %}
+              ban has expired
+            {% else %}
+              {{ ban.days_left }} days {{ ban.hours_left }} hours {{ ban.minutes_left }} minutes left
+            {% endif %}
           {% endif %}
         </div>
       </div>
@@ -49,7 +51,7 @@
       {% for board in boards %}
       <div class="option">
         <input id="{{ ban.id }}-banned-in-board-{{board.id}}" board-id="{{board.id}}" type="checkbox"
-         {% if ban.is_issued_for(board) %} checked {% endif %}/>
+         {% if ban.applies_to(board) %} checked {% endif %}/>
         <label for="{{ ban.id }}-banned-in-board-{{board.id}}">
           <span>{{ board.title }}</span>
         </label>
@@ -58,17 +60,11 @@
     </div>
     <div class="ban-affected-boards ban-affected-boards-display">
       <header>Affected Boards:</header>
-      {% if ban.is_global %}
-        <ul>
-          <li>all boards</li>
-        </ul>
-      {% else %}
         <ul>
         {% for board in ban.affected_boards %}
           <li>{{ board.title }}</li>
         {% endfor %}
         </ul>
-      {% endif %}
       <div class="clear"></div>
     </div>
     <div class="ban-reason">

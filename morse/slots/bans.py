@@ -21,7 +21,7 @@ from flask.ext.login import login_required
 from ..rights import certain_rights_required
 from ..models import db
 from ..protocols import ajax_triggered
-from ..models.bans import LimitedIPBan, PermaIPBan, LimitedIPBannedOn, PermaIPBannedOn
+from ..models.bans import IPBan, IPBannedOn
 from ..enum import DEFAULT_MODE_DUMMY_ID
 
 @app.route('/ip-bans/new', methods=['POST'])
@@ -38,33 +38,30 @@ def issue_ip_ban():
     affected_boards = request.json["affectedBoards"]
 
     if not 'duration' in request.json:
-        ban = PermaIPBan(ip_range, reason)
+        ban = IPBan(ip_range, reason)
         db.session.add(ban)
         db.session.commit()
-        for board_id in affected_boards:
-            banned_board = PermaIPBannedOn(board_id, ban.id)
-            db.session.add(banned_board)
     else:
         duration = request.json["duration"]
-        ban = LimitedIPBan(ip_range, reason, duration)
+        ban = IPBan(ip_range, reason, duration)
         db.session.add(ban)
         db.session.commit()
-        for board_id in affected_boards:
-            banned_board = LimitedIPBannedOn(board_id, ban.id)
-            db.session.add(banned_board)
+
+    for board_id in affected_boards:
+        banned_board = IPBannedOn(board_id, ban.id)
+        db.session.add(banned_board)
 
     db.session.commit()
     
     return ""
 
-
-@app.route('/ip-bans/permanent/<int:ban_id>/update', methods=['POST'])
+@app.route('/ip-bans/<int:ban_id>/update', methods=['POST'])
 @login_required
 @certain_rights_required(may_ban=True)
 @ajax_triggered
-def update_perma_ip_ban(ban_id):
+def update_ip_ban(ban_id):
     
-    ban = PermaIPBan.query.get(ban_id)
+    ban = IPBan.query.get(ban_id)
     if not ban:
         return "bannotfound", 404
 
@@ -72,68 +69,21 @@ def update_perma_ip_ban(ban_id):
     reason = request.json["reason"]
     affected_boards = request.json["affectedBoards"]
 
-    old_affected_boards = PermaIPBannedOn.query.filter(PermaIPBannedOn.ban_id == ban.id).all()
-    for banned_board in old_affected_boards:
-        db.session.delete(banned_board)
+    ban.ip_range = ip_range
+    ban.reason = reason
 
     if 'duration' in request.json:
-        db.session.delete(ban)
-        ban = LimitedIPBan(ip_range, reason, duration)
-        db.session.add(ban)
-        db.session.commit()
-        for board_id in affected_boards:
-            banned_board = LimitedIPBannedOn(board_id, ban.id)
-            db.session.add(banned_board)
-
+        ban.duration_in_days = request.json["duration"]
     else:
-        ban._ip_range = ip_range
-        ban.reason = reason
-        db.session.commit()
-        for board_id in affected_boards:
-            banned_board = PermaIPBannedOn(board_id, ban.id)
-            db.session.add(banned_board)
+        ban.duration_in_days = None
 
-    db.session.commit()
-    return "", 200
-    
-@app.route('/ip-bans/limited/<int:ban_id>/update', methods=['POST'])
-@login_required
-@certain_rights_required(may_ban=True)
-@ajax_triggered
-def update_limited_ip_ban(ban_id):
-    
-    ban = LimitedIPBan.query.get(ban_id)
-    if not ban:
-        return "bannotfound", 404
-
-    ip_range = request.json["IPRange"]
-    reason = request.json["reason"]
-    affected_boards = request.json["affectedBoards"]
-
-    old_affected_boards = LimitedIPBannedOn.query.filter(LimitedIPBannedOn.ban_id == ban.id).all()
+    old_affected_boards = IPBannedOn.query.filter(IPBannedOn.ban_id == ban.id).all()
     for banned_board in old_affected_boards:
         db.session.delete(banned_board)
 
-    if not 'duration' in request.json:
-        db.session.delete(ban)
-        ban = PermaIPBan(ip_range, reason)
-        db.session.add(ban)
-        db.session.commit()
-        for board_id in affected_boards:
-            banned_board = PermaIPBannedOn(board_id, ban.id)
-            db.session.add(banned_board)
-
-    else:
-        ban._ip_range = ip_range
-        ban.reason = reason
-        
-        ban.duration_in_days = request.json["duration"]
-
-        db.session.commit()
-        for board_id in affected_boards:
-            banned_board = LimitedIPBannedOn(board_id, ban.id)
-            db.session.add(banned_board)
+    for board_id in affected_boards:
+        banned_board = IPBannedOn(board_id, ban.id)
+        db.session.add(banned_board)
 
     db.session.commit()
     return "", 200
-    

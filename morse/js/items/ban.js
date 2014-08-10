@@ -81,18 +81,12 @@ function rebindBanEditActions (){
     var duration = parseInt(banItem.find(".ban-duration").val())
     var reason = $(".ban-reason").html();
     
-    var ALL_BOARDS = 0;
     var affectedBoards = [];
 
-    var unchecked = banItem.find(".ban-affected-boards-edit input:checkbox:not(:checked)")
-    if (unchecked.length === 0){
-      affectedBoards = [ALL_BOARDS]
-    }else{
-      banItem.find(".ban-affected-boards-edit input:checkbox:checked").each(function(){
-        var board_id = parseInt($(this).attr("board-id"))
-        affectedBoards.push(board_id);
-      }); 
-    }
+    banItem.find(".ban-affected-boards-edit input:checkbox:checked").each(function(){
+      var board_id = parseInt($(this).attr("board-id"))
+      affectedBoards.push(board_id);
+    }); 
 
     var permanent = banItem.find(".ban-option-permanent").is(":checked");
 
@@ -102,18 +96,10 @@ function rebindBanEditActions (){
         data.duration = duration;
     }
     var json = $.toJSON(data);
-
-    var urlPrefix = ""
-    if (banItem.attr("permanent") === "True"){
-      urlPrefix = "/ip-bans/permanent/"
-    }else{
-      urlPrefix = "/ip-bans/limited/"
-    }
-
     var banID = banItem.attr("ban-id")
 
     $.ajax({
-      url: urlPrefix + banID + "/update",
+      url: "/ip-bans/" + banID + "/update",
       data: json,
       error: handleAjaxErrorBy( alertGlobal ),
       success: function () { window.location.reload();  }

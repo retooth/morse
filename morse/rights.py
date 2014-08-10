@@ -17,7 +17,7 @@
 
 from flask import request, render_template
 from flask.ext.login import current_user
-from models.bans import LimitedIPBan, PermaIPBan, LimitedUserBan, PermaUserBan
+from models.bans import IPBan, UserBan 
 from protocols import ajax_triggered
 from datetime import datetime
 
@@ -46,27 +46,23 @@ def check_ban (board_id = ALL_BOARDS):
 
     ip = request.remote_addr
 
-    banned = LimitedIPBan.query.all()
+    banned = IPBan.query.all()
     for ban in banned:
-        if (ip in ban.ip_range and
+        if (ip in ban.affected_ips and
            board_id in ban.affected_board_ids and
-           ban.expires > datetime.now()):
-            raise LimitedBan(ban.reason, ban.expires)
+           not ban.has_expired):
+            if ban.is_permanent:
+                raise PermaBan(b.reason)
+            else:
+                raise LimitedBan(b.reason, b.expires)
 
-    banned = PermaIPBan.query.all()
+    banned = UserBan.query.filter(UserBan.user_id == current_user.id).all()
     for ban in banned:
-        if (ip in ban.ip_range and 
-           board_id in ban.affected_board_ids):
-            raise PermaBan(ban.reason)
-
-    banned = LimitedUserBan.query.filter(LimitedUserBan.user_id == current_user.id).all()
-    for ban in banned:
-        if ban.expires > datetime.now():
-            raise LimitedBan(b.reason, b.expires)
-
-    ban = PermaUserBan.query.filter(PermaUserBan.user_id == current_user.id).first()
-    if ban:
-        raise PermaBan(ban.reason)
+        if not ban.has_expired:
+            if ban.is_permanent:
+                raise PermaBan(b.reason)
+            else:
+                raise LimitedBan(b.reason, b.expires)
 
     # if we have a specific board as argument 
     # ALSO check if a global ban applies
