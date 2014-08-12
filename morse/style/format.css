@@ -21,3 +21,6 @@ blockquote{
   padding:5pt;
 }
 
+.pseudo-selected{
+  background:#ccf;
+}
