@@ -61,6 +61,20 @@
       font-size:10pt !important;
       margin-right:2pt;
     }
+
+    .reset-edited-post{
+      cursor:pointer;
+      font-weight:bold;
+      background: #F0AD57;
+      border:1pt solid #ccc;
+      border-radius: 2pt;
+      float:left;
+      color:#000;
+      padding:5pt;
+      font-size:10pt !important;
+      margin-right:2pt;
+    }
+
     .format-tool{
       border:1pt solid #ccc;
       border-radius:2pt !important;

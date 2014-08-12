@@ -154,6 +154,9 @@ function rebindPostItemEvents (){
 
   });
 
+  $(".reset-edited-post").off("click");
+  $(".reset-edited-post").on("click", resetAllEditDialogs);
+
   $(".submit-edited-post").off("click");
   $(".submit-edited-post").on("click", function(){
 
