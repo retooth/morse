@@ -104,7 +104,7 @@ def update_group_rights ():
 
     group.may_edit = request.json["mayEdit"]
     group.may_close = request.json["mayClose"]
-    group.may_stick = request.json["mayStick"]
+    group.may_pin_topics = request.json["mayPinTopics"]
     db.session.commit()
 
     return ""

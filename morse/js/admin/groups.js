@@ -250,9 +250,9 @@ $(document).on("ready", function () {
       console.log(changed.attr("alt"));
       var mayEdit  = flagMenu.find(".may-edit").is(":checked");
       var mayClose = flagMenu.find(".may-close").is(":checked");
-      var mayStick = flagMenu.find(".may-stick").is(":checked");
+      var mayPinTopics = flagMenu.find(".may-pin-topics").is(":checked");
 
-      var data = new Object({ groupID: groupID, mayEdit : mayEdit, mayClose : mayClose, mayStick : mayStick });
+      var data = new Object({ groupID: groupID, mayEdit : mayEdit, mayClose : mayClose, mayPinTopics : mayPinTopics });
       console.log(data);
 
       $.ajax({
