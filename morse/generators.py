@@ -30,9 +30,15 @@ def TopicListGenerator (board_id):
             if topic_filter == filt.id:
                 query = filt.filter(query)
 
+    sticky = query.filter(Topic.sticky == True).all()
+
     # TODO: sorting preferences
     # TODO: guest preferences (cookies)
-    return query.all()
+    not_sticky = query.filter(Topic.sticky == False).all()
+
+    topics = sticky + not_sticky
+
+    return topics
 
 def PostListGenerator (topic_id):
 

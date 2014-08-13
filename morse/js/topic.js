@@ -265,6 +265,32 @@ $(document).on("ready", function () {
     });
   });
 
+  $("#pin-topic").click(function(){
+    var topicID = $("#topic").attr("topic-id");
+    var that = $(this);
+
+    $.ajax({
+      url: "/topic/" + topicID + "/pin",
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        switchButton(that);
+      },
+    });
+  });
+
+  $("#unpin-topic").click(function(){
+    var topicID = $("#topic").attr("topic-id");
+    var that = $(this);
+
+    $.ajax({
+      url: "/topic/" + topicID + "/unpin",
+      error: handleAjaxErrorBy( alertGlobal ),
+      success: function(response){
+        switchButton(that);
+      },
+    });
+  });
+
 });
 
 function showNewContributionField (){

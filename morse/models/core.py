@@ -151,6 +151,19 @@ class User (db.Model):
                 break
         return False
 
+    @property
+    def may_pin_topics (self):
+        """ signifies if user may pin topics. This is typically a moderator's right.
+        This property is read only. To change it for a specific user, move him/her
+        to the moderator / admin group or create a group with the may_pin_topics flag """
+        relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
+        for r in relations:
+            group = Group.query.get(r.group_id)
+            if group.may_pin_topics:
+                return True
+                break
+        return False
+
     def may_post_in (self, board):
         """ signifies if a user may post in a specific board. """
         
@@ -337,18 +350,18 @@ class Group (db.Model):
     may_structure = db.Column(db.Boolean)
     may_edit = db.Column(db.Boolean)
     may_close = db.Column(db.Boolean)
-    may_stick = db.Column(db.Boolean)
+    may_pin_topics = db.Column(db.Boolean)
     may_ban = db.Column(db.Boolean)
     label = db.Column(db.Integer)
 
     def __init__ (self, name, may_structure = False, \
                   may_edit = False, may_close = False, \
-                  may_stick = False, may_ban = False, label=0):
+                  may_pin_topics = False, may_ban = False, label=0):
         self.name = name
         self.may_structure = may_structure
         self.may_edit = may_edit
         self.may_close = may_close
-        self.may_stick = may_stick
+        self.may_pin_topics = may_pin_topics
         self.may_ban = may_ban
         self.label = label
 

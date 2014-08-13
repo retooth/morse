@@ -127,6 +127,50 @@ def reopen_topic (topic_str):
     db.session.commit()
     return jsonify(openedID=topic_id)
 
+@app.route('/topic/<topic_str>/pin', methods=['POST'])
+@login_required
+@certain_rights_required(may_pin_topics=True)
+@ajax_triggered
+def pin_topic (topic_str):
+    """ 
+    pins a topic.
+    this function is called by the javascript event handler 
+    for .pin-topic in board.js as well as by the event
+    handler for #pin-topic in topic.js
+    """
+    topic_id = int(topic_str.split("-")[0])
+
+    # XXX: check for bans? should moderators be bannable?
+    topic = Topic.query.get(topic_id)
+    if not topic:
+        return "notfound", 404
+
+    topic.sticky = True
+    db.session.commit()
+    return jsonify(pinnedID=topic_id)
+
+@app.route('/topic/<topic_str>/unpin', methods=['POST'])
+@login_required
+@certain_rights_required(may_pin_topics=True)
+@ajax_triggered
+def unpin_topic (topic_str):
+    """ 
+    unpins a topic.
+    this function is called by the javascript event handler 
+    for .unpin-topic in board.js as well as by the event
+    handler for #unpin-topic in topic.js
+    """
+    # XXX: check for bans? should moderators be bannable?
+    topic_id = int(topic_str.split("-")[0])
+
+    topic = Topic.query.get(topic_id)
+    if not topic:
+        return "notfound", 404
+
+    topic.sticky = False
+    db.session.commit()
+    return jsonify(unpinnedID=topic_id)
+
 @app.route('/topic/<topic_str>/follow', methods=['POST'])
 @login_required
 @ajax_triggered
