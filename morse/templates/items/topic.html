@@ -1,6 +1,18 @@
 <div topic-id="{{ topic.id }}" topic-closed="{{ topic.closed }}" topic-followed="{{ topic.followed }}" class="topic-item 
-    {% if topic.closed %} topic-closed {% endif %} {% if topic.isfresh %} fresh {% endif %}
+    {% if topic.closed %} topic-item-closed {% endif %} 
+    {% if topic.sticky %} topic-item-sticky {% endif %}
+    {% if topic.isfresh %} topic-item-fresh {% endif %}
     ">
+  {% if topic.sticky %}
+    <div class="topic-sticky">
+      <span class="icon"></span>
+    </div>
+  {% endif %}
+  {% if topic.closed %}
+    <div class="topic-closed">
+      <span class="icon"></span>
+    </div>
+  {% endif %}
   <a class="no-text-decoration" href="/topic/{{ topic.seostring }}">
     <div class="topic-title">
      {{ topic.title | safe }}

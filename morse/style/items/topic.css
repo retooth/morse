@@ -33,15 +33,25 @@
   background:#fff;
 }
 
-.topic-closed{
-  background:#DB3026;
-  color:#fff;
-}
+    .topic-sticky {
+      float:right;
+      padding:5pt;
+    }
 
-.topic-closed:hover {
-  background:#DE3329;
-  color:#fff;
-}
+    .topic-sticky span:before {
+      content: "\f08d";
+      color:#888;
+    }
+
+    .topic-closed {
+      float:right;
+      padding:5pt;
+    }
+
+    .topic-closed span:before {
+      content: "\f023";
+      color:#888;
+    }
 
     .topic-title{
       padding:5pt;
