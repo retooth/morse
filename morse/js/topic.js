@@ -184,7 +184,7 @@ $(document).on("ready", function () {
   var slot = "/topic/" + $("#topic").attr("topic-id") + "/posts.json";
   var builder = "/topic/" + $("#topic").attr("topic-id") + "/certainposts";
   var scrolling = new InfiniteScrolling();
-  scrolling.init(".post-item", slot, builder, [rebindToolTipEvents, rebindPostItemEvents, 
+  scrolling.init(".post-item", slot, builder, [rebindToolTipEvents, rebindPostItemEvents, rebindPostEditingEvents, 
                                               rebindPostToolEvents, readVisiblePosts, redrawPostHighlighting], 3000, 20, 5);
 
   hash = window.location.hash;
@@ -226,6 +226,7 @@ $(document).on("ready", function () {
   });
 
   rebindPostItemEvents();
+  rebindPostEditingEvents();
 
   $("#new-post-button").click(function(){
     showNewContributionField();
@@ -299,6 +300,7 @@ function redrawPostHighlighting (){
       });
 
       rebindPostItemEvents();
+      rebindPostEditingEvents();
 
   }else{
 

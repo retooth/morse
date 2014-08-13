@@ -13,7 +13,7 @@
       <div class="profile-image" style="background-image:url('{{ post.creator.profileimage }}')"></div>
       <div class="post-creator">{{ post.creator.username }} wrote</div>
     {% endif %}
-    <div class="post-tools">
+    <div class="post-actions">
       <button class="post-action-context post-action"><span class="icon">&#xf0e8;</span></button>
       {% if current_user.may_post_in(post.topic.board) %}
         <button class="post-action-quote post-action"><span class="icon">&#xf10e;</span></button>
@@ -22,6 +22,9 @@
         {% endif %}
         <button class="post-action-reply post-action"><span class="icon">&#xf112;</span></button>
       {% endif %}
+    </div>
+    <div class="post-actions-edit-mode">
+      <button class="post-action-close-edit-mode post-action"><span class="icon">&#xf00d;</span></button>
     </div>
   <div class="clear"></div>
   </div>

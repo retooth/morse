@@ -16,57 +16,59 @@
 */
 
 function rebindPostItemEvents (){
-  
+  unbindPostItemEvents();
+  bindPostItemEvents();
+}
+
+function unbindPostItemEvents(){
   $(".post-item").off("mouseenter");
+  $(".post-item").off("mouseleave");
+  $(".post-item").off("tapone");
+  $(".post").off("mouseup");
+  $(document).off("mouseup");
+  $(".post-action-reply").off("click");
+  $(".post-action-context").off("click");
+  $(".post-item-downlighted").off("click");
+  $(".post-action-edit").off("click");
+}
+
+function bindPostItemEvents (){
+  
   $(".post-item").on("mouseenter", function(){
     $(this).addClass("post-item-selected");
-    var postTools = $(this).find(".post-tools");
+    var postActions = $(this).find(".post-actions");
     var timer = setTimeout(function(){
-      postTools.fadeIn(400);
+      postActions.fadeIn(400);
     }, 1000);
     $(this).data("toolRevealDelay", timer);
   });
 
-  $(".post-item").off("mouseleave");
   $(".post-item").on("mouseleave", function(){
     var timer = $(this).data("toolRevealDelay");
     clearTimeout(timer);
-    var postTools = $(this).find(".post-tools");
-    if (postTools.is(":visible")){
-      postTools.fadeOut(400);
-    }
-    $(this).removeClass("post-item-selected");
-  });
-
-  $(".post-item").off("mouseleave");
-  $(".post-item").on("mouseleave", function(){
-    var timer = $(this).data("toolRevealDelay");
-    clearTimeout(timer);
-    var postTools = $(this).find(".post-tools");
-    if (postTools.is(":visible")){
-      postTools.fadeOut(400);
+    var postActions = $(this).find(".post-actions");
+    if (postActions.is(":visible")){
+      postActions.fadeOut(400);
     }
     $(this).removeClass("post-item-selected");
   });
 
   /* mobile support */
-  $(".post-item").off("tapone");
   $(".post-item").on("tapone", function(){
     $(".post-item").removeClass("post-item-selected");
     $(this).addClass("post-item-selected");
-    $(".post-tools").fadeOut(200);
-    var postTools = $(this).find(".post-tools");
-    postTools.fadeIn(200);
+    $(".post-actions").fadeOut(200);
+    var postActions = $(this).find(".post-actions");
+    postActions.fadeIn(200);
   });
 
-  $(".post").off("mouseup");
   $(".post").on("mouseup", function(){
       var postID = $(this).parents(".post-item").attr("post-id");
       var otherPosts = $(".post-item:not([post-id=" + postID + "])")
       otherPosts.find(".post-action-quote").fadeOut(0);
 
       var selection = getSelection().getRangeAt(0);
-      var postTools = $(this).parents(".post-item").find(".post-tools");
+      var postActions = $(this).parents(".post-item").find(".post-actions");
       var quoteAction = postTools.find(".post-action-quote");
       /* FIXME: if i click on the selection itself, it gets
       visually unselected, but the endOffset and startOffset
@@ -79,7 +81,6 @@ function rebindPostItemEvents (){
       }
   });
 
-  $(document).off("mouseup");
   $(document).on("mouseup",function (){
     var selection = getSelection().getRangeAt(0);
     /* check, in which element text was selected */
@@ -98,7 +99,6 @@ function rebindPostItemEvents (){
     return true;
   });
 
-  $(".post-action-reply").off("click");
   $(".post-action-reply").on("click", function() {
     var postItem = $(this).parents(".post-item");
     putNewContributionFieldAfter(postItem);
@@ -106,30 +106,17 @@ function rebindPostItemEvents (){
     createPostReference($("#new-contribution"), postItem.attr("post-id"));
   });
 
-  $(".post-action-context").off("click");
   $(".post-action-context").on("click", function() {
     var postItem = $(this).parents(".post-item");
     var postID = postItem.attr("post-id");
     fetchContext(postID, highlightPosts); 
   });
 
-  $(".post-item-downlighted").off("click");
   $(".post-item-downlighted").on("click", function() {
     $("#topic").attr("highlighting-active", "False");
     redrawPostHighlighting();
   });
 
-  function resetAllEditDialogs (){
-    $(".post").attr("contenteditable", "False");
-    $(".post[original-content]").each(function(){
-      var originalContent = $(this).attr("original-content")
-      $(this).html(originalContent);
-    });
-    $(".post-item .tool-footer").slideUp(200);
-    $("#editable-topic-title").slideUp(200);
-  }
-
-  $(".post-action-edit").off("click");
   $(".post-action-edit").on("click", function() {
 
     resetAllEditDialogs();
@@ -141,6 +128,10 @@ function rebindPostItemEvents (){
     his mind) */
     var content = post.html()
     post.attr("original-content", content);
+
+    unbindPostItemEvents();
+    postItem.find(".post-actions").slideUp(0);
+    postItem.find(".post-actions-edit-mode").slideDown(0);
 
     /* show edit dialog */
     post.attr("contenteditable", "True");
@@ -154,8 +145,24 @@ function rebindPostItemEvents (){
 
   });
 
-  $(".reset-edited-post").off("click");
-  $(".reset-edited-post").on("click", resetAllEditDialogs);
+}
+
+function resetAllEditDialogs (){
+  $(".post").attr("contenteditable", "False");
+  $(".post[original-content]").each(function(){
+    var originalContent = $(this).attr("original-content")
+    $(this).html(originalContent);
+  });
+  $(".post-item .tool-footer").slideUp(200);
+  $("#editable-topic-title").slideUp(200);
+  bindPostItemEvents();
+  $(".post-actions-edit-mode").slideUp(0);
+}
+
+function rebindPostEditingEvents (){
+
+  $(".post-action-close-edit-mode").off("click");
+  $(".post-action-close-edit-mode").on("click", resetAllEditDialogs);
 
   $(".submit-edited-post").off("click");
   $(".submit-edited-post").on("click", function(){
@@ -163,6 +170,9 @@ function rebindPostItemEvents (){
     var postItem = $(this).parents(".post-item");
     var postID = postItem.attr("post-id");
     var post = postItem.find(".post");
+
+    bindPostItemEvents();
+    postItem.find(".post-actions-edit-mode").slideUp(0);
 
     /* change post content */
     if (postItem.attr("first-post") === "True"){
