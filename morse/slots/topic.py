@@ -85,7 +85,7 @@ def post (topic_str):
 
 @app.route('/topic/<topic_str>/close', methods=['POST'])
 @login_required
-@certain_rights_required(may_close=True)
+@certain_rights_required(may_close_topics=True)
 @ajax_triggered
 def close_topic (topic_str):
     """ 
@@ -107,7 +107,7 @@ def close_topic (topic_str):
 
 @app.route('/topic/<topic_str>/reopen', methods=['POST'])
 @login_required
-@certain_rights_required(may_close=True)
+@certain_rights_required(may_close_topics=True)
 @ajax_triggered
 def reopen_topic (topic_str):
     """ 

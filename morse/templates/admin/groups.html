@@ -55,14 +55,14 @@
     <div class="group-property-rights">
       {% if not (group.id == 3 or group.id == 4) %}
         <div class="option">
-          <input id="{{ group.id }}-may-close" type="checkbox" class="group-right may-close" {% if group.may_close %} checked {% endif %}/>
-          <label for="{{ group.id }}-may-close">
+          <input id="{{ group.id }}-may-close-topics" type="checkbox" class="group-right may-close-topics" {% if group.may_close_topics %} checked {% endif %}/>
+          <label for="{{ group.id }}-may-close-topics">
             <span>May close threads</span>
           </label>
         </div>
         <div class="option">
-          <input id="{{ group.id }}-may-edit" type="checkbox" class="group-right may-edit" {% if group.may_edit %} checked {% endif %}/>
-          <label for="{{ group.id }}-may-edit">
+          <input id="{{ group.id }}-may-edit-all-posts" type="checkbox" class="group-right may-edit-all-posts" {% if group.may_edit_all_posts %} checked {% endif %}/>
+          <label for="{{ group.id }}-may-edit-all-posts">
            <span>May edit arbitrary posts</span>
           </label>
         </div>

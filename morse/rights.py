@@ -138,7 +138,7 @@ class admin_rights_required (object):
                 return render_template('4xx/403-default.html', current_user = current_user), 403
         return self.f(*args, **kwargs)
 
-def certain_rights_required (may_close = False, may_edit = False, may_pin_topics = False, may_ban = False):
+def certain_rights_required (may_close_topics = False, may_edit_all_posts = False, may_pin_topics = False, may_ban = False):
 
     """ 
     certain_rights_required is a function decorator that makes sure,
@@ -149,7 +149,7 @@ def certain_rights_required (may_close = False, may_edit = False, may_pin_topics
     the privilige flag defined in models.Group
 
     Example:
-    @certain_rights_required(may_close=True)
+    @certain_rights_required(may_close_topics=True)
     def foo ():
         pass
     """
@@ -158,15 +158,15 @@ def certain_rights_required (may_close = False, may_edit = False, may_pin_topics
     # For the inner workings see _certain_rights_required    
 
     def _wrapper (f):
-        return _certain_rights_required(f, may_close, may_edit, may_pin_topics, may_ban)
+        return _certain_rights_required(f, may_close_topics, may_edit_all_posts, may_pin_topics, may_ban)
     return _wrapper
 
 
 class _certain_rights_required (object):
 
-    def __init__ (self, f, may_close, may_edit_all_posts, may_pin_topics, may_ban):
+    def __init__ (self, f, may_close_topics, may_edit_all_posts, may_pin_topics, may_ban):
         self.f = f
-        self.required = { 'may_close': may_close, 'may_edit_all_posts': may_edit_all_posts, 
+        self.required = { 'may_close_topics': may_close_topics, 'may_edit_all_posts': may_edit_all_posts, 
                           'may_pin_topics': may_pin_topics, 'may_ban': may_ban }
         # needed for flask integration
         self.__name__ = self.f.__name__

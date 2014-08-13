@@ -102,8 +102,8 @@ def update_group_rights ():
     if not group:
         return "groupnotfound", 404
 
-    group.may_edit = request.json["mayEdit"]
-    group.may_close = request.json["mayClose"]
+    group.may_edit_all_posts = request.json["mayEditAllPosts"]
+    group.may_close_topics = request.json["mayCloseTopics"]
     group.may_pin_topics = request.json["mayPinTopics"]
     db.session.commit()
 

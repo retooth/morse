@@ -248,11 +248,12 @@ $(document).on("ready", function () {
       var groupID = groupMenu.attr("group-id");
       var changed = $(this);
       console.log(changed.attr("alt"));
-      var mayEdit  = flagMenu.find(".may-edit").is(":checked");
-      var mayClose = flagMenu.find(".may-close").is(":checked");
+      var mayEditAllPosts  = flagMenu.find(".may-edit-all-posts").is(":checked");
+      var mayCloseTopics = flagMenu.find(".may-close-topics").is(":checked");
       var mayPinTopics = flagMenu.find(".may-pin-topics").is(":checked");
 
-      var data = new Object({ groupID: groupID, mayEdit : mayEdit, mayClose : mayClose, mayPinTopics : mayPinTopics });
+      var data = new Object({ groupID: groupID, mayEditAllPosts : mayEditAllPosts, 
+                              mayCloseTopics : mayCloseTopics, mayPinTopics : mayPinTopics });
       console.log(data);
 
       $.ajax({

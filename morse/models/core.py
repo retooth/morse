@@ -120,20 +120,20 @@ class User (db.Model):
         relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
         for r in relations:
             group = Group.query.get(r.group_id)
-            if group.may_edit:
+            if group.may_edit_all_posts:
                 return True
                 break
         return False
 
     @property
-    def may_close (self):
-        """ signifies if user may close threads. This is typically a moderator's right.
+    def may_close_topics (self):
+        """ signifies if user may close topics. This is typically a moderator's right.
         This property is read only. To change it for a specific user, move him/her
-        to the moderator / admin group or create a group with the may_close flag """
+        to the moderator / admin group or create a group with the may_close_topics flag """
         relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
         for r in relations:
             group = Group.query.get(r.group_id)
-            if group.may_close:
+            if group.may_close_topics:
                 return True
                 break
         return False
@@ -142,7 +142,7 @@ class User (db.Model):
     def may_ban (self):
         """ signifies if user may ban other users. This is typically a moderator's right.
         This property is read only. To change it for a specific user, move him/her
-        to the moderator / admin group or create a group with the may_close flag """
+        to the moderator / admin group or create a group with the may_ban flag """
         relations = GroupMember.query.filter(GroupMember.user_id == self.id).all() 
         for r in relations:
             group = Group.query.get(r.group_id)
@@ -240,7 +240,7 @@ class Guest (AnonymousUserMixin):
         return False
 
     @property
-    def may_close (self):
+    def may_close_topics (self):
         return False
 
     @property
@@ -348,19 +348,19 @@ class Group (db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     may_structure = db.Column(db.Boolean)
-    may_edit = db.Column(db.Boolean)
-    may_close = db.Column(db.Boolean)
+    may_edit_all_posts = db.Column(db.Boolean)
+    may_close_topics = db.Column(db.Boolean)
     may_pin_topics = db.Column(db.Boolean)
     may_ban = db.Column(db.Boolean)
     label = db.Column(db.Integer)
 
     def __init__ (self, name, may_structure = False, \
-                  may_edit = False, may_close = False, \
+                  may_edit_all_posts = False, may_close_topics = False, \
                   may_pin_topics = False, may_ban = False, label=0):
         self.name = name
         self.may_structure = may_structure
-        self.may_edit = may_edit
-        self.may_close = may_close
+        self.may_edit_all_posts = may_edit
+        self.may_close_topics = may_close_topics
         self.may_pin_topics = may_pin_topics
         self.may_ban = may_ban
         self.label = label
