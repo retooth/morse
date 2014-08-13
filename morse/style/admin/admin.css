@@ -15,10 +15,11 @@
     along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#adminwrapper{
+#admin-wrapper{
   border-radius: 3pt;
   border: 1pt solid #ccc;
   padding:5pt 5pt 5pt 5pt;
+  margin-top:5pt;
   margin-bottom:5pt;
   background:#fcfcfc;
   box-shadow:1px 1px #ddd;
