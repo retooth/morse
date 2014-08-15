@@ -359,7 +359,7 @@ class Group (db.Model):
                   may_pin_topics = False, may_ban = False, label=0):
         self.name = name
         self.may_structure = may_structure
-        self.may_edit_all_posts = may_edit
+        self.may_edit_all_posts = may_edit_all_posts
         self.may_close_topics = may_close_topics
         self.may_pin_topics = may_pin_topics
         self.may_ban = may_ban
