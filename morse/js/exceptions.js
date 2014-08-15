@@ -56,7 +56,7 @@ function alertAccountSettings (id){
 
   /* FIXME: develop clean highlighting system */
   if (id === "wrongpassword"){
-    $("#oldpassword").addClass("redoutline");
+    $("#oldpassword").addClass("invalid-input");
   }
 
 }

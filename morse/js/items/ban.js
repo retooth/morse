@@ -101,7 +101,29 @@ function rebindBanEditActions (){
     $.ajax({
       url: "/ip-bans/" + banID + "/update",
       data: json,
-      error: handleAjaxErrorBy( alertGlobal ),
+      error: function (response){
+
+        // hide previous invalid input markers
+        $(".invalid-input").removeClass("invalid-input");
+
+        var jsonString = response.responseText;
+        errorMessage = $.parseJSON(jsonString);
+
+        if (errorMessage.errorCode === 2){
+          switch (errorMessage.rejectedAttribute){
+            case "IPRange":
+              banItem.find(".ban-ip-range").addClass("invalid-input");
+              break;
+            case "duration":
+              banItem.find(".ban-duration").addClass("invalid-input");
+              break;
+            case "reason":
+              banItem.find(".ban-reason").addClass("invalid-input");
+              break;
+          }
+        }
+
+      },
       success: function () { window.location.reload();  }
     });
 

@@ -18,11 +18,13 @@
 from . import app
 from flask import request
 from flask.ext.login import login_required
+from ..validators import json_input, Boolean
 from ..protocols import ajax_triggered
 from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
 
 @app.route('/filter/topics', methods=['POST'])
 @login_required
+@json_input({"filterStatus": Boolean()})
 @ajax_triggered
 def update_topic_filters ():
     """ 
@@ -40,6 +42,7 @@ def update_topic_filters ():
 @app.route('/filter/posts', methods=['POST'])
 @login_required
 @ajax_triggered
+@json_input({"filterStatus": Boolean()})
 def update_post_filters ():
     """ 
     updates post filters for current user

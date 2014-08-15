@@ -16,6 +16,7 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import app
+from ..validators import json_input, List, Integer, String
 from ..protocols import ajax_triggered
 from flask import request, jsonify
 from flask.ext.login import current_user, login_required
@@ -24,6 +25,7 @@ from ..models import db
 from ..wrappers import PostWrapper
 
 @app.route('/posts/read', methods=['POST'])
+@json_input({"postIDs": List(Integer)})
 @ajax_triggered
 def read_posts ():
     """ 
@@ -50,8 +52,9 @@ def read_posts ():
     return ""
 
 @app.route('/post/<int:post_id>/edit', methods=['POST'])
-@ajax_triggered
 @login_required
+@json_input({"editedContent": String()})
+@ajax_triggered
 def edit_post (post_id):
     """ 
     marks posts as read. this function is called via ajax

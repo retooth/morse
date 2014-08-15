@@ -19,6 +19,7 @@ from . import app
 from flask.ext.login import current_user, login_required
 from flask import jsonify, request
 from ..rights import check_ban, possibly_banned
+from ..validators import json_input, String
 from ..protocols import ajax_triggered
 from ..models import db
 from ..models.core import Board
@@ -71,6 +72,7 @@ def get_topics (board_str):
 @app.route('/board/<board_str>/start-topic', methods=['POST'])
 @possibly_banned
 @ajax_triggered
+@json_input({"title": String(), "text": String()})
 def start_topic (board_str):
     """ 
     Creates a new topic. Is called by the javascript event

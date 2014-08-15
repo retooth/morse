@@ -32,7 +32,8 @@ $(document).on("ready", function () {
     /* collect ids of visible posts */
     var topicIDs = Array();
     topicItems.each(function () {
-      topicID = $(this).attr("topic-id");
+      topicIDString = $(this).attr("topic-id");
+      topicID = parseInt(topicIDString);
       topicIDs.push(topicID);
     });
 

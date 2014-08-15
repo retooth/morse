@@ -34,7 +34,8 @@ $(document).on("ready", function () {
     postfooters.each(function (){
       var postItem = $(this).parent();
       if (postItem.hasClass("fresh")){
-        var postID = postItem.attr("post-id");
+        var postIDString = postItem.attr("post-id");
+        var postID = parseInt(postIDString);
         postIDs.push(postID);
       }
     });

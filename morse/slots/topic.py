@@ -19,6 +19,7 @@ from . import app
 from flask.ext.login import login_required, current_user
 from flask import jsonify, request
 from ..rights import certain_rights_required, check_ban, possibly_banned
+from ..validators import json_input, String, Integer, List
 from ..protocols import ajax_triggered
 from ..models import db
 from ..models.core import Board
@@ -29,6 +30,7 @@ from sqlalchemy import not_
 
 @app.route('/topic/<topic_str>/post', methods=['POST'])
 @possibly_banned
+@json_input({"text": String(), "referencedPostIDs": List(Integer())})
 @ajax_triggered
 def post (topic_str):
     """ 
@@ -68,11 +70,7 @@ def post (topic_str):
     db.session.add(post)
     db.session.commit()
 
-    for referenced_post_id_string in request.json["referencedPostIDs"]:
-        try:
-            referenced_post_id = int(referenced_post_id_string)
-        except ValueError:
-            continue
+    for referenced_post_id in request.json["referencedPostIDs"]:
         reference = PostReference(post.id, referenced_post_id)
         db.session.add(reference)
 
@@ -265,6 +263,7 @@ def unread_post_stats (topic_str):
     return jsonify(unreadCount = unread_count, firstUnreadID = first_unread_id)    
 
 @app.route('/topics/discover', methods=['POST'])
+@json_input({"topicIDs": List(Integer())})
 @ajax_triggered
 def discover_topics ():
     """ 
@@ -292,6 +291,7 @@ def discover_topics ():
 
 @app.route('/topic/<topic_str>/change-title', methods=['POST'])
 @login_required
+@json_input({"newTitle": String()})
 @ajax_triggered
 def change_topic_title (topic_str):
     """ 

@@ -146,8 +146,8 @@ button::-moz-focus-inner {
   background: #ADE057 !important;
 }
 
-.redoutline{
-  border-color:#F08D37 !important;
+.invalid-input{
+  border:2pt solid #F08D37 !important;
 }
 
 input[type="checkbox"] {

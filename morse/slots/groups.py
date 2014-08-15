@@ -20,6 +20,7 @@ from flask import request, jsonify
 from flask.ext.login import login_required
 from ..rights import admin_rights_required
 from ..models import db
+from ..validators import json_input, String, Integer, Boolean
 from ..protocols import ajax_triggered
 from ..models.core import Board, Group, GroupMode, GroupMember
 from ..enum import DEFAULT_MODE_DUMMY_ID
@@ -27,6 +28,7 @@ from ..enum import DEFAULT_MODE_DUMMY_ID
 @app.route('/groups/adduser', methods=['POST'])
 @login_required
 @admin_rights_required
+@json_input({"userID": Integer(), "groupID": Integer()})
 @ajax_triggered
 def add_user_to_group():
     """
@@ -49,6 +51,7 @@ def add_user_to_group():
 @app.route('/groups/removeuser', methods=['POST'])
 @login_required
 @admin_rights_required
+@json_input({"userID": Integer(), "groupID": Integer()})
 @ajax_triggered
 def remove_user_from_group():
     """
@@ -70,6 +73,7 @@ def remove_user_from_group():
 @app.route('/groups/changelabel', methods=['POST'])
 @login_required
 @admin_rights_required
+@json_input({"groupID": Integer(), "labelID": Integer()})
 @ajax_triggered
 def change_group_label():
     """
@@ -90,6 +94,10 @@ def change_group_label():
 @app.route('/groups/updaterights', methods=['POST'])
 @login_required
 @admin_rights_required
+@json_input({"groupID": Integer(), 
+             "mayEditAllPosts": Boolean(),
+             "mayCloseTopics": Boolean(),
+             "mayPinTopics": Boolean()})
 @ajax_triggered
 def update_group_rights ():
     """ 
@@ -112,6 +120,7 @@ def update_group_rights ():
 @app.route('/groups/create', methods=['POST'])
 @login_required
 @admin_rights_required
+@json_input({"name": String()})
 @ajax_triggered
 def create_group ():
     """ 
@@ -145,6 +154,7 @@ def create_group ():
 @app.route('/groups/delete', methods=['POST'])
 @login_required
 @admin_rights_required
+@json_input({"groupID": Integer()})
 @ajax_triggered
 def delete_group ():
     """ 

@@ -18,6 +18,7 @@
 from . import app
 from flask import request, jsonify
 from flask.ext.login import login_required
+from ..validators import json_input, IPRange, String, Integer, List 
 from ..rights import certain_rights_required
 from ..models import db
 from ..protocols import ajax_triggered
@@ -27,6 +28,9 @@ from ..enum import DEFAULT_MODE_DUMMY_ID
 @app.route('/ip-bans/new', methods=['POST'])
 @login_required
 @certain_rights_required(may_ban=True)
+@json_input({"IPRange": IPRange(), "reason": String(), 
+             "affectedBoards": List(Integer())},
+            {"duration": Integer()})
 @ajax_triggered
 def issue_ip_ban():
     """
@@ -58,6 +62,9 @@ def issue_ip_ban():
 @app.route('/ip-bans/<int:ban_id>/update', methods=['POST'])
 @login_required
 @certain_rights_required(may_ban=True)
+@json_input({"IPRange": IPRange(), "reason": String(), 
+             "affectedBoards": List(Integer())},
+            {"duration": Integer()})
 @ajax_triggered
 def update_ip_ban(ban_id):
     

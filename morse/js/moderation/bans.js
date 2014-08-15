@@ -58,7 +58,29 @@ $(document).on("ready", function () {
     $.ajax({
       url: "/ip-bans/new",
       data: json,
-      error: handleAjaxErrorBy( alertGlobal ),
+      error: function (response){
+
+        // hide previous invalid input markers
+        $(".invalid-input").removeClass("invalid-input");
+
+        var jsonString = response.responseText;
+        errorMessage = $.parseJSON(jsonString);
+
+        if (errorMessage.errorCode === 2){
+          switch (errorMessage.rejectedAttribute){
+            case "IPRange":
+              $("#new-ip-ban-ip-range").addClass("invalid-input");
+              break;
+            case "duration":
+              $("#new-ip-ban-duration").addClass("invalid-input");
+              break;
+            case "reason":
+              $("#new-ip-ban-reason").addClass("invalid-input");
+              break;
+          }
+        }
+
+      },
       success: function () { window.location.reload();  }
     });
   });

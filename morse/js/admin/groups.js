@@ -134,8 +134,10 @@ $(document).on("ready", function () {
     });
     $(".new-member-menu ul").off("click");
     $(".new-member-menu ul").on("click", "li", function(){
-      var userID = $(this).attr("user-id");
-      var groupID = $(this).parents(".group-properties-menu").attr("group-id");
+      var userIDString = $(this).attr("user-id");
+      var groupIDString = $(this).parents(".group-properties-menu").attr("group-id");
+      var userID = parseInt(userIDString);
+      var groupID = parseInt(groupIDString);
       addUserToGroup(userID, groupID);
     });
   }
@@ -211,12 +213,14 @@ $(document).on("ready", function () {
     $(".colorpicker").on("click", function(){
 
       var groupMenu = $(this).parents(".group-properties-menu");
-      var groupID = groupMenu.attr("group-id");
+      var groupIDString = groupMenu.attr("group-id");
+      var groupID = parseInt(groupIDString);
 
       var oldLabel = groupMenu.find(".picked");
-      var oldLabelID = oldLabel.attr("label-id");
+      var oldLabelIDString = oldLabel.attr("label-id");
       var newLabel = $(this);
-      var newLabelID = newLabel.attr("label-id");
+      var newLabelIDString = newLabel.attr("label-id");
+      var newLabelID = parseInt(newLabelIDString);
 
       var groupPennon = $("#group-navigation li[group-id=\"" + groupID + "\"] .group-pennon");
 
@@ -227,8 +231,8 @@ $(document).on("ready", function () {
         data: $.toJSON(data),
         error: handleAjaxErrorBy( alertGlobal ),
         success: function(){
-          groupPennon.removeClass("label-" + oldLabelID);
-          groupPennon.addClass("label-" + newLabelID);
+          groupPennon.removeClass("label-" + oldLabelIDString);
+          groupPennon.addClass("label-" + newLabelIDString);
           newLabel.addClass("picked");
           oldLabel.removeClass("picked");
         },
@@ -242,24 +246,24 @@ $(document).on("ready", function () {
   function rebindGroupFlagEvents (){
     $(".group-right").off("change");
     $(".group-right").on("change", function(){
+
       var flagMenu = $(this).parents(".group-property-rights");
       var groupMenu = $(this).parents(".group-properties-menu").first();
-      console.log(groupMenu);
-      var groupID = groupMenu.attr("group-id");
+
+      var groupIDString = groupMenu.attr("group-id");
+      var groupID = parseInt(groupIDString);
       var changed = $(this);
-      console.log(changed.attr("alt"));
+
       var mayEditAllPosts  = flagMenu.find(".may-edit-all-posts").is(":checked");
       var mayCloseTopics = flagMenu.find(".may-close-topics").is(":checked");
       var mayPinTopics = flagMenu.find(".may-pin-topics").is(":checked");
 
       var data = new Object({ groupID: groupID, mayEditAllPosts : mayEditAllPosts, 
                               mayCloseTopics : mayCloseTopics, mayPinTopics : mayPinTopics });
-      console.log(data);
-
       $.ajax({
         url: "/groups/updaterights",
         data: $.toJSON(data),
-        error: [handleAjaxErrorBy(alertGlobal), function(){
+        error: [handleAjaxErrorBy(alertGlobal), function(response){
           /* reset the flag */
           changed.prop("checked", !changed.prop("checked"));
         }],
@@ -356,7 +360,8 @@ $(document).on("ready", function () {
       groupMenu.on("click", "[dialog-control=\"1\"]", function(){
         hideDialogs();
 
-        var groupID = $(this).parents(".group-properties-menu").attr("group-id");
+        var groupIDString = $(this).parents(".group-properties-menu").attr("group-id");
+        var groupID = parseInt(groupIDString);
         var data = new Object({ groupID: groupID });
         var json = $.toJSON(data);
 

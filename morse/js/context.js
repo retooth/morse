@@ -26,7 +26,12 @@ function createPostReference (owner, postID){
 
 function getPostReferences (owner){
   var refString = owner.attr("references");
-  var refArray = refString.split(" ");
+  var refArray_strings = refString.split(" ");
+  var refArray = []
+  $.each(refArray, function(index, element){
+    var ID = parseInt(element);
+    refArray.push(ID);
+  });
   return refArray;
 }
 

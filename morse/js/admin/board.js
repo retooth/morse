@@ -22,7 +22,7 @@ $(document).on("ready", function () {
     if ($("#new-board-title").val() !== ""){
       return;
     }
-    $("#new-board-title").addClass("redoutline");
+    $("#new-board-title").addClass("invalid-input");
     $("#new-board-title").focus();
     alertBoardSettings("blanktitle");
     e.preventDefault();

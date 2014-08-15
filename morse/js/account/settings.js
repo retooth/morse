@@ -116,9 +116,9 @@ $(document).on("ready", function () {
 
   $("#updateaccount").click(function(){
 
-    $("#newpassword").removeClass("redoutline");
-    $("#newpasswordagain").removeClass("redoutline");
-    $("#oldpassword").removeClass("redoutline");
+    $("#newpassword").removeClass("invalid-input");
+    $("#newpasswordagain").removeClass("invalid-input");
+    $("#oldpassword").removeClass("invalid-input");
 
     $(this).addClass("buttonspinner");
 
@@ -127,8 +127,8 @@ $(document).on("ready", function () {
 
     if (newPassword !== newPasswordAgain){
       alertAccountSettings("passwordsdontmatch");
-      $("#newpassword").addClass("redoutline");
-      $("#newpasswordagain").addClass("redoutline");
+      $("#newpassword").addClass("invalid-input");
+      $("#newpasswordagain").addClass("invalid-input");
       $(this).removeClass("buttonspinner");
       return false;
     }
