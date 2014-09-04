@@ -69,7 +69,7 @@ function bindPostItemEvents (){
 
       var selection = getSelection().getRangeAt(0);
       var postActions = $(this).parents(".post-item").find(".post-actions");
-      var quoteAction = postTools.find(".post-action-quote");
+      var quoteAction = postActions.find(".post-action-quote");
       /* FIXME: if i click on the selection itself, it gets
       visually unselected, but the endOffset and startOffset
       remain the same */
