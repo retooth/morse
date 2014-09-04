@@ -177,7 +177,7 @@ function rebindPostEditingEvents (){
     /* change post content */
     if (postItem.attr("first-post") === "True"){
         var topicID = $("#topic").attr("topic-id");
-        var title = $("#editable-topic-title").html()
+        var title = $.trim( $("#editable-topic-title").html() );
         var data = new Object( { newTitle : title  } );
         var json = $.toJSON(data);
 
@@ -190,7 +190,9 @@ function rebindPostEditingEvents (){
     }
 
     /* change post content */
-    var content = post.html()
+    console.log(post.html());
+    var content = $.trim( post.html() );
+    console.log(content);
     var data = new Object( { editedContent : content  } );
     var json = $.toJSON(data);
 
