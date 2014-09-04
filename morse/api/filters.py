@@ -29,6 +29,7 @@ class ItemFilter (object):
     def filter (self, query):
         raise NotImplementedError(type(self) + " has no filter method")
 
+# TODO: in the next commit -> TopicItemFilter -> AbstractTopicFilter
 class TopicItemFilter (ItemFilter):
 
     @classmethod

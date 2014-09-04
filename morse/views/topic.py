@@ -39,17 +39,16 @@ def topic (topic_str):
 
     check_ban(topic.board_id)
 
-    topic = TopicWrapper(topic)
-
     if not current_user.may_read(topic.board):
         return render_template('4xx/403-default.html'), 403
 
-    topic.view_count += 1
+    topic.view_count = Topic.view_count + 1
     db.session.commit()
 
+    topic_with_user_context = TopicWrapper(topic)
     post_filter_dispatcher = PostFilterDispatcher()
     format_tool_dispatcher = FormatToolDispatcher()
 
-    return render_template("topic.html", topic = topic, 
+    return render_template("topic.html", topic = topic_with_user_context, 
                             post_filter_dispatcher = post_filter_dispatcher,
                             format_tool_dispatcher = format_tool_dispatcher)

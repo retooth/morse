@@ -106,3 +106,29 @@ class PostFilterDispatcher (object):
         for filter_blueprint in self._filters:
             filt = filter_blueprint()
             yield filt
+
+
+class PostTraitDispatcher (object):
+
+    __monostate = None
+
+    def __init__ (self):
+        if not PostTraitDispatcher.__monostate:
+            PostTraitDispatcher.__monostate = self.__dict__
+            self._traits = []
+        else:
+            self.__dict__ = PostTraitDispatcher.__monostate
+
+    def attach (self, trait):
+        # TODO: check for database inconsistency
+        self._traits.append(trait)
+
+    @property
+    def is_empty(self):
+        return self._traits == []
+
+    def __iter__ (self):
+        for trait_blueprint in self._traits:
+            filt = trait_blueprint()
+            yield filt
+

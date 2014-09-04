@@ -25,7 +25,7 @@ from ..models import db
 from ..wrappers import PostWrapper
 
 @app.route('/posts/read', methods=['POST'])
-@json_input({"postIDs": List(Integer)})
+@json_input({"postIDs": List(Integer())})
 @ajax_triggered
 def read_posts ():
     """ 
@@ -69,6 +69,22 @@ def edit_post (post_id):
 
     editedContent = request.json["editedContent"]
     post.content = editedContent
+
+    if post.traits_observed:
+
+        post.unobserve_traits()
+        post.calculate_traits()
+        db.session.commit()
+
+        post.observe_traits()
+        db.session.commit()
+
+        post.topic.calculate_interesting_value()
+        
+    else:
+
+        post.calculate_traits()
+    
     db.session.commit()
     return ""
 

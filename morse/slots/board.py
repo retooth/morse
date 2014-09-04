@@ -95,7 +95,6 @@ def start_topic (board_str):
     text = request.json["text"]
 
     topic = Topic(board_id, title)
-    # TODO: calculate .interesting
     db.session.add(topic)
     db.session.commit()
 
@@ -106,7 +105,16 @@ def start_topic (board_str):
     post = Post(current_user.id, text, topic.id, request.remote_addr)
     db.session.add(post)
     db.session.commit()
-    
+  
+    post.calculate_traits() 
+    db.session.commit()
+
+    post.observe_traits()
+    db.session.commit()
+
+    topic.calculate_interesting_value()
+    db.session.commit()
+
     if not current_user.is_anonymous():
         post = PostWrapper(post)
         post.read()

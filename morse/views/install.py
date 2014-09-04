@@ -5,7 +5,8 @@ from ..models import db
 from ..models.core import User, Group, GroupMember, GroupMode 
 from ..models.filters import TopicFilter, PostFilter
 from ..models.sorting import TopicSortingPreference
-from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher, PostTraitDispatcher
+from ..tasks import Task, TaskDispatcher, install_post_traits
 
 @app.route('/install')
 def install ():
@@ -56,5 +57,9 @@ def install ():
         db.session.add(filter_entry)
 
     db.session.commit()
+
+    task = Task(install_post_traits, PostTraitDispatcher())
+    task_dispatcher = TaskDispatcher()
+    task_dispatcher.start_task("install_post_traits", task)
 
     return redirect(url_for('index'))

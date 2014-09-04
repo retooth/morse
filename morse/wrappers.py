@@ -21,13 +21,7 @@ from models.discussion import Topic, FollowedTopic, Post, ReadPost, DiscoveredTo
 from flask.ext.login import current_user
 from collections import defaultdict
 from cache import TopicCache
-
-class Wrapper (object):
-
-    def __getattr__ (self, attr_name):
-        if attr_name in self.__dict__:
-            return self.__dict__[attr_name]
-        return getattr(self._inner, attr_name)
+from patterns import Wrapper
 
 class PostWrapper (Wrapper):
 

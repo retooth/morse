@@ -16,9 +16,12 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import db
+from ..api.dispatchers import PostTraitDispatcher
 from sqlalchemy import func
 from helpers import make_url_compatible
-from core import User, Guest
+from core import User, Guest, Board
+from traits import PostTraitValue, PostTraitSum
+from datetime import datetime
 
 class Post (db.Model):
 
@@ -33,6 +36,7 @@ class Post (db.Model):
     content = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=func.now())
     remote_addr = db.Column(db.String)
+    traits_observed = db.Column(db.Boolean, default = False)
 
     def __init__ (self, user_id, content, topic_id, remote_addr):
         self.user_id = user_id
@@ -66,6 +70,72 @@ class Post (db.Model):
             post = Post.query.get(post_reference.post_id)
             yield post
 
+    def calculate_traits (self, post_traits = PostTraitDispatcher()):
+        for post_trait in post_traits:
+            #FIXME: what if post was once relevant, then
+            # irrelevant and now relevant again? this leaves
+            # the cache with wrong values or even worse missing ones
+            if not post_trait.is_relevant:
+                continue
+            new_value = post_trait.determine_value(self)
+            query = PostTraitValue.query.filter(PostTraitValue.post_id == self.id)
+            query = query.filter(PostTraitValue.trait_id == post_trait.trait_id)
+            rel = query.first()
+            if rel is None:
+                rel = PostTraitValue(self.id, post_trait.trait_id, new_value)
+                db.session.add(rel)
+            else:
+                rel.value = new_value
+
+    def observe_traits (self, post_traits = PostTraitDispatcher()):
+
+        assert not self.traits_observed
+
+        for post_trait in post_traits:
+            # skip everything if trait is not
+            # active
+            if not post_trait.is_relevant:
+                continue
+            # get trait value
+            query = PostTraitValue.query.filter(PostTraitValue.post_id == self.id)
+            query = query.filter(PostTraitValue.trait_id == post_trait.trait_id)
+            rel = query.first()
+            if rel is None:
+                raise RuntimeError("Tried to observe trait " + post_trait.__class__.__name__ + 
+                                   " for post with id " +  self.id + ", but trait value was not calculated")
+            value_for_addition = rel.value
+            # add it
+            query = PostTraitSum.query.filter(PostTraitSum.topic_id == self.topic.id)
+            sum_rel = query.filter(PostTraitSum.trait_id == post_trait.trait_id).first()
+            if sum_rel is None:
+                sum_rel = PostTraitSum(self.topic.id, post_trait.trait_id, value_for_addition)
+                db.session.add(sum_rel)
+            else:
+                sum_rel.value = PostTraitSum.value + value_for_addition
+
+        self.traits_observed = True
+
+    def unobserve_traits (self, post_traits = PostTraitDispatcher()):
+
+        assert self.traits_observed
+
+        for post_trait in post_traits:
+            # skip everything if trait is not
+            # active
+            if not post_trait.is_relevant:
+                continue
+            # get trait value
+            query = PostTraitValue.query.filter(PostTraitValue.post_id == self.id)
+            query = query.filter(PostTraitValue.trait_id == post_trait.trait_id)
+            rel = query.first()
+            value_for_subtraction = rel.value
+            # subtract it
+            query = PostTraitSum.query.filter(PostTraitSum.topic_id == self.topic.id)
+            sum_rel = query.filter(PostTraitSum.trait_id == post_trait.trait_id).first()
+            sum_rel.value = PostTraitSum.value - value_for_subtraction
+
+        self.traits_observed = False
+
 class Topic (db.Model):
     
     """ Model for topic entries. Saves title and links to board. It 
@@ -80,7 +150,7 @@ class Topic (db.Model):
     closed = db.Column(db.Boolean)
     sticky = db.Column(db.Boolean)
     # cache
-    interesting = db.Column(db.Integer)
+    interesting = db.Column(db.Float)
     view_count = db.Column(db.Integer)
     post_count = db.Column(db.Integer)
     poster_count = db.Column(db.Integer)
@@ -101,8 +171,72 @@ class Topic (db.Model):
         return string
 
     @property
+    def posts (self):
+        """ a list of all posts in this topic """
+        posts = Post.query.filter(Post.topic_id == self.id).all()
+        return posts
+
+    @property
+    def board (self):
+        return Board.query.get(self.board_id)
+
+    @property
     def first_post (self):
         return Post.query.filter(Post.topic_id == self.id).order_by(Post.created_at).first()
+
+    @property
+    def last_post (self):
+        return Post.query.filter(Post.topic_id == self.id).order_by(Post.created_at.desc()).first()
+
+    @property
+    def observed_trait_margin (self):
+        # TODO: fetch from config globals
+        return 10
+
+    @property
+    def next_post_with_obsolete_traits (self):
+
+        """ the post, which falls out of the margin of posts with observed 
+        traits the next time a new posts get added to the topic. if the number
+        of posts in this topic hasn't exceeded the margin of posts with
+        observed traits this property is None
+
+        !!! this property uses the post_count value to determine, whether
+        the number of posts exceed the margin. when adding a new post, the
+        post_count value must be incremented AFTER this property was used.
+        otherwise you will get wrong data and behavior.
+        """
+
+        max_interesting_margin = self.observed_trait_margin
+        if self.post_count < max_interesting_margin:
+            return None
+
+        query = Post.query.filter(Post.topic_id == self.id)
+        query = query.filter(Post.traits_observed == True)
+        query = query.order_by(Post.created_at)
+        return query.first()
+
+    def calculate_interesting_value (self):
+
+        # FIXME: no idea, if this is safe for
+        # different timezones
+        unix_timedelta = self.last_post.created_at - datetime(1970, 1, 1)
+        unix_timestamp = unix_timedelta.days * (24 * 60 * 60) + unix_timedelta.seconds
+        interesting = unix_timestamp
+
+        for post_trait in PostTraitDispatcher():
+            # skip everything if trait is not
+            # active
+            if not post_trait.is_relevant:
+                continue
+            # get sum and calculate average
+            query = PostTraitSum.query.filter(PostTraitSum.topic_id == self.id)
+            sum_rel = query.filter(PostTraitSum.trait_id == post_trait.trait_id).first()
+            divisor = min(self.observed_trait_margin, self.post_count)
+            average = sum_rel.value / divisor
+            interesting += average * post_trait.relevance
+
+        self.interesting = interesting
 
 class FollowedTopic (db.Model):
 

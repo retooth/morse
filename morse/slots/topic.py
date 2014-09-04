@@ -18,6 +18,7 @@
 from . import app
 from flask.ext.login import login_required, current_user
 from flask import jsonify, request
+from ..api.dispatchers import PostTraitDispatcher
 from ..rights import certain_rights_required, check_ban, possibly_banned
 from ..validators import json_input, String, Integer, List
 from ..protocols import ajax_triggered
@@ -47,7 +48,6 @@ def post (topic_str):
 
     check_ban(topic.board_id)
 
-    topic = TopicWrapper(topic)
     if not current_user.may_post_in(topic.board):    
         return "forbidden", 403
 
@@ -55,21 +55,33 @@ def post (topic_str):
         return "forbidden", 403
 
     if not current_user.is_anonymous(): 
-        topic.follow()
+        topic_with_user_context = TopicWrapper(topic)
+        topic_with_user_context.follow()
 
     text = request.json["text"]
     post = Post(current_user.id, text, topic_id, request.remote_addr)
     
     has_posted_at_least_once = Post.query.filter(Post.topic_id == topic_id, Post.user_id == current_user.id).first()
     if not has_posted_at_least_once:
-        topic.poster_count += 1
+        topic.poster_count = Topic.poster_count + 1
 
-    topic.post_count += 1
-    #TODO: calculate interesting
+    post_with_obsolete_traits = topic.next_post_with_obsolete_traits
 
+    if post_with_obsolete_traits is not None:
+        post_with_obsolete_traits.unobserve_traits()
+
+    topic.post_count = Topic.post_count + 1
     db.session.add(post)
     db.session.commit()
 
+    post.calculate_traits()
+    db.session.commit()
+
+    post.observe_traits()   
+    db.session.commit()
+
+    topic.calculate_interesting_value()
+ 
     for referenced_post_id in request.json["referencedPostIDs"]:
         reference = PostReference(post.id, referenced_post_id)
         db.session.add(reference)
