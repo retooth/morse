@@ -190,9 +190,7 @@ function rebindPostEditingEvents (){
     }
 
     /* change post content */
-    console.log(post.html());
     var content = $.trim( post.html() );
-    console.log(content);
     var data = new Object( { editedContent : content  } );
     var json = $.toJSON(data);
 
