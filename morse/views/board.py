@@ -21,7 +21,6 @@ from flask import render_template
 from ..rights import check_ban, possibly_banned 
 from ..models.core import Board
 from ..api.dispatchers import TopicFilterDispatcher, FormatToolDispatcher
-from ..cache import TopicCache
 
 @app.route('/board/<board_str>')
 @possibly_banned
@@ -39,9 +38,6 @@ def board(board_str):
 
     if not current_user.may_read(board):
         return render_template('4xx/403-default.html'), 403
-
-    cache = TopicCache()
-    cache.refresh(board_id) 
 
     topic_filter_dispatcher = TopicFilterDispatcher()
     format_tool_dispatcher = FormatToolDispatcher()

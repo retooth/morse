@@ -67,6 +67,9 @@ def get_topics (board_str):
     for topic in TopicListGenerator(board_id):
         topic_ids.append(topic.id)
 
+    cache = TopicCache()
+    cache.refresh(board_id) 
+
     return jsonify(IDs = topic_ids)
 
 @app.route('/board/<board_str>/start-topic', methods=['POST'])
