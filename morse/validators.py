@@ -84,6 +84,7 @@ class Validator (object):
 class Boolean (Validator):
 
     def validate (self, value):
+        print value, type(value)
         return type(value) is bool
 
 class String (Validator):
@@ -114,6 +115,23 @@ class List (Validator):
             if not is_valid:
                 return False
                 break
+        return True
+
+class Pair (Validator):
+
+    def __init__ (self, first_validator, second_validator):
+        self.first_validator = first_validator
+        self.second_validator = second_validator
+
+    def validate (self, value):
+        if not type(value) is list:
+            return False
+        if not len(value) == 2:
+            return False
+        first_valid = self.first_validator.validate(value[0])
+        second_valid = self.second_validator.validate(value[1])
+        if not (first_valid and second_valid):
+            return False
         return True
 
 class IPRange (Validator):
