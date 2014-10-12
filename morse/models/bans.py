@@ -189,6 +189,7 @@ class IPBannedOn (db.Model):
 class UserBan (Ban):
 
     """ model for user bans """
+    __tablename__ = "user_bans"
 
     user_id = db.Column(db.ForeignKey("users.id"))
 
