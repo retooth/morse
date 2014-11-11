@@ -18,6 +18,7 @@
 from . import app
 from flask import request
 from flask.ext.login import login_required
+from ..models import db
 from ..validators import json_input, List, Pair, String, Boolean
 from ..protocols import ajax_triggered
 from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
@@ -34,8 +35,9 @@ def update_topic_filters ():
     for status in request.json["filterStatus"]:
         string_identifier, active = status
         for filt in dispatcher:
+            print string_identifier, filt.string_identifier
             if string_identifier == filt.string_identifier:
-                filt.active = active
+                filt.change_state(active)
                 break
     return ""          
 
@@ -52,6 +54,6 @@ def update_post_filters ():
         string_identifier, active = status
         for filt in dispatcher:
             if string_identifier == filt.string_identifier:
-                filt.active = active
+                filt.change_state(active)
                 break
     return ""

@@ -16,14 +16,13 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from morse.models.discussion import Topic, Post, ReadPost, FollowedTopic
-from morse.api.filters import TopicItemFilter
+from morse.api.filters import AbstractTopicFilter
 from flask.ext.login import current_user
 from sqlalchemy import not_
 
-class UnreadTopicFilter (TopicItemFilter):
+class UnreadTopicFilter (AbstractTopicFilter):
 
-    id = 1
-    string_identifier = "filter-option-unread"
+    string_identifier = "default-filter-option-unread"
     template = "topicfilters/templates/unread.html"
 
     def filter (self, query):
@@ -38,10 +37,9 @@ class UnreadTopicFilter (TopicItemFilter):
         query = query.filter(Topic.id.in_(unread_topic_ids))
         return query
 
-class FollowedTopicFilter (TopicItemFilter):
+class FollowedTopicFilter (AbstractTopicFilter):
 
-    id = 2
-    string_identifier = "filter-option-followed"
+    string_identifier = "default-filter-option-followed"
     template = "topicfilters/templates/followed.html"
 
     def filter (self, query):

@@ -20,89 +20,89 @@ from ..models.core import User
 from ..models.filters import TopicFilter, PostFilter
 from flask.ext.login import current_user
 from exceptions import PluginError
+from ..patterns import Wrapper
 
-class ItemFilter (object):
-    id = None
+class AbstractItemFilter (object):
+
     string_identifier = ""
     template = ""
+
+    def change_state (self, state):
+        print "at change_state"
+        print self._inner
+        self._inner.active = state
+        db.session.commit()
 
     def filter (self, query):
         raise NotImplementedError(type(self) + " has no filter method")
 
-# TODO: in the next commit -> TopicItemFilter -> AbstractTopicFilter
-class TopicItemFilter (ItemFilter):
+class AbstractTopicFilter (Wrapper, AbstractItemFilter):
+
+    @property
+    def _inner (self): # getting a bit metaphysical here
+        cls = self.__class__
+        query = TopicFilter.query.filter(TopicFilter.string_identifier == cls.string_identifier)
+        filt = query.filter(TopicFilter.user_id == current_user.id).first()
+        if filt is None:
+            raise PluginError(cls.__name__ + " was not registered in the database.")
+        return filt
 
     @classmethod
     def install (cls):
-        id_registered = TopicFilter.query.filter(TopicFilter.filter_id == cls.id).exists()
+        id_registered = TopicFilter.query.filter(TopicFilter.string_identifier == cls.string_identifier).exists()
         if id_registered:
-            raise PluginError("Already found a registered topic filter with id " + str(cls.id) + 
+            raise PluginError("Already found a registered topic filter with id " + cls.string_identifier + 
                               "This can have several reasons: 1. The plugin was installed at an " +
                               "earlier time, but was not properly uninstalled. 2. You tried to " +
                               "install this plugin before, but the installation crashed. 3. The " +
-                              "plugin supplier chose an id that is in conflict with another plugin " +
-                              "or a system reserved id (namely 1-10).")
+                              "plugin supplier chose an id that is in conflict with another plugin ")
         user_id_generator = User.query.values(User.id)
         for user_id_oneple in user_id_generator:
             user_id = user_id_oneple[0]
-            new_filter = TopicFilter(user_id, cls.id)
+            new_filter = TopicFilter(user_id, cls.string_identifier)
             db.session.add(new_filter)
 
         db.session.commit()
 
     @classmethod
     def uninstall (cls):
-        filters = TopicFilter.query.filter(TopicFilter.filter_id == cls.id).all()
+        filters = TopicFilter.query.filter(TopicFilter.string_identifier == cls.string_identifier).all()
         for filt in filters:
             db.session.delete(filt)
         db.session.commit()
 
-    def _get_active (self):
-        model = TopicFilter.query.filter(TopicFilter.filter_id == self.__class__.id, TopicFilter.user_id == current_user.id).first()
-        return model.active
+class AbstractPostFilter (Wrapper, AbstractItemFilter):
 
-    def _set_active (self, value):
-        model = TopicFilter.query.filter(TopicFilter.filter_id == self.__class__.id, TopicFilter.user_id == current_user.id).first()
-        model.active = value
-        db.session.commit() 
-
-    active = property(fget = _get_active, fset = _set_active)
-
-class PostItemFilter (ItemFilter):
+    @property
+    def _inner (self): # getting a bit metaphysical here
+        cls = self.__class__
+        query = PostFilter.query.filter(PostFilter.string_identifier == cls.string_identifier)
+        filt = query.filter(PostFilter.user_id == current_user.id).first()
+        if filt is None:
+            raise PluginError(cls.__name__ + " was not registered in the database.")
+        return filt
 
     @classmethod
     def install (cls):
-        id_registered = PostFilter.query.filter(PostFilter.filter_id == cls.id).exists()
+        id_registered = PostFilter.query.filter(PostFilter.string_identifier == cls.string_identifier).exists()
         if id_registered:
-            raise PluginError("Already found a registered post filter with id " + str(cls.id) + 
+            raise PluginError("Already found a registered post filter with id " + cls.string_identifier + 
                               "This can have several reasons: 1. The plugin was installed at an " +
                               "earlier time, but was not properly uninstalled. 2. You tried to " +
                               "install this plugin before, but the installation crashed. 3. The " +
-                              "plugin supplier chose an id that is in conflict with another plugin " +
-                              "or a system reserved id (namely 1-10).")
+                              "plugin supplier chose an id that is in conflict with another plugin ")
+
         user_id_generator = User.query.values(User.id)
         for user_id_oneple in user_id_generator:
             user_id = user_id_oneple[0]
-            new_filter = PostFilter(user_id, cls.id)
+            new_filter = PostFilter(user_id, cls.string_identifier)
             db.session.add(new_filter)
 
         db.session.commit()
 
     @classmethod
     def uninstall (cls):
-        filters = PostFilter.query.filter(PostFilter.filter_id == cls.id).all()
+        filters = PostFilter.query.filter(PostFilter.string_identifier == cls.string_identifier).all()
         for filt in filters:
             db.session.delete(filt)
         db.session.commit()
-
-    def _get_active (self):
-        model = PostFilter.query.filter(PostFilter.filter_id == self.__class__.id, PostFilter.user_id == current_user.id).first()
-        return model.active
-
-    def _set_active (self, value):
-        model = PostFilter.query.filter(PostFilter.filter_id == self.__class__.id, PostFilter.user_id == current_user.id).first()
-        model.active = value
-        db.session.commit() 
-
-    active = property(fget = _get_active, fset = _set_active)
-

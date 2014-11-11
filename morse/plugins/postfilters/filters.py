@@ -16,14 +16,13 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from morse.models.discussion import Post, ReadPost
-from morse.api.filters import PostItemFilter
+from morse.api.filters import AbstractPostFilter
 from flask.ext.login import current_user
 from sqlalchemy import not_
 
-class UnreadPostFilter (PostItemFilter):
+class UnreadPostFilter (AbstractPostFilter):
 
-    id = 1
-    string_identifier = "filter-option-unread"
+    string_identifier = "default-filter-option-unread"
     template = "postfilters/templates/unread.html"
 
     def filter (self, query):

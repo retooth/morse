@@ -210,14 +210,14 @@ class User (db.Model):
     @property
     def active_topic_filters(self):
         topic_filter_id_generator = TopicFilter.query.filter(TopicFilter.user_id == self.id, 
-                                                             TopicFilter.active == True).values(TopicFilter.filter_id)
+                                                             TopicFilter.active == True).values(TopicFilter.string_identifier)
         filters = [oneple[0] for oneple in topic_filter_id_generator]
         return filters
 
     @property
     def active_post_filters(self):
         post_filter_id_generator = PostFilter.query.filter(PostFilter.user_id == self.id, 
-                                                           PostFilter.active == True).values(PostFilter.filter_id)
+                                                           PostFilter.active == True).values(PostFilter.string_identifier)
         filters = [oneple[0] for oneple in post_filter_id_generator]
         return filters
 

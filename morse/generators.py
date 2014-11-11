@@ -27,7 +27,7 @@ def TopicListGenerator (board_id):
 
     for topic_filter in current_user.active_topic_filters:
         for filt in dispatcher:
-            if topic_filter == filt.id:
+            if topic_filter == filt.string_identifier:
                 query = filt.filter(query)
 
     sticky = query.filter(Topic.sticky == True).all()
@@ -47,7 +47,7 @@ def PostListGenerator (topic_id):
 
     for post_filter in current_user.active_post_filters:
         for filt in dispatcher:
-            if post_filter == filt.id:
+            if post_filter == filt.string_identifier:
                 query = filt.filter(query)
 
     return query.order_by(Post.created_at).all()

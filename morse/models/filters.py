@@ -23,12 +23,12 @@ class BoardFilter (db.Model):
 
     __tablename__ = "board_filters"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    filter_id = db.Column(db.Integer)
+    string_identifier = db.Column(db.String, primary_key=True)
     active = db.Column(db.Boolean)
 
-    def __init__ (self, user_id, filter_id, active = False):
+    def __init__ (self, user_id, string_identifier, active = False):
         self.user_id = user_id
-        self.filter_id = filter_id
+        self.string_identifier = string_identifier
         self.active = active
 
 class TopicFilter (db.Model):
@@ -37,12 +37,12 @@ class TopicFilter (db.Model):
 
     __tablename__ = "topic_filters"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    filter_id = db.Column(db.Integer, primary_key=True)
+    string_identifier = db.Column(db.String, primary_key=True)
     active = db.Column(db.Boolean)
 
-    def __init__ (self, user_id, filter_id, active = False):
+    def __init__ (self, user_id, string_identifier, active = False):
         self.user_id = user_id
-        self.filter_id = filter_id
+        self.string_identifier = string_identifier
         self.active = active
 
 class PostFilter (db.Model):
@@ -51,10 +51,10 @@ class PostFilter (db.Model):
 
     __tablename__ = "post_filters"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    filter_id = db.Column(db.Integer)
+    string_identifier = db.Column(db.String, primary_key=True)
     active = db.Column(db.Boolean)
 
-    def __init__ (self, user_id, filter_id, active = False):
+    def __init__ (self, user_id, string_identifier, active = False):
         self.user_id = user_id
-        self.filter_id = filter_id
+        self.string_identifier = string_identifier
         self.active = active
