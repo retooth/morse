@@ -18,7 +18,6 @@
 from . import app
 from flask.ext.login import login_required, current_user
 from flask import jsonify, request
-from ..api.dispatchers import PostTraitDispatcher
 from ..rights import certain_rights_required, check_ban, possibly_banned
 from ..validators import json_input, String, Integer, List
 from ..protocols import ajax_triggered
@@ -27,6 +26,7 @@ from ..models.core import Board
 from ..models.discussion import Topic, Post, ReadPost, PostReference
 from ..wrappers import TopicWrapper, PostWrapper
 from ..generators import PostListGenerator
+from ..events import EventDispatcher, Event
 from sqlalchemy import not_
 
 @app.route('/topic/<topic_str>/post', methods=['POST'])
@@ -65,31 +65,30 @@ def post (topic_str):
     if not has_posted_at_least_once:
         topic.poster_count = Topic.poster_count + 1
 
-    post_with_obsolete_traits = topic.next_post_with_obsolete_traits
-
-    if post_with_obsolete_traits is not None:
-        post_with_obsolete_traits.unobserve_traits()
-
     topic.post_count = Topic.post_count + 1
+
     db.session.add(post)
     db.session.commit()
 
-    post.calculate_traits()
-    db.session.commit()
-
-    post.observe_traits()   
-    db.session.commit()
-
-    topic.calculate_interesting_value()
- 
     for referenced_post_id in request.json["referencedPostIDs"]:
         reference = PostReference(post.id, referenced_post_id)
         db.session.add(reference)
 
     db.session.commit()
 
+    event_dispatcher = EventDispatcher()
+    event = Event("post_created", post)
+    event_dispatcher.dispatch(event)
+    event = Event("post_id_created", post.id)
+    event_dispatcher.dispatch(event)
+    
     post = PostWrapper(post)
     post.read()
+
+    event = Event("post_read", post)
+    event_dispatcher.dispatch(event)
+    event = Event("post_id_read", post.id)
+    event_dispatcher.dispatch(event)
 
     return jsonify(postId = post.id)
 
@@ -113,6 +112,13 @@ def close_topic (topic_str):
 
     topic.closed = True
     db.session.commit()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_closed", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_closed", topic.id)
+    event_dispatcher.dispatch(event)
+
     return jsonify(closedID=topic_id)
 
 @app.route('/topic/<topic_str>/reopen', methods=['POST'])
@@ -135,6 +141,13 @@ def reopen_topic (topic_str):
 
     topic.closed = False
     db.session.commit()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_reopened", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_reopened", topic.id)
+    event_dispatcher.dispatch(event)
+
     return jsonify(openedID=topic_id)
 
 @app.route('/topic/<topic_str>/pin', methods=['POST'])
@@ -157,6 +170,13 @@ def pin_topic (topic_str):
 
     topic.sticky = True
     db.session.commit()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_pinned", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_pinned", topic.id)
+    event_dispatcher.dispatch(event)
+
     return jsonify(pinnedID=topic_id)
 
 @app.route('/topic/<topic_str>/unpin', methods=['POST'])
@@ -179,6 +199,13 @@ def unpin_topic (topic_str):
 
     topic.sticky = False
     db.session.commit()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_unpinned", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_unpinned", topic.id)
+    event_dispatcher.dispatch(event)
+
     return jsonify(unpinnedID=topic_id)
 
 @app.route('/topic/<topic_str>/follow', methods=['POST'])
@@ -197,6 +224,13 @@ def follow_topic (topic_str):
  
     topic = TopicWrapper(topic)
     topic.follow()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_followed", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_followed", topic.id)
+    event_dispatcher.dispatch(event)
+
     return ""
 
 @app.route('/topic/<topic_str>/unfollow', methods=['POST'])
@@ -215,6 +249,13 @@ def unfollow_topic (topic_str):
 
     topic = TopicWrapper(topic)
     topic.unfollow()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_unfollowed", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_unfollowed", topic.id)
+    event_dispatcher.dispatch(event)
+
     return ""
 
 @app.route('/topic/<topic_str>/posts.json', methods=['GET'])
@@ -292,12 +333,20 @@ def discover_topics ():
     # get flagged as "disovered" either way.    
     topic_ids = request.json["topicIDs"]
     topics = []
+    event_dispatcher = EventDispatcher()
+
     for topic_id in topic_ids:
         topic = Topic.query.get(topic_id)
         if not topic:
             continue
         topic = TopicWrapper(topic)
         topic.discover()
+
+        event = Event("topic_discovered", topic)
+        event_dispatcher.dispatch(event)
+        event = Event("topic_id_discovered", topic.id)
+        event_dispatcher.dispatch(event)
+
 
     return ""
 
@@ -321,4 +370,11 @@ def change_topic_title (topic_str):
 
     topic.title = request.json["newTitle"]
     db.session.commit()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_title_changed", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_title_changed", topic.id)
+    event_dispatcher.dispatch(event)
+
     return ""

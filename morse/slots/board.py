@@ -27,6 +27,7 @@ from ..models.discussion import Topic, Post, DiscoveredTopic
 from ..generators import TopicListGenerator
 from ..wrappers import TopicWrapper, PostWrapper, BoardWrapper
 from ..cache import TopicCache
+from ..events import EventDispatcher, Event
 from sqlalchemy import not_
 
 @app.route('/board/<board_str>/refresh-topic-cache', methods=['GET'])
@@ -101,6 +102,12 @@ def start_topic (board_str):
     db.session.add(topic)
     db.session.commit()
 
+    event_dispatcher = EventDispatcher()
+    event = Event("topic_created", topic)
+    event_dispatcher.dispatch(event)
+    event = Event("topic_id_created", topic.id)
+    event_dispatcher.dispatch(event)
+
     if not current_user.is_anonymous():
         wrapper = TopicWrapper(topic)
         wrapper.follow()
@@ -109,18 +116,16 @@ def start_topic (board_str):
     db.session.add(post)
     db.session.commit()
   
-    post.calculate_traits() 
-    db.session.commit()
-
-    post.observe_traits()
-    db.session.commit()
-
-    topic.calculate_interesting_value()
-    db.session.commit()
+    event = Event("post_created", post)
+    event_dispatcher.dispatch(event)
+    event = Event("post_id_created", post.id)
+    event_dispatcher.dispatch(event)
 
     if not current_user.is_anonymous():
         post = PostWrapper(post)
         post.read()
+        event = Event("post_read", post)
+        event_dispatcher.dispatch(event)
 
     cache = TopicCache()
     cache.refresh(board_id)
@@ -143,6 +148,13 @@ def follow_board (board_str):
  
     board = BoardWrapper(board)
     board.follow()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("board_followed", board)
+    event_dispatcher.dispatch(event)
+    event = Event("board_id_followed", board.id)
+    event_dispatcher.dispatch(event)
+
     return ""
 
 @app.route('/board/<board_str>/unfollow', methods=['POST'])
@@ -161,6 +173,13 @@ def unfollow_board (board_str):
 
     board = BoardWrapper(board)
     board.unfollow()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("board_unfollowed", board)
+    event_dispatcher.dispatch(event)
+    event = Event("board_id_unfollowed", board.id)
+    event_dispatcher.dispatch(event)
+
     return ""
 
 @app.route('/board/<board_str>/undiscovered.json', methods=['GET'])

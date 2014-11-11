@@ -29,3 +29,4 @@ import index
 import install
 import topic
 import bans
+import ratings

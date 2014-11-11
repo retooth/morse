@@ -15,9 +15,17 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-class Wrapper (object):
+from morse.api.ratings import PostRatingMethod
 
-    def __getattr__ (self, attr_name):
-        if attr_name in self.__dict__:
-            return self.__dict__[attr_name]
-        return getattr(self._inner, attr_name)
+class Eloquence (PostRatingMethod):
+
+    identifier = "default-rating-eloquence"
+    name = "Eloquence"
+    description = "Eloquence counts the number of unique words in a post."
+
+    def determine_value (self, post):
+        content = post.content
+        words = content.split(" ")
+        unique_words = list(set(words))
+        eloquence = len(unique_words) * 100.0 / len(words)
+        return eloquence

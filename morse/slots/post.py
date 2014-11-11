@@ -21,6 +21,7 @@ from ..protocols import ajax_triggered
 from flask import request, jsonify
 from flask.ext.login import current_user, login_required
 from ..models.discussion import Post
+from ..events import EventDispatcher, Event
 from ..models import db
 from ..wrappers import PostWrapper
 
@@ -42,12 +43,18 @@ def read_posts ():
     # get flagged as "read" either way.    
     post_ids = request.json["postIDs"]
     posts = []
+    event_dispatcher = EventDispatcher()
+
     for post_id in post_ids:
         post = Post.query.get(post_id)
         if not post:
             continue
         post = PostWrapper(post)
         post.read()
+        event = Event("post_read", post)
+        event_dispatcher.dispatch(event)
+        event = Event("post_id_read", post.id)
+        event_dispatcher.dispatch(event)
 
     return ""
 
@@ -57,9 +64,9 @@ def read_posts ():
 @ajax_triggered
 def edit_post (post_id):
     """ 
-    marks posts as read. this function is called via ajax
-    by the javascript function readVisiblePosts in topic.js
+    edits post contents
     """
+
     post = Post.query.get(post_id)
     if not post:
         return "postnotfound", 404
@@ -70,22 +77,17 @@ def edit_post (post_id):
     editedContent = request.json["editedContent"]
     post.content = editedContent
 
-    if post.traits_observed:
-
-        post.unobserve_traits()
-        post.calculate_traits()
-        db.session.commit()
-
-        post.observe_traits()
-        db.session.commit()
-
-        post.topic.calculate_interesting_value()
-        
-    else:
-
-        post.calculate_traits()
-    
     db.session.commit()
+
+    #TODO: save which user edited the post and
+    #pass the editing user in the event
+
+    event_dispatcher = EventDispatcher()
+    event = Event("post_edited", post)
+    event_dispatcher.dispatch(event)
+    event = Event("post_id_edited", post.id)
+    event_dispatcher.dispatch(event)
+
     return ""
 
 @app.route('/post/<int:post_id>/full-context.json', methods=['GET'])

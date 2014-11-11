@@ -15,18 +15,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from morse.api.traits import AbstractPostTrait
+"""
+this module implements base classes for topic and post rating methods.
 
-class Eloquence (AbstractPostTrait):
+ratings influence the "interesting value" of topics. in morse
+admins can define which contribution behavior is valued by 
+the community and topics get sorted accordingly. available default 
+rating methods are e.g. the eloquency of a post, the community 
+interest measured in unique posters or the amount of images in a post.
+"""
 
-    string_identifier = "default-traits-eloquence"
-    name = "Eloquence"
-    description = "Eloquence counts the number of unique words in a post."
+class PostRatingMethod (object):
+
+    identifier = ""
 
     def determine_value (self, post):
-        content = post.content
-        words = content.split(" ")
-        unique_words = list(set(words))
-        eloquence = len(unique_words) * 100.0 / len(words)
-        return eloquence
-        
+        raise NotImplementedError(self.__class__.__name__ + " needs a determine_value method")

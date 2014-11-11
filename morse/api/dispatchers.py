@@ -107,28 +107,28 @@ class PostFilterDispatcher (object):
             filt = filter_blueprint()
             yield filt
 
-
-class PostTraitDispatcher (object):
+class PostRatingMethods (object):
 
     __monostate = None
 
     def __init__ (self):
-        if not PostTraitDispatcher.__monostate:
-            PostTraitDispatcher.__monostate = self.__dict__
-            self._traits = []
+        if not PostRatingMethods.__monostate:
+            PostRatingMethods.__monostate = self.__dict__
+            self._methods = {}
         else:
-            self.__dict__ = PostTraitDispatcher.__monostate
+            self.__dict__ = PostRatingMethods.__monostate
 
-    def attach (self, trait):
-        # TODO: check for database inconsistency
-        self._traits.append(trait)
+    def attach (self, method):
+        identifier = method.identifier
+        self._methods[identifier] = method
 
     @property
-    def is_empty(self):
-        return self._traits == []
+    def identifiers (self):
+        return self._methods.keys()
 
-    def __iter__ (self):
-        for trait_blueprint in self._traits:
-            filt = trait_blueprint()
-            yield filt
-
+    def fetch (self, identifier):
+        if identifier not in self._methods:
+            raise InconsistencyError("Post rating with identifier " + identifier + " has no method associated." + \
+                                     "This error mostly happens, when a plugin is deleted from the file system " + \
+                                     "without proper uninstallment.")
+        return self._methods[identifier]

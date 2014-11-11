@@ -22,6 +22,9 @@ import os
 app = Flask(__name__)
 app.config.from_object('config')
 
+from workers import make_celery
+celery = make_celery(app)
+
 # FIXME: for some reason FileSystemLoader
 # doesn't like relative paths, so this is a
 # workaround
@@ -38,3 +41,10 @@ from morse.views import login_manager
 login_manager.init_app(app)
 
 from plugins import *
+
+from events import EventDispatcher
+from tasks.ratings import rate_new_post, rate_edited_post
+event_dispatcher = EventDispatcher()
+event_dispatcher.connect_background_listener("post_id_created", rate_new_post)
+event_dispatcher.connect_background_listener("post_id_edited", rate_edited_post)
+

@@ -5,8 +5,8 @@ from ..models import db
 from ..models.core import User, Group, GroupMember, GroupMode 
 from ..models.filters import TopicFilter, PostFilter
 from ..models.sorting import TopicSortingPreference
-from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher, PostTraitDispatcher
-from ..tasks import Task, TaskDispatcher, install_post_traits
+from ..api.dispatchers import TopicFilterDispatcher, PostFilterDispatcher
+from ..tasks.ratings import install_rating_methods
 
 @app.route('/install')
 def install ():
@@ -48,18 +48,15 @@ def install ():
 
     topic_filter_dispatcher = TopicFilterDispatcher()
     for filter_blueprint in topic_filter_dispatcher:
-        filter_entry = TopicFilter(admin.id, filter_blueprint.id)
+        filter_entry = TopicFilter(admin.id, filter_blueprint.string_identifier)
         db.session.add(filter_entry)
 
     post_filter_dispatcher = PostFilterDispatcher()
     for filter_blueprint in post_filter_dispatcher:
-        filter_entry = PostFilter(admin.id, filter_blueprint.id)
+        filter_entry = PostFilter(admin.id, filter_blueprint.string_identifier)
         db.session.add(filter_entry)
 
     db.session.commit()
-
-    task = Task(install_post_traits, PostTraitDispatcher())
-    task_dispatcher = TaskDispatcher()
-    task_dispatcher.start_task("install_post_traits", task)
+    install_rating_methods.delay()
 
     return redirect(url_for('index'))

@@ -213,6 +213,7 @@ $(document).on("ready", function () {
       var active = $(this).is(":checked");
       filterStatus.push( [id, active] );
     });
+    console.log(filterStatus);
     var data = new Object({filterStatus: filterStatus});
     var json = $.toJSON(data);
     $.ajax({

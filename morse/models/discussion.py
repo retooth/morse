@@ -16,11 +16,10 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import db
-from ..api.dispatchers import PostTraitDispatcher
 from sqlalchemy import func
 from helpers import make_url_compatible
 from core import User, Guest, Board
-from traits import PostTraitValue, PostTraitSum
+from ratings import PostRating, PostRatingValue, PostRatingSum
 from datetime import datetime
 
 class Post (db.Model):
@@ -36,7 +35,7 @@ class Post (db.Model):
     content = db.Column(db.String)
     created_at = db.Column(db.DateTime, server_default=func.now())
     remote_addr = db.Column(db.String)
-    traits_observed = db.Column(db.Boolean, default = False)
+    ratings_observed = db.Column(db.Boolean, default = False)
 
     def __init__ (self, user_id, content, topic_id, remote_addr):
         self.user_id = user_id
@@ -70,71 +69,78 @@ class Post (db.Model):
             post = Post.query.get(post_reference.post_id)
             yield post
 
-    def calculate_traits (self, post_traits = PostTraitDispatcher()):
-        for post_trait in post_traits:
-            #FIXME: what if post was once relevant, then
-            # irrelevant and now relevant again? this leaves
-            # the cache with wrong values or even worse missing ones
-            if not post_trait.is_relevant:
-                continue
-            new_value = post_trait.determine_value(self)
-            query = PostTraitValue.query.filter(PostTraitValue.post_id == self.id)
-            query = query.filter(PostTraitValue.trait_id == post_trait.trait_id)
+    def calculate_ratings (self):
+
+        post_ratings = PostRating.query.filter(PostRating.relevance > 0).all()
+
+        for post_rating in post_ratings:
+
+            new_value = post_rating.determine_value(self)
+
+            query = PostRatingValue.query.filter(PostRatingValue.post_id == self.id)
+            query = query.filter(PostRatingValue.rating_id == post_rating.identifier)
             rel = query.first()
+
             if rel is None:
-                rel = PostTraitValue(self.id, post_trait.trait_id, new_value)
+                rel = PostRatingValue(self.id, post_rating.identifier, new_value)
                 db.session.add(rel)
             else:
                 rel.value = new_value
 
-    def observe_traits (self, post_traits = PostTraitDispatcher()):
+    def observe_ratings (self):
 
-        assert not self.traits_observed
+        assert not self.ratings_observed
 
-        for post_trait in post_traits:
-            # skip everything if trait is not
-            # active
-            if not post_trait.is_relevant:
-                continue
-            # get trait value
-            query = PostTraitValue.query.filter(PostTraitValue.post_id == self.id)
-            query = query.filter(PostTraitValue.trait_id == post_trait.trait_id)
+        post_ratings = PostRating.query.filter(PostRating.relevance > 0).all()
+
+        for post_rating in post_ratings:
+            
+            query = PostRatingValue.query.filter(PostRatingValue.post_id == self.id)
+            query = query.filter(PostRatingValue.rating_id == post_rating.identifier)
             rel = query.first()
+
             if rel is None:
-                raise RuntimeError("Tried to observe trait " + post_trait.__class__.__name__ + 
-                                   " for post with id " +  self.id + ", but trait value was not calculated")
+                raise RuntimeError("Tried to observe rating with identifier " + post_rating.identifier + 
+                                   " for post with id " +  str(self.id) + ", but rating value was not calculated")
+
             value_for_addition = rel.value
+
             # add it
-            query = PostTraitSum.query.filter(PostTraitSum.topic_id == self.topic.id)
-            sum_rel = query.filter(PostTraitSum.trait_id == post_trait.trait_id).first()
+            query = PostRatingSum.query.filter(PostRatingSum.topic_id == self.topic.id)
+            sum_rel = query.filter(PostRatingSum.rating_id == post_rating.identifier).first()
+
             if sum_rel is None:
-                sum_rel = PostTraitSum(self.topic.id, post_trait.trait_id, value_for_addition)
+                sum_rel = PostRatingSum(self.topic.id, post_rating.identifier, value_for_addition)
                 db.session.add(sum_rel)
             else:
-                sum_rel.value = PostTraitSum.value + value_for_addition
+                sum_rel.value = PostRatingSum.value + value_for_addition
 
-        self.traits_observed = True
+        self.ratings_observed = True
 
-    def unobserve_traits (self, post_traits = PostTraitDispatcher()):
+    def unobserve_ratings (self):
 
-        assert self.traits_observed
+        assert self.ratings_observed
 
-        for post_trait in post_traits:
-            # skip everything if trait is not
-            # active
-            if not post_trait.is_relevant:
-                continue
-            # get trait value
-            query = PostTraitValue.query.filter(PostTraitValue.post_id == self.id)
-            query = query.filter(PostTraitValue.trait_id == post_trait.trait_id)
+        post_ratings = PostRating.query.filter(PostRating.relevance > 0).all()
+
+        for post_rating in post_ratings:
+            
+            query = PostRatingValue.query.filter(PostRatingValue.post_id == self.id)
+            query = query.filter(PostRatingValue.rating_id == post_rating.identifier)
             rel = query.first()
-            value_for_subtraction = rel.value
-            # subtract it
-            query = PostTraitSum.query.filter(PostTraitSum.topic_id == self.topic.id)
-            sum_rel = query.filter(PostTraitSum.trait_id == post_trait.trait_id).first()
-            sum_rel.value = PostTraitSum.value - value_for_subtraction
 
-        self.traits_observed = False
+            if rel is None:
+                raise RuntimeError("Tried to unobserve rating with identifier " + post_rating.identifier + 
+                                   " for post with id " +  self.id + ", but rating value was not calculated")
+
+            value_for_subtraction = rel.value
+
+            # substract it
+            query = PostRatingSum.query.filter(PostRatingSum.topic_id == self.topic.id)
+            sum_rel = query.filter(PostRatingSum.rating_id == post_rating.identifier).first()
+            sum_rel.value = PostRatingSum.value - value_for_subtraction
+
+        self.ratings_observed = False
 
 class Topic (db.Model):
     
@@ -189,30 +195,31 @@ class Topic (db.Model):
         return Post.query.filter(Post.topic_id == self.id).order_by(Post.created_at.desc()).first()
 
     @property
-    def observed_trait_margin (self):
+    def observed_ratings_margin (self):
         # TODO: fetch from config globals
         return 10
 
     @property
-    def next_post_with_obsolete_traits (self):
+    def next_post_with_obsolete_ratings (self):
 
         """ the post, which falls out of the margin of posts with observed 
-        traits the next time a new posts get added to the topic. if the number
+        ratings the next time a new posts get added to the topic. if the number
         of posts in this topic hasn't exceeded the margin of posts with
-        observed traits this property is None
+        observed ratings this property is None
 
         !!! this property uses the post_count value to determine, whether
         the number of posts exceed the margin. when adding a new post, the
         post_count value must be incremented AFTER this property was used.
         otherwise you will get wrong data and behavior.
+        It also uses the ratings_observed field to determine the post, so
+        the same applies to calling the observe_ratings method
         """
 
-        max_interesting_margin = self.observed_trait_margin
-        if self.post_count < max_interesting_margin:
+        if self.post_count < self.observed_ratings_margin:
             return None
 
         query = Post.query.filter(Post.topic_id == self.id)
-        query = query.filter(Post.traits_observed == True)
+        query = query.filter(Post.ratings_observed == True)
         query = query.order_by(Post.created_at)
         return query.first()
 
@@ -224,17 +231,15 @@ class Topic (db.Model):
         unix_timestamp = unix_timedelta.days * (24 * 60 * 60) + unix_timedelta.seconds
         interesting = unix_timestamp
 
-        for post_trait in PostTraitDispatcher():
-            # skip everything if trait is not
-            # active
-            if not post_trait.is_relevant:
-                continue
+        post_ratings = PostRating.query.filter(PostRating.relevance > 0).all()
+        for post_rating in post_ratings:
+
             # get sum and calculate average
-            query = PostTraitSum.query.filter(PostTraitSum.topic_id == self.id)
-            sum_rel = query.filter(PostTraitSum.trait_id == post_trait.trait_id).first()
-            divisor = min(self.observed_trait_margin, self.post_count)
+            query = PostRatingSum.query.filter(PostRatingSum.topic_id == self.id)
+            sum_rel = query.filter(PostRatingSum.rating_id == post_rating.identifier).first()
+            divisor = min(self.observed_ratings_margin, self.post_count)
             average = sum_rel.value / divisor
-            interesting += average * post_trait.relevance
+            interesting += average * post_rating.relevance
 
         self.interesting = interesting
 

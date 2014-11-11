@@ -15,8 +15,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
-from morse.api.dispatchers import PostTraitDispatcher
-from traits import Eloquence
+from morse.api.dispatchers import PostRatingMethods
+from ratings import Eloquence
 
-dispatcher = PostTraitDispatcher()
-dispatcher.attach(Eloquence)
+eloquence = Eloquence()
+methods = PostRatingMethods()
+methods.attach(eloquence)

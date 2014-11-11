@@ -22,8 +22,9 @@ from ..rights import admin_rights_required
 from ..models import db
 from ..validators import json_input, String, Integer, Boolean
 from ..protocols import ajax_triggered
-from ..models.core import Board, Group, GroupMode, GroupMember
+from ..models.core import Board, Group, GroupMode, GroupMember, User
 from ..enum import DEFAULT_MODE_DUMMY_ID
+from ..events import EventDispatcher, Event
 
 @app.route('/groups/adduser', methods=['POST'])
 @login_required
@@ -46,6 +47,12 @@ def add_user_to_group():
     db.session.add(rel)
     db.session.commit()
 
+    group = Group.get(group_id)
+    user = User.get(user_id)
+    event_dispatcher = EventDispatcher()
+    event = Event("group_added_user", group, user)
+    event_dispatcher.dispatch(event)
+
     return ""
 
 @app.route('/groups/removeuser', methods=['POST'])
@@ -67,6 +74,12 @@ def remove_user_from_group():
 
     db.session.delete(rel)
     db.session.commit()
+
+    group = Group.get(group_id)
+    user = User.get(user_id)
+    event_dispatcher = EventDispatcher()
+    event = Event("group_removed_user", group, user)
+    event_dispatcher.dispatch(event)
 
     return ""
 
@@ -115,6 +128,10 @@ def update_group_rights ():
     group.may_pin_topics = request.json["mayPinTopics"]
     db.session.commit()
 
+    event_dispatcher = EventDispatcher()
+    event = Event("group_changed_rights", group)
+    event_dispatcher.dispatch(event)
+
     return ""
 
 @app.route('/groups/create', methods=['POST'])
@@ -149,6 +166,10 @@ def create_group ():
 
     db.session.commit()
 
+    event_dispatcher = EventDispatcher()
+    event = Event("group_created", group)
+    event_dispatcher.dispatch(event)
+
     return jsonify(newGroupID = group.id, name = name)
 
 @app.route('/groups/delete', methods=['POST'])
@@ -180,4 +201,9 @@ def delete_group ():
     db.session.delete(group)
 
     db.session.commit()
+
+    event_dispatcher = EventDispatcher()
+    event = Event("group_deleted", group)
+    event_dispatcher.dispatch(event)
+
     return ""

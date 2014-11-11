@@ -16,45 +16,50 @@
 #    along with Morse.  If not, see <http://www.gnu.org/licenses/>.
 
 from . import db
+from ..api.dispatchers import PostRatingMethods
 
-class PostTrait (db.Model):
+class PostRating (db.Model):
     
-    __tablename__ = "post_traits"
+    __tablename__ = "post_ratings"
 
-    trait_id = db.Column(db.String, primary_key = True)
+    identifier = db.Column(db.String, primary_key = True)
     relevance = db.Column(db.Integer)
 
-    def __init__ (self, string_identifier):
-        self.trait_id = string_identifier
+    def __init__ (self, identifier):
+        self.identifier = identifier
         self.relevance = 0
 
     @property
     def is_relevant (self):
         return self.relevance > 0
 
-class PostTraitValue (db.Model):
+    def determine_value (self, post):
+        method = PostRatingMethods().fetch(self.identifier)
+        return method.determine_value(post)
 
-    __tablename__ = "post_trait_values"
+class PostRatingValue (db.Model):
+
+    __tablename__ = "post_rating_values"
 
     post_id = db.Column(db.ForeignKey("posts.id"), primary_key = True)
-    trait_id = db.Column(db.String, primary_key = True);
-    value = db.Column(db.Float);
+    rating_id = db.Column(db.ForeignKey("post_ratings.identifier"), primary_key = True)
+    value = db.Column(db.Float)
 
-    def __init__ (self, post_id, trait_id, value):
+    def __init__ (self, post_id, rating_id, value):
         self.post_id = post_id
-        self.trait_id = trait_id
+        self.rating_id = rating_id
         self.value = value
         
-class PostTraitSum (db.Model):
+class PostRatingSum (db.Model):
 
-    __tablename__ = "post_trait_sums"
+    __tablename__ = "post_rating_sums"
 
     topic_id = db.Column(db.ForeignKey("topics.id"), primary_key = True)
-    trait_id = db.Column(db.String, primary_key = True);
-    value = db.Column(db.Float);
+    rating_id = db.Column(db.ForeignKey("post_ratings.identifier"), primary_key = True)
+    value = db.Column(db.Float)
 
-    def __init__ (self, topic_id, trait_id, value):
+    def __init__ (self, topic_id, rating_id, value):
         self.topic_id = topic_id
-        self.trait_id = trait_id
+        self.rating_id = rating_id
         self.value = value
         
