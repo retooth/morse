@@ -28,7 +28,7 @@ function getPostReferences (owner){
   var refString = owner.attr("references");
   var refArray_strings = refString.split(" ");
   var refArray = []
-  $.each(refArray, function(index, element){
+  $.each(refArray_strings, function(index, element){
     var ID = parseInt(element);
     refArray.push(ID);
   });
