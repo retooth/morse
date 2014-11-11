@@ -24,6 +24,7 @@ app.config.from_object('config')
 
 from workers import make_celery
 celery = make_celery(app)
+background = celery
 
 # FIXME: for some reason FileSystemLoader
 # doesn't like relative paths, so this is a
